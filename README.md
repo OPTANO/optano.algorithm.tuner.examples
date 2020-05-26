@@ -1,2 +1,2 @@
-# optano.algorithm.tuner
-OPTANO Algorithm Tuner
+# optano.algorithm.tuner.exmaples
+Examples for OPTANO Algorithm Tuner
