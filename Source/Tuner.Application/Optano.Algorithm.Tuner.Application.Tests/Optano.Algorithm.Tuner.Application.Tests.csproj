@@ -1,0 +1,60 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <IsPackable>false</IsPackable>
+	<Version>0.0.1.1</Version>
+	<Authors>OPTANO GmbH</Authors>
+    <Copyright>OPTANO GmbH</Copyright>
+	<PackageLicenseExpression>MIT</PackageLicenseExpression>
+	<CodeAnalysisRuleSet>..\..\..\StyleCopRuleset.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DocumentationFile>Optano.Algorithm.Tuner.Application.Tests.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>Optano.Algorithm.Tuner.Application.Tests.xml</DocumentationFile>
+    <DefineConstants>DEBUG;TRACE;CODE_ANALYSIS</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0" />
+    <PackageReference Include="Shouldly" Version="3.0.2" />
+    <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="xunit" Version="2.4.1" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="coverlet.collector" Version="1.2.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Optano.Algorithm.Tuner.Application\Optano.Algorithm.Tuner.Application.csproj" />
+  </ItemGroup>
+  
+    <ItemGroup>
+	<None Include="..\..\..\Tools\TestApplication.dll" Link="Tools\TestApplication.dll">
+		<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	</None>
+	<None Include="..\..\..\Tools\TestApplication.runtimeconfig.json" Link="Tools\TestApplication.runtimeconfig.json">
+		<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	</None>
+	<None Include="..\..\..\Tools\ubcsat.exe" Link="Tools\ubcsat.exe">
+		<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	</None>
+	<None Include="..\..\..\Tools\testInstance.cnf" Link="Tools\testInstance.cnf">
+		<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	</None>
+	<AdditionalFiles Include="..\..\..\stylecop.json" />
+  </ItemGroup>
+
+</Project>

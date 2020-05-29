@@ -1,0 +1,203 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Optano.Algorithm.Tuner.Bbob.Tests</name>
+    </assembly>
+    <members>
+        <member name="T:Optano.Algorithm.Tuner.Bbob.Tests.BbobConfigurationTests">
+            <summary>
+            Contains tests for the <see cref="T:Optano.Algorithm.Tuner.Bbob.BbobRunnerConfiguration"/> class and the <see cref="T:Optano.Algorithm.Tuner.Bbob.BbobRunnerConfigurationParser"/> class.
+            </summary>
+        </member>
+        <member name="F:Optano.Algorithm.Tuner.Bbob.Tests.BbobConfigurationTests._parser">
+            <summary>
+            The <see cref="T:Optano.Algorithm.Tuner.Bbob.BbobRunnerConfigurationParser"/> used in tests.
+            </summary>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Bbob.Tests.BbobConfigurationTests.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Optano.Algorithm.Tuner.Bbob.Tests.BbobConfigurationTests"/> class.
+            Behaves like the [TestInitialize] of MSTest framework.
+            </summary>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Bbob.Tests.BbobConfigurationTests.Dispose">
+            <inheritdoc/>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Bbob.Tests.BbobConfigurationTests.ConfigurationParserThrowsIfNoPreprocessingWasDone">
+            <summary>
+            Checks that trying to use the builder throws an
+            <see cref="T:System.InvalidOperationException"/> if no preprocessing was done.
+            </summary>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Bbob.Tests.BbobConfigurationTests.MasterArgumentsAreParsedCorrectly">
+            <summary>
+            Checks that all possible arguments to an instance acting as master get parsed correctly.
+            </summary>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Bbob.Tests.BbobConfigurationTests.NonMasterArgumentsAreParsedCorrectly">
+            <summary>
+            Checks that all possible arguments to an instance acting as worker get parsed correctly.
+            </summary>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Bbob.Tests.BbobConfigurationTests.NDeskParsesGenericParameterizationsCorrectly(Optano.Algorithm.Tuner.Bbob.GenericParameterization,System.String)">
+            <summary>
+            Checks that <see cref="N:NDesk.Options" /> parses all possible generic parameterizations correctly.
+            </summary>
+            <param name="genericParameterization">The generic parameterization.</param>
+            <param name="genericParameterizationString">The generic parameterization as string.</param>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Bbob.Tests.BbobConfigurationTests.NDeskThrowsIfUnknownGenericParameterizationIsUsed(System.String)">
+            <summary>
+            Checks that <see cref="N:NDesk.Options" /> throws an <see cref="T:NDesk.Options.OptionException" />, if unknown generic parameterizations are used.
+            </summary>
+            <param name="genericParameterizationString">The generic parameterization as string.</param>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Bbob.Tests.BbobConfigurationTests.MissingPythonBinThrowsException">
+            <summary>
+            Checks that providing the --master argument and a function id, but no argument defining the python binary
+            results in an <see cref="T:NDesk.Options.OptionException"/> when calling
+            <see cref="M:Optano.Algorithm.Tuner.Bbob.BbobRunnerConfigurationParser.ParseArguments(System.String[])"/>.
+            </summary>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Bbob.Tests.BbobConfigurationTests.MissingFunctionIdThrowsException">
+            <summary>
+            Checks that providing the --master argument and a python binary, but no argument defining the function id
+            results in an <see cref="T:NDesk.Options.OptionException"/> when calling
+            <see cref="M:Optano.Algorithm.Tuner.Bbob.BbobRunnerConfigurationParser.ParseArguments(System.String[])"/>.
+            </summary>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Bbob.Tests.BbobConfigurationTests.ParserThrowsIfFunctionIdIsOutOfRange(System.Int32)">
+            <summary>
+            Checks that the parser throws an <see cref="T:System.ArgumentOutOfRangeException" />, if the functionId is out of range.
+            </summary>
+            <param name="functionId">The function identifier.</param>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Bbob.Tests.BbobConfigurationTests.ParserThrowsIfDimensionsIsNegativeOrZero(System.Int32)">
+            <summary>
+            Checks that the parser throws an <see cref="T:System.ArgumentOutOfRangeException" />, if the dimensions is negative or zero.
+            </summary>
+            <param name="dimensions">The dimensions.</param>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Bbob.Tests.BbobConfigurationTests.BuildWithFallBackPrioritizesFallbackArgumentsCorrectly">
+            <summary>
+            Checks that <see cref="M:Optano.Algorithm.Tuner.Bbob.BbobRunnerConfiguration.BbobRunnerConfigurationBuilder.BuildWithFallback(Optano.Algorithm.Tuner.Configuration.ConfigurationBase)"/> method prioritizes the fallback arguments correctly.
+            </summary>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Bbob.Tests.BbobConfigurationTests.PrintHelpPrintsAllArguments">
+            <summary>
+            Checks that <see cref="M:Optano.Algorithm.Tuner.Bbob.BbobRunnerConfigurationParser.PrintHelp"/> prints help about general worker arguments, general
+            master arguments, and custom BBOB arguments.
+            </summary>
+        </member>
+        <member name="T:Optano.Algorithm.Tuner.Bbob.Tests.BbobRunnerTests">
+            <summary>
+            Contains tests for the <see cref="T:Optano.Algorithm.Tuner.Bbob.BbobRunner"/> class.
+            </summary>
+        </member>
+        <member name="F:Optano.Algorithm.Tuner.Bbob.Tests.BbobRunnerTests.PythonBinary">
+            <summary>
+            The python binary used in tests.
+            </summary>
+        </member>
+        <member name="F:Optano.Algorithm.Tuner.Bbob.Tests.BbobRunnerTests.BbobScript">
+            <summary>
+            The bbob script used in tests.
+            </summary>
+        </member>
+        <member name="F:Optano.Algorithm.Tuner.Bbob.Tests.BbobRunnerTests.SeedFilePath">
+            <summary>
+            The instance file path used in tests.
+            </summary>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Bbob.Tests.BbobRunnerTests.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Optano.Algorithm.Tuner.Bbob.Tests.BbobRunnerTests"/> class.
+            Behaves like the [TestInitialize] of MSTest framework.
+            </summary>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Bbob.Tests.BbobRunnerTests.Dispose">
+            <inheritdoc/>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Bbob.Tests.BbobRunnerTests.BbobRunnerReturnsCorrectResult(System.Int32,System.Int32,System.Double,System.Double,System.Double,System.Double)">
+            <summary>
+            Checks, if the example runs get the right results.
+            </summary>
+            <param name="functionId">The function identifier.</param>
+            <param name="instanceSeed">The instance seed.</param>
+            <param name="x0">The x0.</param>
+            <param name="x1">The x1.</param>
+            <param name="x2">The x2.</param>
+            <param name="expectedResult">The expected result.</param>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Bbob.Tests.BbobRunnerTests.ExtractFunctionValueReturnsCorrectFunctionValue(System.Double)">
+            <summary>
+            Checks that <see cref="M:Optano.Algorithm.Tuner.Bbob.BbobRunner.ExtractFunctionValue(System.String)"/> returns the correct function value.
+            </summary>
+            <param name="functionValue">The function value.</param>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Bbob.Tests.BbobRunnerTests.ExtractFunctionValueReturnsMaxValueIfResultIsCorrupted(System.String)">
+            <summary>
+            Checks that <see cref="M:Optano.Algorithm.Tuner.Bbob.BbobRunner.ExtractFunctionValue(System.String)"/> returns the maximal double value, if the output is corrupted.
+            </summary>
+            <param name="output">The output.</param>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Bbob.Tests.BbobRunnerTests.CreateInstanceFile(System.Int32)">
+            <summary>
+            Creates the instance file.
+            </summary>
+            <param name="instanceSeed">The instance seed.</param>
+            <returns>The instance file.</returns>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Bbob.Tests.BbobRunnerTests.DeleteInstanceFile">
+            <summary>
+            Deletes the instance file.
+            </summary>
+        </member>
+        <member name="T:Optano.Algorithm.Tuner.Bbob.Tests.BbobUtilsTests">
+            <summary>
+            Contains tests for the <see cref="T:Optano.Algorithm.Tuner.Bbob.BbobUtils"/> class.
+            </summary>
+        </member>
+        <member name="F:Optano.Algorithm.Tuner.Bbob.Tests.BbobUtilsTests.InstanceFolder">
+            <summary>
+            The instance folder used in tests.
+            </summary>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Bbob.Tests.BbobUtilsTests.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Optano.Algorithm.Tuner.Bbob.Tests.BbobUtilsTests"/> class.
+            Behaves like the [TestInitialize] of MSTest framework.
+            </summary>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Bbob.Tests.BbobUtilsTests.Dispose">
+            <inheritdoc/>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Bbob.Tests.BbobUtilsTests.NumberOfCreatedInstancesFitsToNumberOfCreatedFiles">
+            <summary>
+            Checks that the number of created instances fits to the number of created files.
+            </summary>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Bbob.Tests.BbobUtilsTests.CreateNoNewInstanceFilesIfNotNecessary">
+            <summary>
+            Checks that the <see cref="M:Optano.Algorithm.Tuner.Bbob.BbobUtils.CreateInstancesFilesAndReturnAsList(System.String,System.Int32,System.Random)"/> method creates no new instance files, if there are enough instance files in the instance folder.
+            </summary>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Bbob.Tests.BbobUtilsTests.ClearInstanceFolder">
+            <summary>
+            Clears the instance folder.
+            </summary>
+        </member>
+        <member name="T:Optano.Algorithm.Tuner.Bbob.Tests.TestUtils">
+            <summary>
+            Contains utility methods that are helpful in tests.
+            </summary>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Bbob.Tests.TestUtils.CheckOutput(System.Action,System.Action{System.IO.StringWriter})">
+            <summary>
+            Checks console output on invoking a certain action.
+            </summary>
+            <param name="action">The action to invoke.</param>
+            <param name="check">Checks to do on the output.</param>
+        </member>
+    </members>
+</doc>

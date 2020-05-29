@@ -1,0 +1,190 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Optano.Algorithm.Tuner.Gurobi.Tests</name>
+    </assembly>
+    <members>
+        <member name="T:Optano.Algorithm.Tuner.Gurobi.Tests.GurobiRunnerConfigurationTests">
+            <summary>
+            Contains tests for the <see cref="T:Optano.Algorithm.Tuner.Gurobi.GurobiRunnerConfiguration"/> class and the <see cref="T:Optano.Algorithm.Tuner.Gurobi.GurobiRunnerConfigurationParser"/> class.
+            </summary>
+        </member>
+        <member name="F:Optano.Algorithm.Tuner.Gurobi.Tests.GurobiRunnerConfigurationTests._parser">
+            <summary>
+            The <see cref="T:Optano.Algorithm.Tuner.Gurobi.GurobiRunnerConfigurationParser"/> used in tests.
+            </summary>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Gurobi.Tests.GurobiRunnerConfigurationTests.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Optano.Algorithm.Tuner.Gurobi.Tests.GurobiRunnerConfigurationTests"/> class.
+            Behaves like the [TestInitialize] of MSTest framework.
+            </summary>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Gurobi.Tests.GurobiRunnerConfigurationTests.Dispose">
+            <inheritdoc/>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Gurobi.Tests.GurobiRunnerConfigurationTests.ConfigurationParserThrowsIfNoPreprocessingWasDone">
+            <summary>
+            Checks that trying to use the builder throws an
+            <see cref="T:System.InvalidOperationException"/> if <see cref="M:Optano.Algorithm.Tuner.Gurobi.GurobiRunnerConfigurationParser.ParseArguments(System.String[])"/>
+            was not called beforehand.
+            </summary>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Gurobi.Tests.GurobiRunnerConfigurationTests.MasterArgumentsAreParsedCorrectly">
+            <summary>
+            Checks that all possible arguments to an instance acting as master get parsed correctly.
+            </summary>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Gurobi.Tests.GurobiRunnerConfigurationTests.NonMasterArgumentsAreParsedCorrectly">
+            <summary>
+            Checks that all possible arguments to an instance acting as worker get parsed correctly.
+            </summary>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Gurobi.Tests.GurobiRunnerConfigurationTests.ParserThrowsIfThreadCountIsNegativeOrZero(System.Int32)">
+            <summary>
+            Checks that the parser throws an <see cref="T:System.ArgumentOutOfRangeException" />, if the number of threads is negative or zero.
+            </summary>
+            <param name="threadCount">The thread count.</param>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Gurobi.Tests.GurobiRunnerConfigurationTests.ParserThrowsIfNumberOfSeedsIsNegativeOrZero(System.Int32)">
+            <summary>
+            Checks that the parser throws an <see cref="T:System.ArgumentOutOfRangeException" />, if the number of seeds is negative or zero.
+            </summary>
+            <param name="numberOfSeeds">The number of seeds.</param>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Gurobi.Tests.GurobiRunnerConfigurationTests.ParserThrowsIfNodeFileStartSizeGigabyteIsNegative(System.Double)">
+            <summary>
+            Checks that the parser throws an <see cref="T:System.ArgumentOutOfRangeException" />, if the nodefile start size is negative.
+            </summary>
+            <param name="nodefileSize">Size of the nodefile.</param>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Gurobi.Tests.GurobiRunnerConfigurationTests.ParserThrowsIfTerminationMipGapIsNegative(System.Double)">
+            <summary>
+            Checks that the parser throws an <see cref="T:System.ArgumentOutOfRangeException" />, if the termination mip gap is negative.
+            </summary>
+            <param name="terminationMipGap">The mip gap.</param>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Gurobi.Tests.GurobiRunnerConfigurationTests.BuildWithFallBackPrioritizesFallbackArgumentsCorrectly">
+            <summary>
+            Checks that <see cref="M:Optano.Algorithm.Tuner.Gurobi.GurobiRunnerConfiguration.GurobiRunnerConfigBuilder.BuildWithFallback(Optano.Algorithm.Tuner.Configuration.ConfigurationBase)"/> method prioritizes the fallback arguments correctly.
+            </summary>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Gurobi.Tests.GurobiRunnerConfigurationTests.PrintHelpPrintsAllArguments">
+            <summary>
+            Checks that <see cref="M:Optano.Algorithm.Tuner.Gurobi.GurobiRunnerConfigurationParser.PrintHelp"/> prints help about general worker arguments, general
+            master arguments, and custom Gurobi arguments.
+            </summary>
+        </member>
+        <member name="T:Optano.Algorithm.Tuner.Gurobi.Tests.GurobiRunnerTests">
+            <summary>
+            Contains tests for the <see cref="T:Optano.Algorithm.Tuner.Gurobi.GurobiRunner"/> class.
+            </summary>
+        </member>
+        <member name="F:Optano.Algorithm.Tuner.Gurobi.Tests.GurobiRunnerTests.PathToTestInstance">
+            <summary>
+            The path to the instance we run Gurobi on for testing.
+            </summary>
+        </member>
+        <member name="F:Optano.Algorithm.Tuner.Gurobi.Tests.GurobiRunnerTests.TestInstanceSeed">
+            <summary>
+            The seed to the instance we run Gurobi on for testing.
+            </summary>
+        </member>
+        <member name="F:Optano.Algorithm.Tuner.Gurobi.Tests.GurobiRunnerTests._cancellationTokenSource">
+            <summary>
+            A <see cref="T:System.Threading.CancellationTokenSource"/>.
+            </summary>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Gurobi.Tests.GurobiRunnerTests.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Optano.Algorithm.Tuner.Gurobi.Tests.GurobiRunnerTests"/> class.
+            Behaves like the [TestInitialize] of MSTest framework.
+            </summary>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Gurobi.Tests.GurobiRunnerTests.Dispose">
+            <inheritdoc/>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Gurobi.Tests.GurobiRunnerTests.CancellationWorks">
+            <summary>
+            Checks that <see cref="M:Optano.Algorithm.Tuner.Gurobi.GurobiRunner.Run(Optano.Algorithm.Tuner.TargetAlgorithm.Instances.InstanceSeedFile,System.Threading.CancellationToken)"/> can be cancelled.
+            </summary>
+        </member>
+        <member name="T:Optano.Algorithm.Tuner.Gurobi.Tests.GurobiUtilsTests">
+            <summary>
+            Contains tests for the <see cref="T:Optano.Algorithm.Tuner.Gurobi.GurobiUtils"/> class.
+            </summary>
+        </member>
+        <member name="F:Optano.Algorithm.Tuner.Gurobi.Tests.GurobiUtilsTests.MpsFileNames">
+            <summary>
+            File names that should be translated into instances on <see cref="M:Optano.Algorithm.Tuner.Gurobi.GurobiUtils.CreateInstances(System.String,System.Int32,System.Int32)"/>.
+            </summary>
+        </member>
+        <member name="F:Optano.Algorithm.Tuner.Gurobi.Tests.GurobiUtilsTests.NonMpsFileNames">
+            <summary>
+            File names that should not be translated into instances on <see cref="M:Optano.Algorithm.Tuner.Gurobi.GurobiUtils.CreateInstances(System.String,System.Int32,System.Int32)"/>.
+            </summary>
+        </member>
+        <member name="F:Optano.Algorithm.Tuner.Gurobi.Tests.GurobiUtilsTests._instanceFolder">
+            <summary>
+            Path to the folder containing test data. Has to be initialized.
+            </summary>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Gurobi.Tests.GurobiUtilsTests.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Optano.Algorithm.Tuner.Gurobi.Tests.GurobiUtilsTests"/> class.
+            Behaves like the [TestInitialize] of MSTest framework.
+            </summary>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Gurobi.Tests.GurobiUtilsTests.Dispose">
+            <inheritdoc/>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Gurobi.Tests.GurobiUtilsTests.SeedsToUseReturnsCorrectNumberOfSeeds">
+            <summary>
+            Checks that <see cref="M:Optano.Algorithm.Tuner.Gurobi.GurobiUtils.SeedsToUse(System.Int32,System.Int32)"/> returns the correct number of seeds.
+            </summary>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Gurobi.Tests.GurobiUtilsTests.CreateInstancesThrowsExceptionIfItCannotOpenFolder">
+            <summary>
+            Verifies that calling <see cref="M:Optano.Algorithm.Tuner.Gurobi.GurobiUtils.CreateInstances(System.String,System.Int32,System.Int32)"/> with a non existant directory throws
+            a <see cref="T:System.IO.DirectoryNotFoundException"/>.
+            </summary>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Gurobi.Tests.GurobiUtilsTests.CreateInstancesPrintsMessageIfItCannotOpenFolder">
+            <summary>
+            Verifies that calling <see cref="M:Optano.Algorithm.Tuner.Gurobi.GurobiUtils.CreateInstances(System.String,System.Int32,System.Int32)"/> with a non existant directory prints
+            out a message to the console telling the user the directory doesn't exist.
+            </summary>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Gurobi.Tests.GurobiUtilsTests.CreateInstancesCorrectlyExtractsPathsToMpsFiles">
+            <summary>
+            Checks that <see cref="M:Optano.Algorithm.Tuner.Gurobi.GurobiUtils.CreateInstances(System.String,System.Int32,System.Int32)"/> creates an instance out of each .mps file and
+            the instance's file name matches the complete path to that file.
+            </summary>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Gurobi.Tests.GurobiUtilsTests.CreateInstancesIgnoresFilesNotInMpsFormat">
+            <summary>
+            Checks that <see cref="M:Optano.Algorithm.Tuner.Gurobi.GurobiUtils.CreateInstances(System.String,System.Int32,System.Int32)"/> ignores files which are not in .mps format.
+            </summary>
+        </member>
+        <member name="T:Optano.Algorithm.Tuner.Gurobi.Tests.TestUtils">
+            <summary>
+            Contains utility methods that are helpful in tests.
+            </summary>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Gurobi.Tests.TestUtils.PrintList``1(System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Prints a list in the form { item1, item2, item3, item4 }.
+            </summary>
+            <typeparam name="T">The type of the list items.</typeparam>
+            <param name="list">The list to print.</param>
+            <returns>A <see cref="T:System.String"/> representing the given list.</returns>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Gurobi.Tests.TestUtils.CheckOutput(System.Action,System.Action{System.IO.StringWriter})">
+            <summary>
+            Checks console output on invoking a certain action.
+            </summary>
+            <param name="action">The action to invoke.</param>
+            <param name="check">Checks to do on the output.</param>
+        </member>
+    </members>
+</doc>

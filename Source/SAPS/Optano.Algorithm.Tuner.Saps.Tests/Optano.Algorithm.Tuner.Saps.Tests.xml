@@ -1,0 +1,247 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Optano.Algorithm.Tuner.Saps.Tests</name>
+    </assembly>
+    <members>
+        <member name="T:Optano.Algorithm.Tuner.Saps.Tests.SapsRunnerConfigurationTests">
+            <summary>
+            Containts tests for the <see cref="T:Optano.Algorithm.Tuner.Saps.SapsRunnerConfiguration"/> class and <see cref="T:Optano.Algorithm.Tuner.Saps.SapsRunnerConfigurationParser"/> class.
+            </summary>
+        </member>
+        <member name="F:Optano.Algorithm.Tuner.Saps.Tests.SapsRunnerConfigurationTests._parser">
+            <summary>
+            The <see cref="T:Optano.Algorithm.Tuner.Saps.SapsRunnerConfigurationParser"/> used in tests.
+            </summary>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Saps.Tests.SapsRunnerConfigurationTests.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Optano.Algorithm.Tuner.Saps.Tests.SapsRunnerConfigurationTests"/> class.
+            Behaves like the [TestInitialize] of MSTest framework.
+            </summary>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Saps.Tests.SapsRunnerConfigurationTests.Dispose">
+            <inheritdoc/>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Saps.Tests.SapsRunnerConfigurationTests.ConfigurationParserThrowsIfNoPreprocessingWasDone">
+            <summary>
+            Checks that trying to use the builder throws an
+            <see cref="T:System.InvalidOperationException"/> if <see cref="M:Optano.Algorithm.Tuner.Saps.SapsRunnerConfigurationParser.ParseArguments(System.String[])"/>
+            was not called beforehand.
+            </summary>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Saps.Tests.SapsRunnerConfigurationTests.MasterArgumentsAreParsedCorrectly">
+            <summary>
+            Checks that all possible arguments to an instance acting as master get parsed correctly.
+            </summary>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Saps.Tests.SapsRunnerConfigurationTests.NonMasterArgumentsAreParsedCorrectly">
+            <summary>
+            Checks that all possible arguments to an instance acting as worker get parsed correctly.
+            </summary>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Saps.Tests.SapsRunnerConfigurationTests.NDeskParsesGenericParameterizationsCorrectly(Optano.Algorithm.Tuner.Saps.GenericParameterization,System.String)">
+            <summary>
+            Checks that <see cref="N:NDesk.Options" /> parses all possible generic parameterizations correctly.
+            </summary>
+            <param name="genericParameterization">The generic parameterization.</param>
+            <param name="genericParameterizationString">The generic parameterization as string.</param>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Saps.Tests.SapsRunnerConfigurationTests.NDeskThrowsIfUnknownGenericParameterizationIsUsed(System.String)">
+            <summary>
+            Checks that <see cref="N:NDesk.Options" /> throws an <see cref="T:NDesk.Options.OptionException" />, if unknown generic parameterizations are used.
+            </summary>
+            <param name="genericParameterizationString">The generic parameterization as string.</param>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Saps.Tests.SapsRunnerConfigurationTests.MissingPathToExecutableThrowsException">
+            <summary>
+            Checks that providing the --master argument, but no argument defining the path to the ubcsat executable
+            results in an <see cref="T:NDesk.Options.OptionException"/> when calling
+            <see cref="M:Optano.Algorithm.Tuner.Saps.SapsRunnerConfigurationParser.ParseArguments(System.String[])"/>.
+            </summary>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Saps.Tests.SapsRunnerConfigurationTests.ParserThrowsIfFactorParKIsNegativeOrZero(System.Int32)">
+            <summary>
+            Checks that the parser throws an <see cref="T:System.ArgumentOutOfRangeException" />, if the factorParK is negative or zero.
+            </summary>
+            <param name="factor">The factor.</param>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Saps.Tests.SapsRunnerConfigurationTests.ParserThrowsIfNumberOfSeedsIsNegativeOrZero(System.Int32)">
+            <summary>
+            Checks that the parser throws an <see cref="T:System.ArgumentOutOfRangeException" />, if the numberOfSeeds is negative or zero.
+            </summary>
+            <param name="numberOfSeeds">The number of seeds.</param>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Saps.Tests.SapsRunnerConfigurationTests.BuildWithFallBackPrioritizesFallbackArgumentsCorrectly">
+            <summary>
+            Checks that <see cref="M:Optano.Algorithm.Tuner.Saps.SapsRunnerConfiguration.SapsConfigBuilder.BuildWithFallback(Optano.Algorithm.Tuner.Configuration.ConfigurationBase)"/> method prioritizes the fallback arguments correctly.
+            </summary>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Saps.Tests.SapsRunnerConfigurationTests.PrintHelpPrintsAllArguments">
+            <summary>
+            Checks that <see cref="M:Optano.Algorithm.Tuner.Saps.SapsRunnerConfigurationParser.PrintHelp"/> prints help about general worker arguments, general
+            master arguments, and custom SAPS arguments.
+            </summary>
+        </member>
+        <member name="T:Optano.Algorithm.Tuner.Saps.Tests.SapsRunnerTests">
+            <summary>
+            Contains tests for the <see cref="T:Optano.Algorithm.Tuner.Saps.SapsRunner"/> class.
+            </summary>
+        </member>
+        <member name="F:Optano.Algorithm.Tuner.Saps.Tests.SapsRunnerTests.PathToExecutable">
+            <summary>
+            Path to ubcsat excutable.
+            </summary>
+        </member>
+        <member name="F:Optano.Algorithm.Tuner.Saps.Tests.SapsRunnerTests.PathToTestInstance">
+            <summary>
+            The path to the instance we run ubcsat on for testing.
+            </summary>
+        </member>
+        <member name="F:Optano.Algorithm.Tuner.Saps.Tests.SapsRunnerTests.TestInstanceSeed">
+            <summary>
+            The seed to the instance we run ubcsat on for testing.
+            </summary>
+        </member>
+        <member name="F:Optano.Algorithm.Tuner.Saps.Tests.SapsRunnerTests._cancellationTokenSource">
+            <summary>
+            A <see cref="T:System.Threading.CancellationTokenSource"/>.
+            </summary>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Saps.Tests.SapsRunnerTests.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Optano.Algorithm.Tuner.Saps.Tests.SapsRunnerTests"/> class.
+            Behaves like the [TestInitialize] of MSTest framework.
+            </summary>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Saps.Tests.SapsRunnerTests.Dispose">
+            <inheritdoc/>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Saps.Tests.SapsRunnerTests.CancellationWorks">
+            <summary>
+            Checks that <see cref="M:Optano.Algorithm.Tuner.Saps.SapsRunner.Run(Optano.Algorithm.Tuner.TargetAlgorithm.Instances.InstanceSeedFile,System.Threading.CancellationToken)"/> can be cancelled.
+            </summary>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Saps.Tests.SapsRunnerTests.CreateRuntimeResultCreatesCorrectResult(System.Double,System.Double)">
+            <summary>
+            Checks that <see cref="M:Optano.Algorithm.Tuner.Saps.SapsRunner.CreateRuntimeResult(System.String,System.TimeSpan)"/> returns the correct result.
+            </summary>
+            <param name="runtime">The runtime.</param>
+            <param name="timeoutLimit">The timeout limit.</param>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Saps.Tests.SapsRunnerTests.CreateRuntimeResultCreatesCancelledResult(System.String,System.Double)">
+            <summary>
+            Checks that <see cref="M:Optano.Algorithm.Tuner.Saps.SapsRunner.CreateRuntimeResult(System.String,System.TimeSpan)"/> returns a cancelled result, if a) the output does not fit to the regex or b) the runtime exceeds the timeout limit.
+            </summary>
+            <param name="output">The output.</param>
+            <param name="timeoutLimit">The timeout limit.</param>
+        </member>
+        <member name="T:Optano.Algorithm.Tuner.Saps.Tests.SapsUtilsTests">
+            <summary>
+            Contains tests for the <see cref="T:Optano.Algorithm.Tuner.Saps.SapsUtils"/> class.
+            </summary>
+        </member>
+        <member name="F:Optano.Algorithm.Tuner.Saps.Tests.SapsUtilsTests.CnfFileNames">
+            <summary>
+            File names that should be translated into instances on <see cref="M:Optano.Algorithm.Tuner.Saps.SapsUtils.CreateInstances(System.String,System.Int32,System.Int32)"/>.
+            </summary>
+        </member>
+        <member name="F:Optano.Algorithm.Tuner.Saps.Tests.SapsUtilsTests.NonCnfFileNames">
+            <summary>
+            File names that should not be translated into instances on <see cref="M:Optano.Algorithm.Tuner.Saps.SapsUtils.CreateInstances(System.String,System.Int32,System.Int32)"/>.
+            </summary>
+        </member>
+        <member name="F:Optano.Algorithm.Tuner.Saps.Tests.SapsUtilsTests._instanceFolder">
+            <summary>
+            Path to the folder containing test data. Has to be initialized.
+            </summary>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Saps.Tests.SapsUtilsTests.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Optano.Algorithm.Tuner.Saps.Tests.SapsUtilsTests"/> class.
+            Behaves like the [TestInitialize] of MSTest framework.
+            </summary>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Saps.Tests.SapsUtilsTests.Dispose">
+            <inheritdoc/>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Saps.Tests.SapsUtilsTests.CreateParameterTreeReturnsIndependentSapsParameters">
+            <summary>
+            Checks that the <see cref="T:Optano.Algorithm.Tuner.Parameters.ParameterTree"/> returned by <see cref="M:Optano.Algorithm.Tuner.Saps.SapsUtils.CreateParameterTree"/>
+            contains 4 independent parameters:
+            * alpha, a logarithmically spaced parameter between 1.01 and 1.4;
+            * rho, a uniformly spaced parameter between 0 and 1;
+            * ps, a uniformly spaced parameter between 0 and 0.2; and
+            * wp, a uniformly spaced parameter between 0 and 0.06.
+            </summary>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Saps.Tests.SapsUtilsTests.SeedsToUseReturnsCorrectNumberOfSeeds">
+            <summary>
+            Checks that <see cref="M:Optano.Algorithm.Tuner.Saps.SapsUtils.SeedsToUse(System.Int32,System.Int32)"/> returns the correct number of seeds.
+            </summary>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Saps.Tests.SapsUtilsTests.CreateInstancesThrowsExceptionIfItCannotOpenFolder">
+            <summary>
+            Verifies that calling <see cref="M:Optano.Algorithm.Tuner.Saps.SapsUtils.CreateInstances(System.String,System.Int32,System.Int32)"/> with a non existant directory throws
+            a <see cref="T:System.IO.DirectoryNotFoundException"/>.
+            </summary>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Saps.Tests.SapsUtilsTests.CreateInstancesPrintsMessageIfItCannotOpenFolder">
+            <summary>
+            Verifies that calling <see cref="M:Optano.Algorithm.Tuner.Saps.SapsUtils.CreateInstances(System.String,System.Int32,System.Int32)"/> with a non existant directory prints
+            out a message to the console telling the user the directory doesn't exist.
+            </summary>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Saps.Tests.SapsUtilsTests.CreateInstancesCorrectlyExtractsPathsToCnfFiles">
+            <summary>
+            Checks that <see cref="M:Optano.Algorithm.Tuner.Saps.SapsUtils.CreateInstances(System.String,System.Int32,System.Int32)"/> creates an instance out of each .cnf file and
+            the instance's file name matches the complete path to that file.
+            </summary>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Saps.Tests.SapsUtilsTests.CreateInstancesIgnoresFilesNotInCnfFormat">
+            <summary>
+            Checks that <see cref="M:Optano.Algorithm.Tuner.Saps.SapsUtils.CreateInstances(System.String,System.Int32,System.Int32)"/> ignores files which are not in .cnf format.
+            </summary>
+        </member>
+        <member name="T:Optano.Algorithm.Tuner.Saps.Tests.TestUtils">
+            <summary>
+            Contains utility methods that are helpful in tests.
+            </summary>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Saps.Tests.TestUtils.PrintList``1(System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Prints a list in the form { item1, item2, item3, item4 }.
+            </summary>
+            <typeparam name="T">The type of the list items.</typeparam>
+            <param name="list">The list to print.</param>
+            <returns>A <see cref="T:System.String"/> representing the given list.</returns>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Saps.Tests.TestUtils.CheckOutput(System.Action,System.Action{System.IO.StringWriter})">
+            <summary>
+            Checks console output on invoking a certain action.
+            </summary>
+            <param name="action">The action to invoke.</param>
+            <param name="check">Checks to do on the output.</param>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Saps.Tests.TestUtils.RepresentsParameter(Optano.Algorithm.Tuner.Parameters.ParameterTreeNodes.IParameterTreeNode,System.String)">
+            <summary>
+            Returns whether the given <see cref="T:Optano.Algorithm.Tuner.Parameters.ParameterTreeNodes.IParameterTreeNode"/> represents the parameter described by the given
+            identifier.
+            </summary>
+            <param name="node">The node to check.</param>
+            <param name="identifier">The identifier to check for.</param>
+            <returns>True if and only if the node is an <see cref="T:Optano.Algorithm.Tuner.Parameters.ParameterTreeNodes.IParameterNode"/> with identifier equal to the given
+            one.
+            </returns>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Saps.Tests.TestUtils.CheckRange(Optano.Algorithm.Tuner.Parameters.Domains.NumericalDomain{System.Double},System.String,System.Double,System.Double)">
+            <summary>
+            Asserts that the domain has the expected range.
+            </summary>
+            <param name="domain">Domain to check.</param>
+            <param name="identifier">Parameter's identifier. Useful for output.</param>
+            <param name="expectedMinimum">The expected minimum.</param>
+            <param name="expectedMaximum">The expected maximum.</param>
+        </member>
+    </members>
+</doc>

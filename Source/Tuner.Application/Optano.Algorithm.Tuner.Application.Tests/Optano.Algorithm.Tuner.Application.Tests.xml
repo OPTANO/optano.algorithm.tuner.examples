@@ -1,0 +1,324 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Optano.Algorithm.Tuner.Application.Tests</name>
+    </assembly>
+    <members>
+        <member name="T:Optano.Algorithm.Tuner.Application.Tests.ArgumentParserTest">
+            <summary>
+            Contains tests for the <see cref="T:Optano.Algorithm.Tuner.Application.ArgumentParser"/> class.
+            </summary>
+        </member>
+        <member name="F:Optano.Algorithm.Tuner.Application.Tests.ArgumentParserTest._parser">
+            <summary>
+            The <see cref="T:Optano.Algorithm.Tuner.Application.ArgumentParser"/> used in tests. Must be initialized.
+            </summary>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Application.Tests.ArgumentParserTest.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Optano.Algorithm.Tuner.Application.Tests.ArgumentParserTest"/> class.
+            </summary>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Application.Tests.ArgumentParserTest.AccessingHelpTextRequestedBeforeParsingThrowsException">
+            <summary>
+            Verifies that accessing <see cref="P:Optano.Algorithm.Tuner.Configuration.ArgumentParsers.HelpSupportingArgumentParserBase.HelpTextRequested"/> before calling
+            <see cref="M:Optano.Algorithm.Tuner.Application.ArgumentParser.ParseArguments(System.String[])"/> throws an
+            <see cref="T:System.InvalidOperationException"/>.
+            </summary>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Application.Tests.ArgumentParserTest.AccessingAdditionalArgumentsBeforeParsingThrowsException">
+            <summary>
+            Verifies that accessing <see cref="P:Optano.Algorithm.Tuner.Configuration.ArgumentParsers.HelpSupportingArgumentParserBase.AdditionalArguments"/> before calling
+            <see cref="M:Optano.Algorithm.Tuner.Application.ArgumentParser.ParseArguments(System.String[])"/> throws an
+            <see cref="T:System.InvalidOperationException"/>.
+            </summary>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Application.Tests.ArgumentParserTest.HelpLongOptionPreventsExceptions">
+            <summary>
+            Checks that calling <see cref="M:Optano.Algorithm.Tuner.Application.ArgumentParser.ParseArguments(System.String[])"/> with --help
+            does not throw an exception even if invalid arguments are given.
+            </summary>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Application.Tests.ArgumentParserTest.HelpShortOptionPreventsExceptions">
+            <summary>
+            Checks that calling <see cref="M:Optano.Algorithm.Tuner.Application.ArgumentParser.ParseArguments(System.String[])"/> with -h does
+            not throw an exception even if invalid arguments are given.
+            </summary>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Application.Tests.ArgumentParserTest.AccessingBasicCommandBeforeParsingThrowsException">
+            <summary>
+            Verifies that accessing <see cref="P:Optano.Algorithm.Tuner.Application.ArgumentParser.BasicCommand"/> before calling
+            <see cref="M:Optano.Algorithm.Tuner.Application.ArgumentParser.ParseArguments(System.String[])"/> throws an
+            <see cref="T:System.InvalidOperationException"/>.
+            </summary>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Application.Tests.ArgumentParserTest.AccessingPathToParameterTreeeBeforeParsingThrowsException">
+            <summary>
+            Verifies that accessing <see cref="P:Optano.Algorithm.Tuner.Application.ArgumentParser.PathToParameterTree"/> before calling
+            <see cref="M:Optano.Algorithm.Tuner.Application.ArgumentParser.ParseArguments(System.String[])"/> throws an
+            <see cref="T:System.InvalidOperationException"/>.
+            </summary>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Application.Tests.ArgumentParserTest.AccessingMasterRequestedBeforeParsingThrowsException">
+            <summary>
+            Verifies that accessing <see cref="P:Optano.Algorithm.Tuner.Application.ArgumentParser.MasterRequested"/> before calling
+            <see cref="M:Optano.Algorithm.Tuner.Application.ArgumentParser.ParseArguments(System.String[])"/> throws an
+            <see cref="T:System.InvalidOperationException"/>.
+            </summary>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Application.Tests.ArgumentParserTest.TuneByValueRequestedBeforeParsingThrowsException">
+            <summary>
+            Verifies that accessing <see cref="P:Optano.Algorithm.Tuner.Application.ArgumentParser.TuneByValue"/> before calling
+            <see cref="M:Optano.Algorithm.Tuner.Application.ArgumentParser.ParseArguments(System.String[])"/> throws an
+            <see cref="T:System.InvalidOperationException"/>.
+            </summary>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Application.Tests.ArgumentParserTest.SortValuesAscendinglyRequestedBeforeParsingThrowsException">
+            <summary>
+            Verifies that accessing <see cref="P:Optano.Algorithm.Tuner.Application.ArgumentParser.SortValuesAscendingly"/> before calling
+            <see cref="M:Optano.Algorithm.Tuner.Application.ArgumentParser.ParseArguments(System.String[])"/> throws an
+            <see cref="T:System.InvalidOperationException"/>.
+            </summary>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Application.Tests.ArgumentParserTest.OptionsAreParsedCorrectly">
+            <summary>
+            Checks that <see cref="M:Optano.Algorithm.Tuner.Application.ArgumentParser.ParseArguments(System.String[])"/> correctly interprets arguments.
+            </summary>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Application.Tests.ArgumentParserTest.NoBasicCommandThrowsExceptionForMaster">
+            <summary>
+            Verifies that calling <see cref="M:Optano.Algorithm.Tuner.Application.ArgumentParser.ParseArguments(System.String[])"/> without providing
+            a basic command throws an <see cref="T:NDesk.Options.OptionException"/> if --master is set.
+            </summary>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Application.Tests.ArgumentParserTest.NoBasicCommandDoesNotThrowForWorker">
+            <summary>
+            Checks that calling <see cref="M:Optano.Algorithm.Tuner.Application.ArgumentParser.ParseArguments(System.String[])"/> without providing 
+            a basic command does not throw an exception if --master is not set.
+            </summary>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Application.Tests.ArgumentParserTest.BasicCommandPrintsWarningForWorker">
+            <summary>
+            Checks that calling <see cref="M:Optano.Algorithm.Tuner.Application.ArgumentParser.ParseArguments(System.String[])"/> and providing a 
+            basic command, but not setting --master, prints a warning to the console.
+            </summary>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Application.Tests.ArgumentParserTest.NoPathToParameterTreeThrowsExceptionForMaster">
+            <summary>
+            Verifies that calling <see cref="M:Optano.Algorithm.Tuner.Application.ArgumentParser.ParseArguments(System.String[])"/> without providing
+            a path to a parameter tree throws an <see cref="T:NDesk.Options.OptionException"/> if --master is set.
+            </summary>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Application.Tests.ArgumentParserTest.NoPathToParameterTreeDoesNotThrowForWorker">
+            <summary>
+            Checks that calling <see cref="M:Optano.Algorithm.Tuner.Application.ArgumentParser.ParseArguments(System.String[])"/> without providing a
+            path to a parameter tree does not throw an exception if --master is not set.
+            </summary>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Application.Tests.ArgumentParserTest.PathToParameterTreePrintsWarningForWorker">
+            <summary>
+            Checks that calling <see cref="M:Optano.Algorithm.Tuner.Application.ArgumentParser.ParseArguments(System.String[])"/> and providing a 
+            parameter tree, but not setting --master, prints a warning to the console.
+            </summary>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Application.Tests.ArgumentParserTest.TuneByValuePrintsWarningForWorker">
+            <summary>
+            Checks that calling <see cref="M:Optano.Algorithm.Tuner.Application.ArgumentParser.ParseArguments(System.String[])"/> and providing the --byValue
+            parameter, but not setting --master, prints a warning to the console.
+            </summary>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Application.Tests.ArgumentParserTest.SortDirectionPrintsWarningForWorker">
+            <summary>
+            Checks that calling <see cref="M:Optano.Algorithm.Tuner.Application.ArgumentParser.ParseArguments(System.String[])"/> and providing the sort direction,
+            but not setting --master, prints a warning to the console.
+            </summary>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Application.Tests.ArgumentParserTest.SortDirectionWithoutTuneByValuePrintsWarningForMaster">
+            <summary>
+            Checks that calling <see cref="M:Optano.Algorithm.Tuner.Application.ArgumentParser.ParseArguments(System.String[])"/> and providing the sort direction,
+            but not setting --byValue, prints a warning to the console when --master is provided.
+            </summary>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Application.Tests.ArgumentParserTest.PrintHelpPrintsAllArguments">
+            <summary>
+            Checks that a call to <see cref="M:Optano.Algorithm.Tuner.Application.ArgumentParser.PrintHelp"/> prints all arguments, including those for both
+            master and workers.
+            </summary>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Application.Tests.ArgumentParserTest.AdditionalArgumentsAreStored">
+            <summary>
+            Checks that arguments that could not be parsed will be returned upon calling
+            <see cref="P:Optano.Algorithm.Tuner.Configuration.ArgumentParsers.HelpSupportingArgumentParserBase.AdditionalArguments"/>.
+            </summary>
+        </member>
+        <member name="T:Optano.Algorithm.Tuner.Application.Tests.TestUtils">
+            <summary>
+            Contains utility methods that are helpful in tests.
+            </summary>
+        </member>
+        <member name="F:Optano.Algorithm.Tuner.Application.Tests.TestUtils.PathToTargetAlgorithm">
+            <summary>
+            The path to a CPU intensive target algorithm. We recommend to use the ubcsat implementation of the SAT solver SAPS.
+            </summary>
+        </member>
+        <member name="F:Optano.Algorithm.Tuner.Application.Tests.TestUtils.PathToTestInstance">
+            <summary>
+            The path to a test instance of the CPU intensive target algorithm. 
+            </summary>
+        </member>
+        <member name="F:Optano.Algorithm.Tuner.Application.Tests.TestUtils.PathToTestApplication">
+            <summary>
+            The path to the test application, which is used in multiple tests.
+            </summary>
+        </member>
+        <member name="F:Optano.Algorithm.Tuner.Application.Tests.TestUtils.ReturnExitCodeApplicationCall">
+            <summary>
+            Call of the application, which returns its input as exit code.
+            </summary>
+        </member>
+        <member name="F:Optano.Algorithm.Tuner.Application.Tests.TestUtils.ReturnInputApplicationCall">
+            <summary>
+            Call of the application, which returns its input.
+            </summary>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Application.Tests.TestUtils.CheckOutput(System.Action,System.Action{System.String})">
+            <summary>
+            Checks output on invoking a certain action.
+            </summary>
+            <param name="action">The action to invoke.</param>
+            <param name="check">Checks to do on the output.</param>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Application.Tests.TestUtils.InitializeLogger">
+            <summary>
+            Initializes the <see cref="N:NLog"/> logger with a config that is suitable for tests.
+            </summary>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Application.Tests.TestUtils.Equals(System.Double,System.Double,System.Double,System.String)">
+            <summary>
+            Checks that <paramref name="value"/> equals <paramref name="expected"/> within a certain tolerance.
+            </summary>
+            <param name="value">The value.</param>
+            <param name="expected">The expected value.</param>
+            <param name="tolerance">The tolerance.</param>
+            <param name="additionalInformation">The additional information to write on failure.</param>
+        </member>
+        <member name="T:Optano.Algorithm.Tuner.Application.Tests.TimeMeasuringExecutorTest">
+            <summary>
+            Contains tests for the <see cref="T:Optano.Algorithm.Tuner.Application.TimeMeasuringExecutor"/> class.
+            Should not be executed in parallel s.t. <see cref="M:Optano.Algorithm.Tuner.Application.Tests.TimeMeasuringExecutorTest.RuntimeMeasureIsApproximatelyCorrect"/> has a chance.
+            </summary>
+        </member>
+        <member name="F:Optano.Algorithm.Tuner.Application.Tests.TimeMeasuringExecutorTest._cancellationTokenSource">
+            <summary>
+            A <see cref="T:System.Threading.CancellationTokenSource"/>.
+            </summary>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Application.Tests.TimeMeasuringExecutorTest.RuntimeMeasureIsApproximatelyCorrect">
+            <summary>
+            Checks that the <see cref="T:Optano.Algorithm.Tuner.TargetAlgorithm.Results.RuntimeResult"/> returned by
+            <see cref="M:Optano.Algorithm.Tuner.Application.TimeMeasuringExecutor.Run(Optano.Algorithm.Tuner.TargetAlgorithm.Instances.InstanceFile,System.Threading.CancellationToken)"/> contains an approximately
+            correct runtime.
+            </summary>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Application.Tests.TimeMeasuringExecutorTest.CancellationWorks">
+            <summary>
+            Checks that <see cref="M:Optano.Algorithm.Tuner.Application.TimeMeasuringExecutor.Run(Optano.Algorithm.Tuner.TargetAlgorithm.Instances.InstanceFile,System.Threading.CancellationToken)"/> can be cancelled.
+            </summary>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Application.Tests.TimeMeasuringExecutorTest.TimeMeasuringExecutorCreatesCancelledResult">
+            <summary>
+            Checks, that the <see cref="T:Optano.Algorithm.Tuner.Application.TimeMeasuringExecutor"/> creates a cancelled result, if the process returns 1 as exit code.
+            </summary>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Application.Tests.TimeMeasuringExecutorTest.TimeMeasuringExecutorCreatesNotCancelledResult">
+            <summary>
+            Checks, that the <see cref="T:Optano.Algorithm.Tuner.Application.TimeMeasuringExecutor"/> creates not a cancelled result, if the process returns 0 as exit code.
+            </summary>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Application.Tests.TimeMeasuringExecutorTest.CreateSapsRunner(System.Int32)">
+            <summary>
+            Creates a <see cref="T:Optano.Algorithm.Tuner.Application.TimeMeasuringExecutor"/>  executing SAPS on an instance that takes several seconds to
+            solve.
+            </summary>
+            <param name="timeout">Timeout in seconds for the SAPS algorithm.</param>
+            <returns>The created <see cref="T:Optano.Algorithm.Tuner.Application.TimeMeasuringExecutor"/>.</returns>
+        </member>
+        <member name="T:Optano.Algorithm.Tuner.Application.Tests.ValueReadingExecutorTest">
+            <summary>
+            Contains tests for the <see cref="T:Optano.Algorithm.Tuner.Application.ValueReadingExecutor"/> class.
+            Should not be executed in parallel s.t. <see cref="M:Optano.Algorithm.Tuner.Application.Tests.ValueReadingExecutorTest.RuntimeMeasureIsApproximatelyCorrect"/> has a chance.
+            </summary>
+        </member>
+        <member name="F:Optano.Algorithm.Tuner.Application.Tests.ValueReadingExecutorTest._cancellationTokenSource">
+            <summary>
+            A <see cref="T:System.Threading.CancellationTokenSource"/>.
+            </summary>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Application.Tests.ValueReadingExecutorTest.RuntimeMeasureIsApproximatelyCorrect">
+            <summary>
+            Checks that the <see cref="T:Optano.Algorithm.Tuner.TargetAlgorithm.Results.ContinuousResult"/> returned by
+            <see cref="M:Optano.Algorithm.Tuner.Application.ValueReadingExecutor.Run(Optano.Algorithm.Tuner.TargetAlgorithm.Instances.InstanceFile,System.Threading.CancellationToken)"/> contains an approximately
+            correct runtime.
+            </summary>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Application.Tests.ValueReadingExecutorTest.CancellationWorks">
+            <summary>
+            Checks that <see cref="M:Optano.Algorithm.Tuner.Application.ValueReadingExecutor.Run(Optano.Algorithm.Tuner.TargetAlgorithm.Instances.InstanceFile,System.Threading.CancellationToken)"/> can be cancelled.
+            </summary>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Application.Tests.ValueReadingExecutorTest.LastValueIsRead">
+            <summary>
+            Checks that <see cref="M:Optano.Algorithm.Tuner.Application.ValueReadingExecutor.Run(Optano.Algorithm.Tuner.TargetAlgorithm.Instances.InstanceFile,System.Threading.CancellationToken)"/> reads the very last 
+            number printed by the program.
+            </summary>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Application.Tests.ValueReadingExecutorTest.IntegerCanBeRead">
+            <summary>
+            Checks that <see cref="M:Optano.Algorithm.Tuner.Application.ValueReadingExecutor.Run(Optano.Algorithm.Tuner.TargetAlgorithm.Instances.InstanceFile,System.Threading.CancellationToken)"/> can read values in 
+            integer format.
+            </summary>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Application.Tests.ValueReadingExecutorTest.NegativeDoubleCanBeRead">
+            <summary>
+            Checks that <see cref="M:Optano.Algorithm.Tuner.Application.ValueReadingExecutor.Run(Optano.Algorithm.Tuner.TargetAlgorithm.Instances.InstanceFile,System.Threading.CancellationToken)"/> can read values in 
+            negative double format.
+            </summary>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Application.Tests.ValueReadingExecutorTest.FormatWithECanBeRead">
+            <summary>
+            Checks that <see cref="M:Optano.Algorithm.Tuner.Application.ValueReadingExecutor.Run(Optano.Algorithm.Tuner.TargetAlgorithm.Instances.InstanceFile,System.Threading.CancellationToken)"/> can read values in 
+            +5e-7 format.
+            </summary>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Application.Tests.ValueReadingExecutorTest.ParametersAreUsed">
+            <summary>
+            Checks that <see cref="M:Optano.Algorithm.Tuner.Application.ValueReadingExecutor.Run(Optano.Algorithm.Tuner.TargetAlgorithm.Instances.InstanceFile,System.Threading.CancellationToken)"/> uses the parameters
+            provided on construction.
+            </summary>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Application.Tests.ValueReadingExecutorTest.InstanceIsUsed">
+            <summary>
+            Checks that <see cref="M:Optano.Algorithm.Tuner.Application.ValueReadingExecutor.Run(Optano.Algorithm.Tuner.TargetAlgorithm.Instances.InstanceFile,System.Threading.CancellationToken)"/> uses the provided
+            instance.
+            </summary>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Application.Tests.ValueReadingExecutorTest.ValueReadingExecutorCreatesCancelledResult">
+            <summary>
+            Checks, that the <see cref="T:Optano.Algorithm.Tuner.Application.ValueReadingExecutor"/> creates a cancelled result, if the process returns 1 as exit code.
+            </summary>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Application.Tests.ValueReadingExecutorTest.ValueReadingExecutorCreatesNotCancelledResult">
+            <summary>
+            Checks, that the <see cref="T:Optano.Algorithm.Tuner.Application.ValueReadingExecutor"/> creates not a cancelled result, if the process returns 0 as exit code.
+            </summary>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Application.Tests.ValueReadingExecutorTest.CreateSapsRunner(System.Int32)">
+            <summary>
+            Creates a <see cref="T:Optano.Algorithm.Tuner.Application.ValueReadingExecutor"/> executing SAPS on an instance that takes several seconds to
+            solve.
+            </summary>
+            <param name="timeout">Timeout in seconds for the SAPS algorithm.</param>
+            <returns>The created <see cref="T:Optano.Algorithm.Tuner.Application.ValueReadingExecutor"/>.</returns>
+        </member>
+    </members>
+</doc>

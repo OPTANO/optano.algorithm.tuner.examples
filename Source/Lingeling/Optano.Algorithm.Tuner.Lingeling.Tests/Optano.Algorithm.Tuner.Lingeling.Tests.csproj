@@ -1,0 +1,57 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+	<CodeAnalysisRuleSet>..\..\..\StyleCopRuleset.ruleset</CodeAnalysisRuleSet>
+	<Version>0.0.1.1</Version>
+	<Authors>OPTANO GmbH</Authors>
+    <Copyright>OPTANO GmbH</Copyright>
+	<PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>Optano.Algorithm.Tuner.Lingeling.Tests.xml</DocumentationFile>
+	<CodeAnalysisRuleSet>..\..\..\StyleCopRuleset.ruleset</CodeAnalysisRuleSet>
+	<DefineConstants>DEBUG;TRACE;CODE_ANALYSIS</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+	<CodeAnalysisRuleSet>..\..\..\StyleCopRuleset.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="coverlet.collector" Version="1.2.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0" />
+    <PackageReference Include="Shouldly" Version="3.0.2" />
+    <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="xunit" Version="2.4.1" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Xunit.SkippableFact" Version="1.3.12" />
+    <DotNetCliToolReference Include="dotnet-xunit" Version="2.3.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Optano.Algorithm.Tuner.Lingeling\Optano.Algorithm.Tuner.Lingeling.csproj" />
+  </ItemGroup>
+  
+    <ItemGroup>
+  	<None Include="..\..\..\Tools\lingeling" Link="Tools\lingeling">
+		<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	</None>
+	<None Include="..\..\..\Tools\testInstance.cnf" Link="Tools\testInstance.cnf">
+		<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	</None>
+	<AdditionalFiles Include="..\..\..\stylecop.json" />
+  </ItemGroup>
+
+</Project>
