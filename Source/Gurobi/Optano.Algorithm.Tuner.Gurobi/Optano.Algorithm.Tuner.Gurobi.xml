@@ -108,6 +108,11 @@
                 Needed to make sure licenses are released.
             </summary>
         </member>
+        <member name="P:Optano.Algorithm.Tuner.Gurobi.GurobiRunner.StartTime">
+            <summary>
+            Gets or sets the start time.
+            </summary>
+        </member>
         <member name="M:Optano.Algorithm.Tuner.Gurobi.GurobiRunner.Dispose">
             <summary>
                 Releases the resources associated with this runner.
@@ -115,15 +120,16 @@
         </member>
         <member name="M:Optano.Algorithm.Tuner.Gurobi.GurobiRunner.Run(Optano.Algorithm.Tuner.TargetAlgorithm.Instances.InstanceSeedFile,System.Threading.CancellationToken)">
             <summary>
-                Creates a cancellable task that runs Gurobi on the given instance.
+            Creates a task that runs Gurobi on the given instance.
             </summary>
-            <param name="instance">Instance to run on.</param>
+            <param name="instance">
+            Instance to run on.
+            </param>
             <param name="cancellationToken">
-                Token that is regurlarly checked for cancellation.
-                If cancellation is detected, the task will be stopped.
+            The cancellation token given to the task. NOTE: In this implementation, we ignore this cancellation token, since Gurobi uses its own cancellation token in the callback.
             </param>
             <returns>
-                A task that returns the run's runtime, gap, feasibility and completion status onto return.
+            A task that returns the run's runtime, gap, feasibility and completion status onto return.
             </returns>
         </member>
         <member name="M:Optano.Algorithm.Tuner.Gurobi.GurobiRunner.CreateGurobiResult(Gurobi.GRBModel)">
@@ -138,6 +144,31 @@
                 Releases the resources associated with <see cref="F:Optano.Algorithm.Tuner.Gurobi.GurobiRunner._environment" />.
             </summary>
             <param name="disposing">Whether this got called by <see cref="M:Optano.Algorithm.Tuner.Gurobi.GurobiRunner.Dispose" /> or the class's finalizer.</param>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Gurobi.GurobiRunner.TryToGetMstFile(System.String,System.String,System.String@)">
+            <summary>
+            Tries to get the full file name of a corresponding mst file, if existing.
+            </summary>
+            <param name="instanceDirectoryName">The full directory name of the current instance file.</param>
+            <param name="instanceFileNameWithoutExtension">The file name without extension of the current instance file.</param>
+            <param name="mstFileFullName">The full file name of the corresponding mst file.</param>
+            <returns>True, if a corresponding mst file exists.</returns>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Gurobi.GurobiRunner.GetValueWithTryCatch``1(System.Func{``0},``0)">
+            <summary>
+            Gets the value of a method, which returns a value, in a try catch block.
+            </summary>
+            <typeparam name="TReturnValue">The return type.</typeparam>
+            <param name="getValue">The desired method.</param>
+            <param name="fallback">The fallback value.</param>
+            <returns>The desired value.</returns>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Gurobi.GurobiRunner.GetCorrectRuntime(Gurobi.GRBModel)">
+            <summary>
+            Since Gurobi might not stop directly after its timeout, we need to return the corrected runtime of Gurobi.
+            </summary>
+            <param name="model">The model.</param>
+            <returns>The corrected runtime.</returns>
         </member>
         <member name="M:Optano.Algorithm.Tuner.Gurobi.GurobiRunner.GetIsRunInterrupted(Gurobi.GRBModel)">
             <summary>
@@ -465,57 +496,61 @@
             <param name="parameters">The parameters to configure the Gurobi run with.</param>
             <returns>The configured <see cref="T:Optano.Algorithm.Tuner.Gurobi.GurobiRunner" />.</returns>
         </member>
+        <member name="M:Optano.Algorithm.Tuner.Gurobi.GurobiRunnerFactory.CombinePartitionPlaceParameters(System.Collections.Generic.Dictionary{System.String,Optano.Algorithm.Tuner.Genomes.Values.IAllele})">
+            <summary>
+            Combines all values for the separate PartitionPlace bits into a single parameter.
+            See also <see cref="F:Optano.Algorithm.Tuner.Gurobi.GurobiUtils.PartitionPlaceGroupIdentifiers"/>.
+            </summary>
+            <param name="parameters">The unfiltered parameters.</param>
+            <returns>The parameters with combined <c>PartitionPlace</c> value.</returns>
+        </member>
         <member name="T:Optano.Algorithm.Tuner.Gurobi.GurobiUtils">
             <summary>
                 Utility methods for starting an OPTANO Algorithm Tuner instance that tunes Gurobi.
             </summary>
         </member>
-        <member name="F:Optano.Algorithm.Tuner.Gurobi.GurobiUtils.RinsActiveIdentifier">
+        <member name="F:Optano.Algorithm.Tuner.Gurobi.GurobiUtils.ListOfValidFileCompressionExtensions">
             <summary>
-            Identifier of the parameter deciding whether the Gurobi parameter 'RINS' should be set automatically, to 0
-            or by another gene.
+            The list of valid file compression extensions of Gurobi.
+            Note, that a file can also be uncompressed, resulting in an empty string.
             </summary>
         </member>
-        <member name="F:Optano.Algorithm.Tuner.Gurobi.GurobiUtils.ArtificialNodeIdentifiers">
+        <member name="F:Optano.Algorithm.Tuner.Gurobi.GurobiUtils.ListOfValidFileExtensions">
             <summary>
-            Identifiers that identify nodes which have no directly corresponding Gurobi parameter.
+            The list of valid file extensions of Gurobi.
             </summary>
+        </member>
+        <member name="F:Optano.Algorithm.Tuner.Gurobi.GurobiUtils.PartitionPlaceGroupIdentifiers">
+            <summary>
+            Names for individual bit-values of the <c>PartitionPlace</c> parameter: https://www.gurobi.com/documentation/9.0/refman/partitionplace.html.
+            </summary>
+        </member>
+        <member name="F:Optano.Algorithm.Tuner.Gurobi.GurobiUtils.PartitionPlaceName">
+            <summary>
+            Parameter name for the PartitionPlace heuristic.
+            </summary>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Gurobi.GurobiUtils.GetFileNameWithoutGurobiExtension(System.IO.FileInfo)">
+            <summary>
+            Returns the file name without its extension, if the file has a valid Gurobi model extension.
+            </summary>
+            <param name="fileInfo">The file info.</param>
+            <returns>The file name without its extension.</returns>
         </member>
         <member name="M:Optano.Algorithm.Tuner.Gurobi.GurobiUtils.CreateParameterTree">
             <summary>
-                Creates a <see cref="T:Optano.Algorithm.Tuner.Parameters.ParameterTree" /> of tuneable Gurobi parameters for MIP solving.
-                The parameters and their connections are described in parameterTree.xml.
-            <para>
-            Defines parameter replacements for artificial parameters.
-            </para> 
+            Creates a <see cref="T:Optano.Algorithm.Tuner.Parameters.ParameterTree" /> of tuneable Gurobi parameters for MIP solving.
+            The parameters and their connections are described in parameterTree.xml.
             </summary>
             <returns>The <see cref="T:Optano.Algorithm.Tuner.Parameters.ParameterTree" />.</returns>
         </member>
-        <member name="M:Optano.Algorithm.Tuner.Gurobi.GurobiUtils.CreateInstances(System.String,System.Int32,System.Int32)">
+        <member name="M:Optano.Algorithm.Tuner.Gurobi.GurobiUtils.AddAllIndicatorParameterWrappers(Optano.Algorithm.Tuner.Parameters.ParameterTree)">
             <summary>
-            Creates the list of instances to train on using .mps files in the given directory.
+            Adds all required parameter replacements to the <paramref name="parameterTree"/>.
             </summary>
-            <param name="pathToInstanceFolder">Path to the folder containing the instance .mps files.</param>
-            <param name="numSeedsToUse">The number of seeds.</param>
-            <param name="rngSeed">The random number generator seed.</param>
-            <returns>
-            The created list.
-            </returns>
-        </member>
-        <member name="M:Optano.Algorithm.Tuner.Gurobi.GurobiUtils.SeedsToUse(System.Int32,System.Int32)">
-            <summary>
-            Generates the seeds to use for the file seed combinations.
-            </summary>
-            <param name="numSeedsToUse">The number of seeds.</param>
-            <param name="rngSeed">The random number generator seed.</param>
-            <returns>The seeds.</returns>
-        </member>
-        <member name="M:Optano.Algorithm.Tuner.Gurobi.GurobiUtils.DumpFileSeedCombinations(System.IO.DirectoryInfo,System.Collections.Generic.IEnumerable{System.String})">
-            <summary>
-            Dumps the file seed combinations.
-            </summary>
-            <param name="instanceDirectory">The instance directory.</param>
-            <param name="instanceSeedCombinations">The instance seed combinations.</param>
+            <param name="parameterTree">
+            The parameter tree.
+            </param>
         </member>
         <member name="T:Optano.Algorithm.Tuner.Gurobi.Program">
             <summary>

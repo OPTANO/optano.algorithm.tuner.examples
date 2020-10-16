@@ -32,6 +32,7 @@
 namespace Optano.Algorithm.Tuner.Bbob.Tests
 {
     using System;
+    using System.Diagnostics.CodeAnalysis;
     using System.IO;
 
     using Shouldly;
@@ -78,6 +79,10 @@ namespace Optano.Algorithm.Tuner.Bbob.Tests
         /// Checks that the number of created instances fits to the number of created files.
         /// </summary>
         [Fact]
+        [SuppressMessage(
+            "NDepend",
+            "ND3101:DontUseSystemRandomForSecurityPurposes",
+            Justification = "No security related purpose.")]
         public void NumberOfCreatedInstancesFitsToNumberOfCreatedFiles()
         {
             const int NumberOfInstances = 42;
@@ -90,6 +95,10 @@ namespace Optano.Algorithm.Tuner.Bbob.Tests
         /// Checks that the <see cref="BbobUtils.CreateInstancesFilesAndReturnAsList"/> method creates no new instance files, if there are enough instance files in the instance folder.
         /// </summary>
         [Fact]
+        [SuppressMessage(
+            "NDepend",
+            "ND3101:DontUseSystemRandomForSecurityPurposes",
+            Justification = "No security related purpose.")]
         public void CreateNoNewInstanceFilesIfNotNecessary()
         {
             const int NumberOfOldInstances = 20;

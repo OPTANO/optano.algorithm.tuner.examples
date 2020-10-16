@@ -33,7 +33,9 @@ namespace Optano.Algorithm.Tuner.Gurobi.Tests
 {
     using System;
     using System.IO;
-    using System.Linq;
+
+    using Optano.Algorithm.Tuner.Configuration;
+    using Optano.Algorithm.Tuner.Genomes;
 
     using Shouldly;
 
@@ -45,29 +47,6 @@ namespace Optano.Algorithm.Tuner.Gurobi.Tests
     [Collection("NonParallel")]
     public class GurobiUtilsTests : IDisposable
     {
-        #region Static Fields
-
-        /// <summary>
-        /// File names that should be translated into instances on <see cref="GurobiUtils.CreateInstances"/>.
-        /// </summary>
-        private static readonly string[] MpsFileNames = { "useful1.mps", "useful2.mps" };
-
-        /// <summary>
-        /// File names that should not be translated into instances on <see cref="GurobiUtils.CreateInstances"/>.
-        /// </summary>
-        private static readonly string[] NonMpsFileNames = { "useless.txt" };
-
-        #endregion
-
-        #region Fields
-
-        /// <summary>
-        /// Path to the folder containing test data. Has to be initialized.
-        /// </summary>
-        private readonly string _instanceFolder;
-
-        #endregion
-
         #region Constructors and Destructors
 
         /// <summary>
@@ -76,13 +55,6 @@ namespace Optano.Algorithm.Tuner.Gurobi.Tests
         /// </summary>
         public GurobiUtilsTests()
         {
-            this._instanceFolder = PathUtils.GetAbsolutePathFromExecutableFolderRelative("testData");
-            Directory.CreateDirectory(this._instanceFolder);
-            foreach (var fileName in GurobiUtilsTests.MpsFileNames.Union(GurobiUtilsTests.NonMpsFileNames))
-            {
-                var handle = File.Create(Path.Combine(this._instanceFolder, fileName));
-                handle.Close();
-            }
         }
 
         #endregion
@@ -92,93 +64,73 @@ namespace Optano.Algorithm.Tuner.Gurobi.Tests
         /// <inheritdoc/>
         public void Dispose()
         {
-            Directory.Delete(this._instanceFolder, recursive: true);
         }
 
         /// <summary>
-        /// Checks that <see cref="GurobiUtils.SeedsToUse"/> returns the correct number of seeds.
+        /// Checks, that <see cref="GurobiUtils.GetFileNameWithoutGurobiExtension"/> returns correct file name.
         /// </summary>
-        [Fact]
-        public void SeedsToUseReturnsCorrectNumberOfSeeds()
+        /// <param name="fileName">The file name.</param>
+        /// <param name="extension">The extension.</param>
+        [Theory]
+        [InlineData("test", ".mps")]
+        [InlineData("test", ".mps.gz")]
+        [InlineData("test", ".mps.bz2")]
+        [InlineData("test", ".mps.7z")]
+        public void GetFileNameWithoutGurobiExtensionReturnsCorrectFileName(string fileName, string extension)
         {
-            var numberOfSeeds = 6;
-            var seedsToUse = GurobiUtils.SeedsToUse(numberOfSeeds, 42);
-            seedsToUse.Count().ShouldBe(numberOfSeeds);
+            var fileInfo = new FileInfo(fileName + extension);
+            var fileNameWithoutExtension = GurobiUtils.GetFileNameWithoutGurobiExtension(fileInfo);
+            fileNameWithoutExtension.ShouldBe(fileName);
         }
 
         /// <summary>
-        /// Verifies that calling <see cref="GurobiUtils.CreateInstances"/> with a non existant directory throws
-        /// a <see cref="DirectoryNotFoundException"/>.
+        /// Checks, that <see cref="GurobiUtils.GetFileNameWithoutGurobiExtension"/> throws an <see cref="ArgumentException"/>, if the given file has not a valid Gurobi model extension.
         /// </summary>
-        [Fact]
-        public void CreateInstancesThrowsExceptionIfItCannotOpenFolder()
+        /// <param name="fileName">The file name.</param>
+        [Theory]
+        [InlineData("test.mst")]
+        [InlineData("test.mps.zip")]
+        public void GetFileNameWithoutGurobiExtensionThrowsIfExtensionIsNotValid(string fileName)
         {
-            Exception exception =
-                Assert.Throws<DirectoryNotFoundException>(
-                    () => { GurobiUtils.CreateInstances("foobarFolder", 1, 42); });
+            var fileInfo = new FileInfo(fileName);
+            Assert.Throws<ArgumentException>(() => GurobiUtils.GetFileNameWithoutGurobiExtension(fileInfo));
         }
 
         /// <summary>
-        /// Verifies that calling <see cref="GurobiUtils.CreateInstances"/> with a non existant directory prints
-        /// out a message to the console telling the user the directory doesn't exist.
+        /// Checks that <see cref="GurobiUtils.CreateParameterTree"/> throws no exception.
         /// </summary>
         [Fact]
-        public void CreateInstancesPrintsMessageIfItCannotOpenFolder()
+        public void CreateParameterTreeThrowsNoException()
         {
-            TestUtils.CheckOutput(
-                action: () =>
-                    {
-                        // Call CreateInstances with a non existant directory path.
-                        try
-                        {
-                            GurobiUtils.CreateInstances("foobarFolder", 1, 42);
-                        }
-                        catch (DirectoryNotFoundException)
-                        {
-                            // This is expected.
-                        }
-                    },
-                check: consoleOutput =>
-                    {
-                        // Check that information about it is written to console.
-                        StringReader reader = new StringReader(consoleOutput.ToString());
-                        reader.ReadLine().ShouldContain("foobarFolder", "The problematic path did not get printed.");
-                        reader.ReadLine().ShouldBe("Cannot open folder.", "Cause of exception has not been printed.");
-                    });
+            try
+            {
+                var parameterTree = GurobiUtils.CreateParameterTree();
+            }
+            catch (Exception exception)
+            {
+                Assert.True(false, $"Exception: {exception.Message}");
+            }
         }
 
         /// <summary>
-        /// Checks that <see cref="GurobiUtils.CreateInstances"/> creates an instance out of each .mps file and
-        /// the instance's file name matches the complete path to that file.
+        /// Checks that <see cref="GurobiUtils.CreateParameterTree"/> filters all dummy / indicator parameters.
         /// </summary>
         [Fact]
-        public void CreateInstancesCorrectlyExtractsPathsToMpsFiles()
+        public void AllDummyParametersAreFiltered()
         {
-            // Call method.
-            var instances = GurobiUtils.CreateInstances(this._instanceFolder, 1, 42);
+            Randomizer.Configure(0);
+            var parameterTree = GurobiUtils.CreateParameterTree();
+            var config = new AlgorithmTunerConfiguration.AlgorithmTunerConfigurationBuilder().Build(1);
+            var genomeBuilder = new GenomeBuilder(parameterTree, config);
 
-            // Check that file names of instances match the complete paths of all .mps files.
-            var expectedPaths = GurobiUtilsTests.MpsFileNames.Select(name => this._instanceFolder + Path.DirectorySeparatorChar + name);
-            var instancePaths = instances.Select(instance => instance.Path);
-            expectedPaths.ShouldBe(
-                instancePaths,
-                true,
-                $"{TestUtils.PrintList(instancePaths)} should have been equal to {TestUtils.PrintList(expectedPaths)}.");
-        }
+            var genome = genomeBuilder.CreateRandomGenome(0);
 
-        /// <summary>
-        /// Checks that <see cref="GurobiUtils.CreateInstances"/> ignores files which are not in .mps format.
-        /// </summary>
-        [Fact]
-        public void CreateInstancesIgnoresFilesNotInMpsFormat()
-        {
-            // Call method.
-            var instances = GurobiUtils.CreateInstances(this._instanceFolder, 1, 42);
+            var filteredGenes = genome.GetFilteredGenes(parameterTree);
 
-            // Check that no non-mps file has been translated into an instance.
-            var instancePaths = instances.Select(instance => instance.Path);
-            instancePaths.Any(path => GurobiUtilsTests.NonMpsFileNames.Any(file => path.Contains(file)))
-                .ShouldBeFalse("Not all non-mps files have been ignored.");
+            foreach (var filteredGenesKey in filteredGenes.Keys)
+            {
+                filteredGenesKey.ShouldNotContain("Indicator");
+            }
         }
 
         #endregion

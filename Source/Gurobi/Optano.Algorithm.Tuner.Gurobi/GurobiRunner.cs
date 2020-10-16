@@ -33,6 +33,7 @@ namespace Optano.Algorithm.Tuner.Gurobi
 {
     using System;
     using System.IO;
+    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
 
@@ -90,6 +91,15 @@ namespace Optano.Algorithm.Tuner.Gurobi
 
         #endregion
 
+        #region Properties
+
+        /// <summary>
+        /// Gets or sets the start time.
+        /// </summary>
+        private DateTime StartTime { get; set; }
+
+        #endregion
+
         #region Public Methods and Operators
 
         /// <summary>
@@ -102,15 +112,16 @@ namespace Optano.Algorithm.Tuner.Gurobi
         }
 
         /// <summary>
-        ///     Creates a cancellable task that runs Gurobi on the given instance.
+        /// Creates a task that runs Gurobi on the given instance.
         /// </summary>
-        /// <param name="instance">Instance to run on.</param>
+        /// <param name="instance">
+        /// Instance to run on.
+        /// </param>
         /// <param name="cancellationToken">
-        ///     Token that is regurlarly checked for cancellation.
-        ///     If cancellation is detected, the task will be stopped.
+        /// The cancellation token given to the task. NOTE: In this implementation, we ignore this cancellation token, since Gurobi uses its own cancellation token in the callback.
         /// </param>
         /// <returns>
-        ///     A task that returns the run's runtime, gap, feasibility and completion status onto return.
+        /// A task that returns the run's runtime, gap, feasibility and completion status onto return.
         /// </returns>
         public Task<GurobiResult> Run(InstanceSeedFile instance, CancellationToken cancellationToken)
         {
@@ -121,15 +132,16 @@ namespace Optano.Algorithm.Tuner.Gurobi
             }
 
             // Continue if it hasn't.
+            // ReSharper disable once MethodSupportsCancellation
             var solveTask = Task.Run(
                 () =>
                     {
                         // Prepare Gurobi model: Use configured _environment and the given instance,
-                        // then add a callback for cancellation.
+                        // then add a cancellation token source and the Gurobi callback for cancellation.
                         var instanceFile = new FileInfo(instance.Path);
                         if (!File.Exists(instanceFile.FullName))
                         {
-                            throw new Exception(string.Format("Instance {0} not found!", instance.Path));
+                            throw new FileNotFoundException($"Instance {instanceFile.FullName} not found!");
                         }
 
                         LoggingHelper.WriteLine(VerbosityLevel.Debug, $"Setting MIPGap to {this._runnerConfiguration.TerminationMipGap}");
@@ -138,22 +150,28 @@ namespace Optano.Algorithm.Tuner.Gurobi
                         this._environment.Seed = instance.Seed;
                         this._environment.TimeLimit = this._runnerConfiguration.CpuTimeout.TotalSeconds;
 
-                        var fileName = Path.GetFileNameWithoutExtension(instance.Path);
                         if (!Directory.Exists("GurobiLog"))
                         {
                             Directory.CreateDirectory("GurobiLog");
                         }
 
-                        this._environment.LogFile = $"GurobiLog/GurobiRunner_{DateTime.Now:yy-MM-dd_HH-mm-ss-ffff}_" + fileName + ".log";
+                        var instanceFileNameWithoutExtension = GurobiUtils.GetFileNameWithoutGurobiExtension(instanceFile);
 
-                        var model = new GRBModel(this._environment, instance.Path) { ModelName = instanceFile.Name };
-                        var mstfileName = instance.Path.Substring(0, instance.Path.Length - instanceFile.Extension.Length) + ".mst";
-                        if (File.Exists(mstfileName))
+                        this._environment.LogFile = "GurobiLog" + Path.DirectorySeparatorChar + $"GurobiRunner_{DateTime.Now:yy-MM-dd_HH-mm-ss-ffff}_"
+                                                    + instanceFileNameWithoutExtension + $"_{Guid.NewGuid()}.log";
+
+                        var model = new GRBModel(this._environment, instanceFile.FullName) { ModelName = instanceFileNameWithoutExtension };
+
+                        if (GurobiRunner.TryToGetMstFile(instanceFile.DirectoryName, instanceFileNameWithoutExtension, out var mstFileFullName))
                         {
-                            model.Read(mstfileName);
+                            model.Read(mstFileFullName);
                         }
 
-                        model.SetCallback(new GurobiCallback(cancellationToken));
+                        var cancellationTokenSource = new CancellationTokenSource(this._runnerConfiguration.CpuTimeout);
+
+                        model.SetCallback(new GurobiCallback(cancellationTokenSource.Token));
+
+                        this.StartTime = DateTime.Now;
 
                         // Optimize. This step may be aborted in the callback.
                         model.Optimize();
@@ -161,8 +179,7 @@ namespace Optano.Algorithm.Tuner.Gurobi
                         // Before returning, dispose of Gurobi model.
                         model.Dispose();
                         return result;
-                    },
-                cancellationToken);
+                    });
 
             return solveTask;
         }
@@ -175,12 +192,10 @@ namespace Optano.Algorithm.Tuner.Gurobi
         public GurobiResult CreateGurobiResult(GRBModel model)
         {
             // Return result even if the task was cancelled as the MIP gap might still be small.
-            var isRunInterrupted = this.GetIsRunInterrupted(model);
             var result = new GurobiResult(
-                model.MIPGap,
-                // Gurobi sometimes reports a wrong (i.e. too small) runtime when solve is user-interrupted. Use the actual configured timeout instead of the measured.
-                isRunInterrupted ? this._runnerConfiguration.CpuTimeout : TimeSpan.FromSeconds(model.Runtime),
-                isRunInterrupted,
+                this.GetValueWithTryCatch(() => model.MIPGap, GRB.INFINITY),
+                this.GetCorrectRuntime(model),
+                this.GetIsRunInterrupted(model),
                 this.HasFoundSolution(model));
             return result;
         }
@@ -200,6 +215,54 @@ namespace Optano.Algorithm.Tuner.Gurobi
                 this._environment.Dispose();
                 this._hasAlreadyBeenDisposed = true;
             }
+        }
+
+        /// <summary>
+        /// Tries to get the full file name of a corresponding mst file, if existing.
+        /// </summary>
+        /// <param name="instanceDirectoryName">The full directory name of the current instance file.</param>
+        /// <param name="instanceFileNameWithoutExtension">The file name without extension of the current instance file.</param>
+        /// <param name="mstFileFullName">The full file name of the corresponding mst file.</param>
+        /// <returns>True, if a corresponding mst file exists.</returns>
+        private static bool TryToGetMstFile(string instanceDirectoryName, string instanceFileNameWithoutExtension, out string mstFileFullName)
+        {
+            mstFileFullName = GurobiUtils.ListOfValidFileCompressionExtensions.Select(
+                    compressionExtension => instanceDirectoryName + Path.DirectorySeparatorChar + instanceFileNameWithoutExtension + ".mst" + compressionExtension)
+                .FirstOrDefault(File.Exists);
+
+            return mstFileFullName != null;
+        }
+
+        /// <summary>
+        /// Gets the value of a method, which returns a value, in a try catch block.
+        /// </summary>
+        /// <typeparam name="TReturnValue">The return type.</typeparam>
+        /// <param name="getValue">The desired method.</param>
+        /// <param name="fallback">The fallback value.</param>
+        /// <returns>The desired value.</returns>
+        private TReturnValue GetValueWithTryCatch<TReturnValue>(Func<TReturnValue> getValue, TReturnValue fallback)
+        {
+            try
+            {
+                return getValue();
+            }
+            catch
+            {
+                return fallback;
+            }
+        }
+
+        /// <summary>
+        /// Since Gurobi might not stop directly after its timeout, we need to return the corrected runtime of Gurobi.
+        /// </summary>
+        /// <param name="model">The model.</param>
+        /// <returns>The corrected runtime.</returns>
+        private TimeSpan GetCorrectRuntime(GRBModel model)
+        {
+            var wallClockTime = DateTime.Now - this.StartTime;
+            return (this.GetIsRunInterrupted(model) || this._runnerConfiguration.CpuTimeout < wallClockTime)
+                       ? this._runnerConfiguration.CpuTimeout
+                       : wallClockTime;
         }
 
         /// <summary>

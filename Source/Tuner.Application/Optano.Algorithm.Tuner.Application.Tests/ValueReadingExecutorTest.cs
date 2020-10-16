@@ -36,7 +36,6 @@ namespace Optano.Algorithm.Tuner.Application.Tests
     using System.Diagnostics;
     using System.Threading;
 
-    using Optano.Algorithm.Tuner.Application;
     using Optano.Algorithm.Tuner.Genomes.Values;
     using Optano.Algorithm.Tuner.TargetAlgorithm.Instances;
     using Optano.Algorithm.Tuner.TargetAlgorithm.Results;
@@ -82,10 +81,6 @@ namespace Optano.Algorithm.Tuner.Application.Tests
             // Check the result.
             TestUtils.Equals(runner.Result.Runtime.TotalSeconds, seconds, seconds * 0.2);
         }
-
-        #endregion
-
-        #region Public Methods and Operators
 
         /// <summary>
         /// Checks that <see cref="ValueReadingExecutor.Run(InstanceFile, CancellationToken)"/> can be cancelled.
@@ -280,7 +275,7 @@ namespace Optano.Algorithm.Tuner.Application.Tests
         {
             var fixedParameters = @"-alg saps -seed 0 -cutoff max";
             var basicCommand =
-                $@"{TestUtils.PathToTargetAlgorithm} {fixedParameters} -i {TestUtils.PathToTestInstance} {TimeMeasuringExecutor.ParameterReplacement}";
+                $@"{TestUtils.PathToTargetAlgorithm} {fixedParameters} -i {TestUtils.PathToTestInstance} {ValueReadingExecutor.ParameterReplacement}";
             var parameters = new Dictionary<string, IAllele>(capacity: 1) { { "timeout", new Allele<int>(timeout) } };
             return new ValueReadingExecutor(parameters, basicCommand, TimeSpan.FromSeconds(timeout));
         }

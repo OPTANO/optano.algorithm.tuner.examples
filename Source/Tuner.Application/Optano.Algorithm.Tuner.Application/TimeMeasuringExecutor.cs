@@ -117,9 +117,7 @@ namespace Optano.Algorithm.Tuner.Application
                             // If the process was not cancelled, return CPU time as result.
                             timer.Stop();
                             return new RuntimeResult(timer.Elapsed);
-
                         }
-
                     },
                 cancellationToken: cancellationToken);
         }

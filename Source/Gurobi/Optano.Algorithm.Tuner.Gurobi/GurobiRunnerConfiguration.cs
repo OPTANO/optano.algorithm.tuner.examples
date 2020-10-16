@@ -32,6 +32,7 @@
 namespace Optano.Algorithm.Tuner.Gurobi
 {
     using System;
+    using System.Diagnostics.CodeAnalysis;
     using System.IO;
     using System.Text;
 
@@ -138,6 +139,10 @@ namespace Optano.Algorithm.Tuner.Gurobi
         /// <summary>
         /// Builder for <see cref="GurobiRunnerConfiguration"/>s.
         /// </summary>
+        [SuppressMessage(
+            "NDepend",
+            "ND1305:NestedTypesShouldNotBeVisible",
+            Justification = "This type is part of the Builder pattern.")]
         public class GurobiRunnerConfigBuilder : IConfigBuilder<GurobiRunnerConfiguration>
         {
             #region Static Fields
@@ -172,14 +177,14 @@ namespace Optano.Algorithm.Tuner.Gurobi
             /// </summary>
             public static readonly double NodefileStartSizeGigabyteDefault = 0.5;
 
-            #endregion
-
-            #region Fields
-
             /// <summary>
             /// The default value of <see cref="GurobiRunnerConfiguration.TerminationMipGap"/> is 0,01.
             /// </summary>
             public static readonly double TerminationMipGapDefault = 0.01;
+
+            #endregion
+
+            #region Fields
 
             /// <summary>
             /// The value to set for <see cref="GurobiRunnerConfiguration.IsMaster"/>.
@@ -334,8 +339,11 @@ namespace Optano.Algorithm.Tuner.Gurobi
             {
                 if (terminationMipGap < 0)
                 {
-                    throw new ArgumentOutOfRangeException(nameof(terminationMipGap), $"${nameof(terminationMipGap)} needs to be greater than or equal to 0.");
+                    throw new ArgumentOutOfRangeException(
+                        nameof(terminationMipGap),
+                        $"${nameof(terminationMipGap)} needs to be greater than or equal to 0.");
                 }
+
                 this._terminationMipGap = terminationMipGap;
                 return this;
             }
@@ -378,21 +386,21 @@ namespace Optano.Algorithm.Tuner.Gurobi
             private GurobiRunnerConfiguration BuildWithFallback(GurobiRunnerConfiguration fallback)
             {
                 var config = new GurobiRunnerConfiguration
-                {
-                    IsMaster = this._isMaster ?? fallback?.IsMaster ?? GurobiRunnerConfigBuilder.IsMasterDefault,
-                    NumberOfSeeds = this._numberOfSeeds ?? fallback?.NumberOfSeeds ?? GurobiRunnerConfigBuilder.NumberOfSeedsDefault,
-                    ThreadCount = this._threadCount ?? fallback?.ThreadCount ?? GurobiRunnerConfigBuilder.ThreadCountDefault,
-                    RngSeed = this._rngSeed ?? fallback?.RngSeed ?? GurobiRunnerConfigBuilder.RngSeedDefault,
-                    NodefileDirectory = this._nodefileDirectory ?? fallback?.NodefileDirectory
+                                 {
+                                     IsMaster = this._isMaster ?? fallback?.IsMaster ?? GurobiRunnerConfigBuilder.IsMasterDefault,
+                                     NumberOfSeeds = this._numberOfSeeds ?? fallback?.NumberOfSeeds ?? GurobiRunnerConfigBuilder.NumberOfSeedsDefault,
+                                     ThreadCount = this._threadCount ?? fallback?.ThreadCount ?? GurobiRunnerConfigBuilder.ThreadCountDefault,
+                                     RngSeed = this._rngSeed ?? fallback?.RngSeed ?? GurobiRunnerConfigBuilder.RngSeedDefault,
+                                     NodefileDirectory = this._nodefileDirectory ?? fallback?.NodefileDirectory
                                                          ?? new DirectoryInfo(GurobiRunnerConfigBuilder.NodefileDirectoryDefault),
-                    NodefileStartSizeGigabyte = this._nodefileStartSizeGigabyte ??
+                                     NodefileStartSizeGigabyte = this._nodefileStartSizeGigabyte ??
                                                                  fallback?.NodefileStartSizeGigabyte ??
                                                                  GurobiRunnerConfigBuilder.NodefileStartSizeGigabyteDefault,
-                    TerminationMipGap = this._terminationMipGap ??
-                                                                 fallback?.TerminationMipGap ??
-                                                                 GurobiRunnerConfigBuilder.TerminationMipGapDefault,
-                    CpuTimeout = this._cpuTimeout,
-                };
+                                     TerminationMipGap = this._terminationMipGap ??
+                                                         fallback?.TerminationMipGap ??
+                                                         GurobiRunnerConfigBuilder.TerminationMipGapDefault,
+                                     CpuTimeout = this._cpuTimeout,
+                                 };
                 return config;
             }
 

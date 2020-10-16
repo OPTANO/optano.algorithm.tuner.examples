@@ -1,96 +1,173 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <!-- Tuneable parameters for Gurobi solving MIPS.
-Descriptions are taken from https://www.gurobi.com/documentation/7.0/refman/parameter_descriptions.html. -->
+Descriptions are taken from https://www.gurobi.com/documentation/9.0/refman/parameter_descriptions.html. -->
 <node xsi:type="and" xsi:noNamespaceSchemaLocation="../parameterTree.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
 	<!-- Determines which child node is explored first in the branch-and-cut search.
 	The default value (0) chooses automatically. A value of -1 will always explore the down branch first,
 	while a value of 1 will always explore the up branch first. -->
 	<node xsi:type="value" id="BranchDir">
-		<domain xsi:type="categorical" ints="-1 0 1" />
+		<domain xsi:type="categorical" ints="-1 0 1" defaultIndexOrValue="1" />
 	</node>
+
 	<!-- A non-negative value indicates the maximum number of cutting plane passes performed during root cut generation.
 	The default value (-1) chooses the number of cut passes automatically.-->
-	<node xsi:type="or" id="CutPassesActive">
-		<domain xsi:type="categorical" booleans="true false" />
+	<node xsi:type="or" id="CutPassesIndicator">
+		<domain xsi:type="categorical" strings="default off on" defaultIndexOrValue="0" />
 		<choice>
-			<boolean>true</boolean>
+			<string>on</string>
 			<child xsi:type="value" id="CutPasses">
-				<domain xsi:type="discrete" start="0" end="10" />
+				<domain xsi:type="discrete" start="1" end="10" />
 			</child>
 		</choice>
 	</node>
+
+	<!-- Controls where the partition heuristic runs. Setting the Partition attribute on at least one variable in a model enables the partitioning heuristic,
+	which uses large-neighborhood search to try to improve the current incumbent solution.
+	NOTE: Parameter values of this group need to be filtered and combined into a single int-value, ranging from 0 to 31. -->
+  <node xsi:type="and">
+		<node xsi:type="value" id="PartitionPlace_BeforeRoot">
+			<domain xsi:type="categorical" ints="0 16" defaultIndexOrValue="0" />
+		</node>
+		<node xsi:type="value" id="PartitionPlace_StartOfCutLoop">
+			<domain xsi:type="categorical" ints="0 8" defaultIndexOrValue="1" />
+		</node>
+		<node xsi:type="value" id="PartitionPlace_EntOfCutLoop">
+			<domain xsi:type="categorical" ints="0 4" defaultIndexOrValue="1" />
+		</node>
+		<node xsi:type="value" id="PartitionPlace_NodesOfBaC">
+			<domain xsi:type="categorical" ints="0 2" defaultIndexOrValue="1" />
+		</node>
+		<node xsi:type="value" id="PartitionPlace_TerminationOfBaC">
+			<domain xsi:type="categorical" ints="0 1" defaultIndexOrValue="1" />
+		</node>
+	</node>
+
 	<!-- Global cut aggressiveness setting.
 	Use value 0 to shut off cuts, 1 for moderate cut generation, 2 for aggressive cut generation, and 3 for very aggressive cut generation. -->
 	<node xsi:type="value" id="Cuts">
-		<domain xsi:type="categorical" ints="-1 0 1 2 3" />
+		<domain xsi:type="categorical" ints="-1 0 1 2 3" defaultIndexOrValue="0" />
 		<!-- The following parameters that control individual cut types override the cut parameter: -->
 		<node xsi:type="and">
+			<!-- CutAggPasses is left out, since Gurobi states that it has rarely a beneficial impact:
+			https://www.gurobi.com/documentation/9.0/refman/cutaggpasses.html#parameter:CutAggPasses -->
 			<!-- Controls cover cut generation.
 			Use 0 to disable these cuts, 1 for moderate cut generation, or 2 for aggressive cut generation. The default -1 value chooses automatically. -->
 			<node xsi:type="value" id="CoverCuts">
-				<domain xsi:type="categorical" ints="-1 0 1 2" />
+				<domain xsi:type="categorical" ints="-1 0 1 2" defaultIndexOrValue="0" />
 			</node>
 			<!-- Controls flow cover cut generation.
 			Use 0 to disable these cuts, 1 for moderate cut generation, or 2 for aggressive cut generation. The default -1 value chooses automatically. -->
 			<node xsi:type="value" id="FlowCoverCuts">
-				<domain xsi:type="categorical" ints="-1 0 1 2" />
+				<domain xsi:type="categorical" ints="-1 0 1 2" defaultIndexOrValue="0" />
 			</node>
 			<!-- A non-negative value indicates the maximum number of Gomory cut passes performed. -->
-			<node xsi:type="or" id="GomoryPassesActive">
-				<domain xsi:type="categorical" booleans="true false" />
+			<node xsi:type="or" id="GomoryPassesIndicator">
+				<domain xsi:type="categorical" strings="default off on" defaultIndexOrValue="0" />
 				<choice>
-					<boolean>true</boolean>
+					<string>on</string>
 					<child xsi:type="value" id="GomoryPasses">
-						<domain xsi:type="discrete" start="0" end="100" />
+						<domain xsi:type="discrete" start="1" end="15" />
 					</child>
 				</choice>
 			</node>
 			<!-- Controls Mixed Integer Rounding (MIR) cut generation.
 			Use 0 to disable these cuts, 1 for moderate cut generation, or 2 for aggressive cut generation. The default -1 value chooses automatically. -->
 			<node xsi:type="value" id="MIRCuts">
-				<domain xsi:type="categorical" ints="-1 0 1 2" />
+				<domain xsi:type="categorical" ints="-1 0 1 2" defaultIndexOrValue="0" />
 			</node>
 			<!-- Controls Strong Chvátal-Gomory (Strong-CG) cut generation.
 			Use 0 to disable these cuts, 1 for moderate cut generation, or 2 for aggressive cut generation. The default -1 value chooses automatically. -->
 			<node xsi:type="value" id="StrongCGCuts">
-				<domain xsi:type="categorical" ints="-1 0 1 2" />
-			</node>			
+				<domain xsi:type="categorical" ints="-1 0 1 2" defaultIndexOrValue="0" />
+			</node>
 			<!-- Controls zero-half cut generation.
 			Use 0 to disable these cuts, 1 for moderate cut generation, or 2 for aggressive cut generation. The default -1 value chooses automatically. -->
 			<node xsi:type="value" id="ZeroHalfCuts">
-				<domain xsi:type="categorical" ints="-1 0 1 2" />
+				<domain xsi:type="categorical" ints="-1 0 1 2" defaultIndexOrValue="0" />
+			</node>
+			<!-- Controls Boolean Quadric Polytope (BQP) cut generation.
+			Use 0 to disable these cuts, 1 for moderate cut generation, or 2 for aggressive cut generation. The default -1 value chooses automatically. -->
+			<node xsi:type="value" id="BQPCuts">
+				<domain xsi:type="categorical" ints="-1 0 1 2" defaultIndexOrValue="0" />
+			</node>
+			<!-- Controls Relaxation Linearization Technique (RLT) cut generation.
+			Use 0 to disable these cuts, 1 for moderate cut generation, or 2 for aggressive cut generation. The default -1 value chooses automatically. -->
+			<node xsi:type="value" id="RLTCuts">
+				<domain xsi:type="categorical" ints="-1 0 1 2" defaultIndexOrValue="0" />
+			</node>
+			<!-- Controls relax-and-lift cut generation.
+			Use 0 to disable these cuts, 1 for moderate cut generation, or 2 for aggressive cut generation. The default -1 value chooses automatically. -->
+			<node xsi:type="value" id="RelaxLiftCuts">
+				<domain xsi:type="categorical" ints="-1 0 1 2" defaultIndexOrValue="0" />
+			</node>
+			<!-- Other types of Cuts... -->
+			<node xsi:type="value" id="CliqueCuts">
+				<domain xsi:type="categorical" ints="-1 0 1 2" defaultIndexOrValue="0" />
+			</node>
+			<node xsi:type="value" id="FlowPathCuts">
+				<domain xsi:type="categorical" ints="-1 0 1 2" defaultIndexOrValue="0" />
+			</node>
+			<node xsi:type="value" id="GUBCoverCuts">
+				<domain xsi:type="categorical" ints="-1 0 1 2" defaultIndexOrValue="0" />
+			</node>
+			<node xsi:type="value" id="ImpliedCuts">
+				<domain xsi:type="categorical" ints="-1 0 1 2" defaultIndexOrValue="0" />
+			</node>
+			<node xsi:type="value" id="InfProofCuts">
+				<domain xsi:type="categorical" ints="-1 0 1 2" defaultIndexOrValue="0" />
+			</node>
+			<node xsi:type="value" id="MIPSepCuts">
+				<domain xsi:type="categorical" ints="-1 0 1 2" defaultIndexOrValue="0" />
+			</node>
+			<node xsi:type="value" id="ModKCuts">
+				<domain xsi:type="categorical" ints="-1 0 1 2" defaultIndexOrValue="0" />
+			</node>
+			<node xsi:type="value" id="NetworkCuts">
+				<domain xsi:type="categorical" ints="-1 0 1 2" defaultIndexOrValue="0" />
+			</node>
+			<node xsi:type="value" id="ProjImpliedCuts">
+				<domain xsi:type="categorical" ints="-1 0 1 2" defaultIndexOrValue="0" />
+			</node>
+			<node xsi:type="value" id="SubMIPCuts">
+				<domain xsi:type="categorical" ints="-1 0 1 2" defaultIndexOrValue="0" />
 			</node>
 		</node>
 	</node>
+
 	<!-- Limits degenerate simplex moves. By default, the algorithm chooses the number of moves to perform automatically. -->
-	<node xsi:type="or" id="DegenMovesActive">
-		<domain xsi:type="categorical" booleans="true false" />
+	<node xsi:type="or" id="DegenMovesIndicator">
+		<domain xsi:type="categorical" strings="default off on" defaultIndexOrValue="0" />
 		<choice>
-			<boolean>true</boolean>
+			<string>on</string>
 			<child xsi:type="value" id="DegenMoves">
-				<domain xsi:type="discrete" start="0" end="100" />
+				<domain xsi:type="discrete" start="1" end="10" />
 			</child>
 		</choice>
 	</node>
+
 	<!-- Determines the amount of time spent in MIP heuristics. -->
 	<node xsi:type="value" id="Heuristics">
-		<domain xsi:type="continuous" start="0" end="1" />
+		<domain xsi:type="continuous" start="0" end="1" defaultIndexOrValue="0.05" />
 	</node>
+
 	<!-- Algorithm used to solve continuous models or the root node of a MIP model.
 	Options are: -1=automatic, 0=primal simplex, 1=dual simplex, 2=barrier, 3=concurrent, 4=deterministic concurrent. -->
 	<node xsi:type="value" id="Method">
-		<domain xsi:type="categorical" ints="-1 0 1 2 3 4" />
+		<domain xsi:type="categorical" ints="-1 0 1 2 3 4" defaultIndexOrValue="0" />
 	</node>
+
 	<!-- Number of nodes to explore in the minimum relaxation heuristic. -->
-	<node xsi:type="or" id="MinRelNodesActive">
-		<domain xsi:type="categorical" booleans="true false" />
+	<node xsi:type="or" id="MinRelNodesIndicator">
+		<domain xsi:type="categorical" strings="default off on" defaultIndexOrValue="0" />
 		<choice>
-			<boolean>true</boolean>
+			<string>on</string>
 			<child xsi:type="value" id="MinRelNodes">
-				<domain xsi:type="discrete" start="0" end="10000" />
+				<domain xsi:type="discrete" start="1" end="2500" />
 			</child>
 		</choice>
 	</node>
+
 	<!-- Allows you to modify your high-level solution strategy, depending on your goals. By default (0), the Gurobi MIP
 	solver strikes a balance between finding new feasible solutions and proving that the current solution is optimal. If
 	you are more interested in finding feasible solutions quickly, you can select MIPFocus=1. If you believe the solver
@@ -98,24 +175,25 @@ Descriptions are taken from https://www.gurobi.com/documentation/7.0/refman/para
 	MIPFocus=2. If the best objective bound is moving very slowly (or not at all), you may want to try MIPFocus=3 to
 	focus on the bound. -->
 	<node xsi:type="value" id="MIPFocus">
-		<domain xsi:type="categorical" ints="0 1 2 3" />
+		<domain xsi:type="categorical" ints="0 1 2 3" defaultIndexOrValue="0" />
 	</node>
+
 	<!-- Controls the presolve level. A value of -1 corresponds to an automatic setting. Other options are off (0),
 	conservative (1), or aggressive (2). -->
 	<node xsi:type="value" id="Presolve">
-		<domain xsi:type="categorical" ints="-1 0 1 2" />
+		<domain xsi:type="categorical" ints="-1 0 1 2" defaultIndexOrValue="0" />
 		<!-- The following parameters all influence the presolve. -->
 		<node xsi:type="and">
 			<!-- Enables or disables aggregation in presolve. -->
 			<node xsi:type="value" id="Aggregate">
-				<domain xsi:type="categorical" ints="0 1" />
+				<domain xsi:type="categorical" ints="0 1" defaultIndexOrValue="1" />
 				<!-- Controls the amount of fill allowed during presolve aggregation. -->
-				<node xsi:type="or" id="AggFillActive">
-					<domain xsi:type="categorical" booleans="true false" />
+				<node xsi:type="or" id="AggFillIndicator">
+					<domain xsi:type="categorical" strings="default off on" defaultIndexOrValue="0" />
 					<choice>
-						<boolean>true</boolean>
+						<string>on</string>
 						<child xsi:type="value" id="AggFill">
-							<domain xsi:type="discrete" start="0" end="1000" />
+							<domain xsi:type="discrete" start="1" end="1000" />
 						</child>
 					</choice>
 				</node>
@@ -124,81 +202,88 @@ Descriptions are taken from https://www.gurobi.com/documentation/7.0/refman/para
 			The default setting (-1) applies the reduction to continuous models but not to MIP models. Setting 0 turns the reduction off for all models.
 			Setting 1 turns it on for all models. -->
 			<node xsi:type="value" id="PreDepRow">
-				<domain xsi:type="categorical" ints="-1 0 1" />
+				<domain xsi:type="categorical" ints="-1 0 1" defaultIndexOrValue="0" />
 			</node>
 			<!-- Limits the number of passes performed by presolve. The default setting (-1) chooses the number of passes automatically. -->
-			<node xsi:type="or" id="PrePassesActive">
-				<domain xsi:type="categorical" booleans="true false" />
+			<node xsi:type="or" id="PrePassesIndicator">
+				<domain xsi:type="categorical" strings="default off on" defaultIndexOrValue="0" />
 				<choice>
-					<boolean>true</boolean>
+					<string>on</string>
 					<child xsi:type="value" id="PrePasses">
-						<domain xsi:type="discrete" start="0" end="100" />
+						<domain xsi:type="discrete" start="1" end="8" />
 					</child>
 				</choice>
 			</node>
 			<!-- Controls the presolve sparsify reduction.
 			Value 0 shuts off the reduction, while value 1 forces it on. The default value of -1 chooses automatically. -->
 			<node xsi:type="value" id="PreSparsify">
-				<domain xsi:type="categorical" ints="-1 0 1" />
+				<domain xsi:type="categorical" ints="-1 0 1" defaultIndexOrValue="0" />
 			</node>
 		</node>
 	</node>
+
 	<!-- Number of passes of the feasibility pump heuristic. -->
-	<node xsi:type="or" id="PumpPassesActive">
-		<domain xsi:type="categorical" booleans="true false" />
+	<node xsi:type="or" id="PumpPassesIndicator">
+		<domain xsi:type="categorical" strings="default off on" defaultIndexOrValue="0" />
 		<choice>
-			<boolean>true</boolean>
+			<string>on</string>
 			<child xsi:type="value" id="PumpPasses">
-				<domain xsi:type="discrete" start="0" end="100" />
+				<domain xsi:type="discrete" start="1" end="50" />
 			</child>
 		</choice>
 	</node>
+
 	<!-- Frequency of the Relaxation Induced Neighborhood Search (RINS) heuristic. Default value (-1) chooses automatically.
 	A value of 0 shuts off RINS. A positive value n applies RINS at every n-th node of the MIP search tree. -->
-	<node xsi:type="or" id="RinsActive">
-		<domain xsi:type="categorical" ints="-1 0 1" />
+	<node xsi:type="or" id="RinsIndicator">
+		<domain xsi:type="categorical" strings="default off on" defaultIndexOrValue="0" />
 		<choice>
-			<int>1</int>
+			<string>on</string>
 			<child xsi:type="value" id="RINS">
-				<domain xsi:type="discrete" start="1" end="10000" />
+				<domain xsi:type="discrete" start="1" end="2500" />
 			</child>
 		</choice>
-	</node>	
+	</node>
+
 	<!-- Controls model scaling.
-	By default (ScaleFlag=1), the rows and columns of the model are scaled in order to improve the numerical properties of the constraint matrix.
+	By default (ScaleFlag=-1), the rows and columns of the model are scaled in order to improve the numerical properties of the constraint matrix.
 	Turning off scaling (ScaleFlag=0) can sometimes produce smaller constraint violations.
 	Choosing a more aggressive scaling option (ScaleFlag=2) can sometimes improve performance for particularly numerically difficult models. -->
 	<node xsi:type="value" id="ScaleFlag">
-		<domain xsi:type="categorical" ints="0 1 2" />
+		<domain xsi:type="categorical" ints="-1 0 1 2" defaultIndexOrValue="0" />
 	</node>
+
 	<!-- Determines the simplex variable pricing strategy.
 	Available options are Automatic (-1), Partial Pricing (0), Steepest Edge (1), Devex (2), and Quick-Start Steepest Edge (3). -->
 	<node xsi:type="value" id="SimplexPricing">
-		<domain xsi:type="categorical" ints="-1 0 1 2 3" />
+		<domain xsi:type="categorical" ints="-1 0 1 2 3" defaultIndexOrValue="0" />
 		<!-- Chooses from among multiple pricing norm variants.
 		The details of how this parameter affects the simplex pricing algorithm are subtle and difficult to describe -->
 		<node xsi:type="value" id="NormAdjust">
-			<domain xsi:type="categorical" ints="-1 0 1 2 3" />
+			<domain xsi:type="categorical" ints="-1 0 1 2 3" defaultIndexOrValue="0" />
 		</node>
 	</node>
+
 	<!-- Controls MIP symmetry detection. A value of -1 corresponds to an automatic setting.
 	Other options are off (0), conservative (1), or aggressive (2). -->
 	<node xsi:type="value" id="Symmetry">
-		<domain xsi:type="categorical" ints="-1 0 1 2" />
+		<domain xsi:type="categorical" ints="-1 0 1 2" defaultIndexOrValue="0" />
 	</node>
+
 	<!-- Controls the branch variable selection strategy. The default -1 setting makes an automatic choice, depending
 	on problem characteristics. Available alternatives are Pseudo Reduced Cost Branching (0),
 	Pseudo Shadow Price Branching (1), Maximum Infeasibility Branching (2), and Strong Branching (3). -->
 	<node xsi:type="value" id="VarBranch">
-		<domain xsi:type="categorical" ints="-1 0 1 2 3" />
+		<domain xsi:type="categorical" ints="-1 0 1 2 3" defaultIndexOrValue="0" />
 	</node>
+
 	<!-- Number of nodes to explore in the zero objective heuristic. -->
-	<node xsi:type="or" id="ZeroObjNodesActive">
-		<domain xsi:type="categorical" booleans="true false" />
+	<node xsi:type="or" id="ZeroObjNodesIndicator">
+		<domain xsi:type="categorical" strings="default off on" defaultIndexOrValue="0" />
 		<choice>
-			<boolean>true</boolean>
+			<string>on</string>
 			<child xsi:type="value" id="ZeroObjNodes">
-				<domain xsi:type="discrete" start="0" end="10000" />
+				<domain xsi:type="discrete" start="1" end="10000" />
 			</child>
 		</choice>
 	</node>

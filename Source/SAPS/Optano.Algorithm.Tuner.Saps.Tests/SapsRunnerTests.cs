@@ -34,6 +34,7 @@ namespace Optano.Algorithm.Tuner.Saps.Tests
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
+    using System.Diagnostics.CodeAnalysis;
     using System.Globalization;
     using System.Linq;
     using System.Threading;
@@ -102,6 +103,10 @@ namespace Optano.Algorithm.Tuner.Saps.Tests
         /// <summary>
         /// Checks that <see cref="SapsRunner.Run"/> can be cancelled.
         /// </summary>
+        [SuppressMessage(
+            "NDepend",
+            "ND2502:DontUseDangerousThreadingMethods",
+            Justification = "Usage of Thread.Sleep() is suitable for this use case.")]
         [Fact]
         public void CancellationWorks()
         {

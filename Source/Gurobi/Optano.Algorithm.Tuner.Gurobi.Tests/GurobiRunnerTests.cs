@@ -63,15 +63,6 @@ namespace Optano.Algorithm.Tuner.Gurobi.Tests
 
         #endregion
 
-        #region Fields
-
-        /// <summary>
-        /// A <see cref="CancellationTokenSource"/>.
-        /// </summary>
-        private readonly CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
-
-        #endregion
-
         #region Constructors and Destructors
 
         /// <summary>
@@ -99,25 +90,25 @@ namespace Optano.Algorithm.Tuner.Gurobi.Tests
         {
             var gurobiEnvironment = new GRBEnv();
             var runnerConfiguration =
-                new GurobiRunnerConfiguration.GurobiRunnerConfigBuilder().Build(TimeSpan.FromSeconds(30));
+                new GurobiRunnerConfiguration.GurobiRunnerConfigBuilder().Build(TimeSpan.FromSeconds(1));
+
+            // Note, that this cancellation token source is never used in GurobiRunner.Run().
+            var cancellationTokenSource = new CancellationTokenSource(500);
 
             var timer = new Stopwatch();
             timer.Start();
 
-            // Run Gurobi.
             var gurobiRunner = new GurobiRunner(gurobiEnvironment, runnerConfiguration);
             var runner = gurobiRunner.Run(
                 new InstanceSeedFile(GurobiRunnerTests.PathToTestInstance, GurobiRunnerTests.TestInstanceSeed),
-                this._cancellationTokenSource.Token);
+                cancellationTokenSource.Token);
 
-            // Cancel task and expect it to be cancelled.
-            Thread.Sleep(100);
-            this._cancellationTokenSource.Cancel();
             runner.Wait();
             timer.Stop();
             var result = runner.Result;
             result.IsCancelled.ShouldBeTrue();
-            timer.Elapsed.ShouldBeLessThan(TimeSpan.FromSeconds(1));
+            timer.Elapsed.ShouldBeGreaterThan(TimeSpan.FromMilliseconds(1000));
+            timer.Elapsed.ShouldBeLessThan(TimeSpan.FromMilliseconds(1900));
             gurobiEnvironment.Dispose();
         }
 

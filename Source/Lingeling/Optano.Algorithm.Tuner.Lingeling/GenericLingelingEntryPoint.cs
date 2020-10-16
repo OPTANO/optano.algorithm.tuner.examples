@@ -104,13 +104,13 @@ namespace Optano.Algorithm.Tuner.Lingeling
                 TSamplingStrategy>(
                 targetAlgorithmFactory: new LingelingRunnerFactory(runnerConfig.PathToExecutable, tunerConfig, runnerConfig.MemoryLimitMegabyte),
                 runEvaluator: new SortByRuntime(runnerConfig.FactorParK),
-                trainingInstances: LingelingUtils.CreateInstances(trainingInstanceFolder, runnerConfig.NumberOfSeeds, runnerConfig.RngSeed),
+                trainingInstances: InstanceSeedFile.CreateInstanceSeedFilesFromDirectory(trainingInstanceFolder, LingelingUtils.ListOfValidFileExtensions, runnerConfig.NumberOfSeeds, runnerConfig.RngSeed),
                 parameterTree: LingelingUtils.CreateParameterTree(),
                 configuration: tunerConfig);
 
             if (!string.IsNullOrWhiteSpace(testInstanceFolder))
             {
-                tuner.SetTestInstances(LingelingUtils.CreateInstances(testInstanceFolder, runnerConfig.NumberOfSeeds, runnerConfig.RngSeed));
+                tuner.SetTestInstances(InstanceSeedFile.CreateInstanceSeedFilesFromDirectory(testInstanceFolder, LingelingUtils.ListOfValidFileExtensions, runnerConfig.NumberOfSeeds, runnerConfig.RngSeed));
             }
 
             return tuner;

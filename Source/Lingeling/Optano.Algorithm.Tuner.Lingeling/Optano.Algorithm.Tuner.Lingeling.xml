@@ -209,7 +209,6 @@
             <summary>
             Builds the configuration to tune Lingeling.
             </summary>
-            <seealso cref="T:Optano.Algorithm.Tuner.Configuration.IConfigBuilder`1" />
         </member>
         <member name="F:Optano.Algorithm.Tuner.Lingeling.LingelingRunnerConfiguration.LingelingConfigBuilder.IsMasterDefault">
             <summary>
@@ -474,37 +473,16 @@
             Utility methods for starting a tuner instance that tunes Lingeling.
             </summary>
         </member>
+        <member name="F:Optano.Algorithm.Tuner.Lingeling.LingelingUtils.ListOfValidFileExtensions">
+            <summary>
+            The list of valid file extensions of Lingeling.
+            </summary>
+        </member>
         <member name="M:Optano.Algorithm.Tuner.Lingeling.LingelingUtils.CreateParameterTree">
             <summary>
             Creates a parameter tree from the "lingelingParamTree.xml" in the working directory.
             </summary>
             <returns>The <see cref="T:Optano.Algorithm.Tuner.Parameters.ParameterTree"/>.</returns>
-        </member>
-        <member name="M:Optano.Algorithm.Tuner.Lingeling.LingelingUtils.CreateInstances(System.String,System.Int32,System.Int32)">
-            <summary>
-            Creates the list of SAT instances to train on using .cnf files in the given directory.
-            </summary>
-            <param name="pathToInstanceFolder">Path to the folder containing the instance .cnf files.</param>
-            <param name="numSeedsToUse">The number of seeds to use.</param>
-            <param name="rngSeed">The random number generator seed.</param>
-            <returns>
-            The created list.
-            </returns>
-        </member>
-        <member name="M:Optano.Algorithm.Tuner.Lingeling.LingelingUtils.SeedsToUse(System.Int32,System.Int32)">
-            <summary>
-            Generates the seeds to use for the file seed combinations.
-            </summary>
-            <param name="numSeedsToUse">The number of seeds.</param>
-            <param name="rngSeed">The random number generator seed.</param>
-            <returns>The seeds.</returns>
-        </member>
-        <member name="M:Optano.Algorithm.Tuner.Lingeling.LingelingUtils.DumpFileSeedCombinations(System.IO.DirectoryInfo,System.Collections.Generic.IEnumerable{System.String})">
-            <summary>
-            Dumps the file seed combinations.
-            </summary>
-            <param name="instanceDirectory">The instance directory.</param>
-            <param name="instanceSeedCombinations">The instance seed combinations.</param>
         </member>
         <member name="M:Optano.Algorithm.Tuner.Lingeling.LingelingUtils.AddAllActiveParameterWrappers(Optano.Algorithm.Tuner.Parameters.ParameterTree)">
             <summary>

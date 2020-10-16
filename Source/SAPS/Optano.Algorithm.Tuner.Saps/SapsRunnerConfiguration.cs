@@ -32,6 +32,7 @@
 namespace Optano.Algorithm.Tuner.Saps
 {
     using System;
+    using System.Diagnostics.CodeAnalysis;
     using System.Text;
 
     using Optano.Algorithm.Tuner.Configuration;
@@ -137,7 +138,10 @@ namespace Optano.Algorithm.Tuner.Saps
         /// <summary>
         /// Builds the configuration to tune SAPS.
         /// </summary>
-        /// <seealso cref="Optano.Algorithm.Tuner.Configuration.IConfigBuilder{SapsRunnerConfiguration}" />
+        [SuppressMessage(
+            "NDepend",
+            "ND1305:NestedTypesShouldNotBeVisible",
+            Justification = "This type is part of the Builder pattern.")]
         public class SapsConfigBuilder : IConfigBuilder<SapsRunnerConfiguration>
         {
             #region Static Fields

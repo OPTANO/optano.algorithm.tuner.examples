@@ -137,7 +137,6 @@ namespace Optano.Algorithm.Tuner.Lingeling
             new MasterArgumentParser().PrintHelp(false);
             Console.Out.WriteLine();
             new WorkerArgumentParser().PrintHelp(false);
-
         }
 
         #endregion
@@ -167,7 +166,7 @@ namespace Optano.Algorithm.Tuner.Lingeling
         {
             var options = new OptionSet
                               {
-                                  { 
+                                  {
                                       "executable=",
                                       "{PATH} to the executable",
                                       p => this.InternalConfigurationBuilder.SetPathToExecutable(p)

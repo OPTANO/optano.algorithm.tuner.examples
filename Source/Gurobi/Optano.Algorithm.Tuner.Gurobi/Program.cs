@@ -31,8 +31,6 @@
 
 namespace Optano.Algorithm.Tuner.Gurobi
 {
-    using NDesk.Options;
-
     using Optano.Algorithm.Tuner.Configuration;
     using Optano.Algorithm.Tuner.DistributedExecution;
     using Optano.Algorithm.Tuner.MachineLearning.RandomForest;
@@ -100,7 +98,7 @@ namespace Optano.Algorithm.Tuner.Gurobi
             var tuner = new AlgorithmTuner<GurobiRunner, InstanceSeedFile, GurobiResult>(
                 targetAlgorithmFactory: new GurobiRunnerFactory(gurobiConfig),
                 runEvaluator: new GurobiRunEvaluator(),
-                trainingInstances: GurobiUtils.CreateInstances(pathToTrainingInstanceFolder, gurobiConfig.NumberOfSeeds, gurobiConfig.RngSeed),
+                trainingInstances: InstanceSeedFile.CreateInstanceSeedFilesFromDirectory(pathToTrainingInstanceFolder, GurobiUtils.ListOfValidFileExtensions, gurobiConfig.NumberOfSeeds, gurobiConfig.RngSeed),
                 parameterTree: GurobiUtils.CreateParameterTree(),
                 configuration: configuration);
 
@@ -108,7 +106,7 @@ namespace Optano.Algorithm.Tuner.Gurobi
             {
                 if (!string.IsNullOrWhiteSpace(pathToTestInstanceFolder))
                 {
-                    var testInstances = GurobiUtils.CreateInstances(pathToTestInstanceFolder, gurobiConfig.NumberOfSeeds, gurobiConfig.RngSeed);
+                    var testInstances = InstanceSeedFile.CreateInstanceSeedFilesFromDirectory(pathToTestInstanceFolder, GurobiUtils.ListOfValidFileExtensions, gurobiConfig.NumberOfSeeds, gurobiConfig.RngSeed);
                     tuner.SetTestInstances(testInstances);
                 }
             }

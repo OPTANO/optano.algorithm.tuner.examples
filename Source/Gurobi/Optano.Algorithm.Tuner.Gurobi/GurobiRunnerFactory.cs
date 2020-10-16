@@ -79,6 +79,9 @@ namespace Optano.Algorithm.Tuner.Gurobi
         /// <returns>The configured <see cref="GurobiRunner" />.</returns>
         public GurobiRunner ConfigureTargetAlgorithm(Dictionary<string, IAllele> parameters)
         {
+            // Handle partition place parameters
+            parameters = this.CombinePartitionPlaceParameters(parameters);
+
             // Create a new gurobi environment.
             var gurobiEnvironment = new GRBEnv();
 
@@ -104,6 +107,36 @@ namespace Optano.Algorithm.Tuner.Gurobi
 
             // Return the new gurobi runner.
             return new GurobiRunner(gurobiEnvironment, this.GurobiSettings);
+        }
+
+        #endregion
+
+        #region Methods
+
+        /// <summary>
+        /// Combines all values for the separate PartitionPlace bits into a single parameter.
+        /// See also <see cref="GurobiUtils.PartitionPlaceGroupIdentifiers"/>.
+        /// </summary>
+        /// <param name="parameters">The unfiltered parameters.</param>
+        /// <returns>The parameters with combined <c>PartitionPlace</c> value.</returns>
+        private Dictionary<string, IAllele> CombinePartitionPlaceParameters(Dictionary<string, IAllele> parameters)
+        {
+            var filteredParameters = parameters.Where(p => !GurobiUtils.PartitionPlaceGroupIdentifiers.Contains(p.Key))
+                .ToDictionary(p => p.Key, p => p.Value);
+
+            var partitionPlaceValue = 0;
+            foreach (var partitionPlacePart in GurobiUtils.PartitionPlaceGroupIdentifiers)
+            {
+                if (!parameters.TryGetValue(partitionPlacePart, out var allele))
+                {
+                    continue;
+                }
+
+                partitionPlaceValue += (int)allele.GetValue();
+            }
+
+            filteredParameters[GurobiUtils.PartitionPlaceName] = new Allele<int>(partitionPlaceValue);
+            return filteredParameters;
         }
 
         #endregion

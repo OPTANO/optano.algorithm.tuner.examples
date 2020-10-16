@@ -15,7 +15,7 @@ def main(argv):
    result = function(parameters)
    deltaOpt = (result - optVal)
    output = "result=%f" % deltaOpt
-   print output
+   print(output)
 
 if __name__ == "__main__":
    main(sys.argv[1:])

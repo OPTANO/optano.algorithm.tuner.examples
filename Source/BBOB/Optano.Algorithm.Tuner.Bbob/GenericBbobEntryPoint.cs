@@ -33,6 +33,7 @@ namespace Optano.Algorithm.Tuner.Bbob
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.Globalization;
     using System.IO;
     using System.Linq;
@@ -52,7 +53,7 @@ namespace Optano.Algorithm.Tuner.Bbob
     using Optano.Algorithm.Tuner.Tuning;
 
     /// <summary>
-    /// Generic entry point for different Saps runner parametrizations.
+    /// Generic entry point for different BBOB runner parametrizations.
     /// </summary>
     /// <typeparam name="TLearnerModel">The learner model.</typeparam>
     /// <typeparam name="TPredictorModel">The predictor model.</typeparam>
@@ -91,8 +92,8 @@ namespace Optano.Algorithm.Tuner.Bbob
                                 pathToInstanceFolder = trainingInstances ?? "DummyInstances";
                                 return GenericBbobEntryPoint<TLearnerModel, TPredictorModel, TSamplingStrategy>.BuildBbobRunner(
                                     config,
-                                    pathToInstanceFolder, 
-                                    testInstance, 
+                                    pathToInstanceFolder,
+                                    testInstance,
                                     bbobConfig);
                             });
             // log results
@@ -112,6 +113,10 @@ namespace Optano.Algorithm.Tuner.Bbob
         /// <param name="bestParameters">The best parameters.</param>
         /// <param name="bbobConfig">The bbob configuration.</param>
         /// <param name="pathToInstanceFolder">The path to instance folder.</param>
+        [SuppressMessage(
+            "NDepend",
+            "ND2502:DontUseDangerousThreadingMethods",
+            Justification = "Usage of Thread.Sleep() is okay in this context.")]
         private static void LogBestParameters(
             Dictionary<string, IAllele> bestParameters,
             BbobRunnerConfiguration bbobConfig,
@@ -119,7 +124,7 @@ namespace Optano.Algorithm.Tuner.Bbob
         {
             var bestParamsConsole = string.Join(
                 " ",
-                bestParameters?.OrderBy(p => p.Key).Select(p => string.Format(CultureInfo.InvariantCulture, "{0}", (double)p.Value.GetValue())) ?? new string[0]);
+                GenericBbobEntryPoint<TLearnerModel, TPredictorModel, TSamplingStrategy>.FormatParametersAsEnumerable(bestParameters));
 
             // evaluate the best found config on all instances. print commands to execute python + compute average performance
             var pythonCommand = string.Concat(
@@ -169,6 +174,23 @@ namespace Optano.Algorithm.Tuner.Bbob
         }
 
         /// <summary>
+        /// Formats the parameters as enumerable.
+        /// </summary>
+        /// <param name="bestParameters">The parameters.</param>
+        /// <returns>The enumerable.</returns>
+        private static IEnumerable<string> FormatParametersAsEnumerable(Dictionary<string, IAllele> bestParameters)
+        {
+            return bestParameters?
+                       .OrderBy(p => p.Key)
+                       .Select(
+                           p => string.Format(
+                               CultureInfo.InvariantCulture,
+                               "{0}",
+                               (double)p.Value.GetValue()))
+                   ?? new string[0];
+        }
+
+        /// <summary>
         /// Builds an instance of the <see cref="AlgorithmTuner{TTargetAlgorihtm,TInsance,TResult}" /> class which
         /// executes a target function minimization for the BBOB algorithm.
         /// </summary>
@@ -179,6 +201,10 @@ namespace Optano.Algorithm.Tuner.Bbob
         /// <returns>
         /// The built instance.
         /// </returns>
+        [SuppressMessage(
+            "NDepend",
+            "ND3101:DontUseSystemRandomForSecurityPurposes",
+            Justification = "No security related purpose.")]
         private static AlgorithmTuner<BbobRunner, InstanceFile, ContinuousResult, TLearnerModel, TPredictorModel, TSamplingStrategy> BuildBbobRunner(
             AlgorithmTunerConfiguration configuration,
             string trainingInstanceFolder,

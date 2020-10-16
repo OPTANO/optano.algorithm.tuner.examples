@@ -104,7 +104,12 @@ namespace Optano.Algorithm.Tuner.Gurobi.Tests
             const double NodefileSize = 2;
             const double TerminationMipGap = 0.05;
 
-            var args = new[] { "--master", $"--grbThreadCount={ThreadCount}", $"--numberOfSeeds={NumberOfSeeds}", $"--rngSeed={RngSeed}", $"--grbNodefileDirectory={NodefileDir}", $"--grbNodefileStartSizeGigabyte={NodefileSize}", $"--grbTerminationMipGap={TerminationMipGap}" };
+            var args = new[]
+                           {
+                               "--master", $"--grbThreadCount={ThreadCount}", $"--numberOfSeeds={NumberOfSeeds}", $"--rngSeed={RngSeed}",
+                               $"--grbNodefileDirectory={NodefileDir}", $"--grbNodefileStartSizeGigabyte={NodefileSize}",
+                               $"--grbTerminationMipGap={TerminationMipGap}",
+                           };
 
             this._parser.ParseArguments(args);
 

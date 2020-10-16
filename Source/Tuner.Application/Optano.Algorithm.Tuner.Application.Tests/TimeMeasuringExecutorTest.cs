@@ -36,7 +36,6 @@ namespace Optano.Algorithm.Tuner.Application.Tests
     using System.Diagnostics;
     using System.Threading;
 
-    using Optano.Algorithm.Tuner.Application;
     using Optano.Algorithm.Tuner.Genomes.Values;
     using Optano.Algorithm.Tuner.TargetAlgorithm.Instances;
     using Optano.Algorithm.Tuner.TargetAlgorithm.Results;

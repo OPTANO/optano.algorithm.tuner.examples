@@ -166,7 +166,7 @@ namespace Optano.Algorithm.Tuner.Saps
         {
             var options = new OptionSet
                               {
-                                  { 
+                                  {
                                       "executable=",
                                       "{PATH} to the ubcsat executable",
                                       p => this.InternalConfigurationBuilder.SetPathToExecutable(p)

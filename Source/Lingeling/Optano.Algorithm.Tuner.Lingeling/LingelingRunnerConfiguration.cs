@@ -32,6 +32,7 @@
 namespace Optano.Algorithm.Tuner.Lingeling
 {
     using System;
+    using System.Diagnostics.CodeAnalysis;
     using System.Text;
 
     using Optano.Algorithm.Tuner.Configuration;
@@ -147,7 +148,10 @@ namespace Optano.Algorithm.Tuner.Lingeling
         /// <summary>
         /// Builds the configuration to tune Lingeling.
         /// </summary>
-        /// <seealso cref="Configuration.IConfigBuilder{LingelingRunnerConfiguration}" />
+        [SuppressMessage(
+            "NDepend",
+            "ND1305:NestedTypesShouldNotBeVisible",
+            Justification = "This type is part of the Builder pattern.")]
         public class LingelingConfigBuilder : IConfigBuilder<LingelingRunnerConfiguration>
         {
             #region Static Fields

@@ -221,7 +221,6 @@
             <summary>
             Builds the configuration to tune SAPS.
             </summary>
-            <seealso cref="T:Optano.Algorithm.Tuner.Configuration.IConfigBuilder`1" />
         </member>
         <member name="F:Optano.Algorithm.Tuner.Saps.SapsRunnerConfiguration.SapsConfigBuilder.IsMasterDefault">
             <summary>
@@ -479,6 +478,11 @@
             Identifier of the SAPS parameter which is known as wp.
             </summary>
         </member>
+        <member name="F:Optano.Algorithm.Tuner.Saps.SapsUtils.ListOfValidFileExtensions">
+            <summary>
+            The list of valid file extensions of SAPS.
+            </summary>
+        </member>
         <member name="M:Optano.Algorithm.Tuner.Saps.SapsUtils.CreateParameterTree">
             <summary>
             Creates a <see cref="T:Optano.Algorithm.Tuner.Parameters.ParameterTree"/> consisting of four independent nodes:
@@ -488,32 +492,6 @@
             * one representing the continuous parameter with name <see cref="F:Optano.Algorithm.Tuner.Saps.SapsUtils.WpIdentifier"/>.
             </summary>
             <returns>The <see cref="T:Optano.Algorithm.Tuner.Parameters.ParameterTree"/>.</returns>
-        </member>
-        <member name="M:Optano.Algorithm.Tuner.Saps.SapsUtils.CreateInstances(System.String,System.Int32,System.Int32)">
-            <summary>
-            Creates the list of SAT instances to train on using .cnf files in the given directory.
-            </summary>
-            <param name="pathToInstanceFolder">Path to the folder containing the instance .cnf files.</param>
-            <param name="numSeedsToUse">The number of seeds.</param>
-            <param name="rngSeed">The random number generator seed.</param>
-            <returns>
-            The created list.
-            </returns>
-        </member>
-        <member name="M:Optano.Algorithm.Tuner.Saps.SapsUtils.SeedsToUse(System.Int32,System.Int32)">
-            <summary>
-            Generates the seeds to use for the file seed combinations.
-            </summary>
-            <param name="numSeedsToUse">The number of seeds.</param>
-            <param name="rngSeed">The random number generator seed.</param>
-            <returns>The seeds.</returns>
-        </member>
-        <member name="M:Optano.Algorithm.Tuner.Saps.SapsUtils.DumpFileSeedCombinations(System.IO.DirectoryInfo,System.Collections.Generic.IEnumerable{System.String})">
-            <summary>
-            Dumps the file seed combinations.
-            </summary>
-            <param name="instanceDirectory">The instance directory.</param>
-            <param name="instanceSeedCombinations">The instance seed combinations.</param>
         </member>
     </members>
 </doc>

@@ -32,7 +32,6 @@
 namespace Optano.Algorithm.Tuner.Saps.Tests
 {
     using System;
-    using System.IO;
     using System.Linq;
 
     using Optano.Algorithm.Tuner.Parameters;
@@ -49,29 +48,6 @@ namespace Optano.Algorithm.Tuner.Saps.Tests
     [Collection("NonParallel")]
     public class SapsUtilsTests : IDisposable
     {
-        #region Static Fields
-
-        /// <summary>
-        /// File names that should be translated into instances on <see cref="SapsUtils.CreateInstances"/>.
-        /// </summary>
-        private static readonly string[] CnfFileNames = { "useful1.cnf", "useful2.cnf" };
-
-        /// <summary>
-        /// File names that should not be translated into instances on <see cref="SapsUtils.CreateInstances"/>.
-        /// </summary>
-        private static readonly string[] NonCnfFileNames = { "useless.txt" };
-
-        #endregion
-
-        #region Fields
-
-        /// <summary>
-        /// Path to the folder containing test data. Has to be initialized.
-        /// </summary>
-        private readonly string _instanceFolder;
-
-        #endregion
-
         #region Constructors and Destructors
 
         /// <summary>
@@ -80,13 +56,6 @@ namespace Optano.Algorithm.Tuner.Saps.Tests
         /// </summary>
         public SapsUtilsTests()
         {
-            this._instanceFolder = PathUtils.GetAbsolutePathFromExecutableFolderRelative("testData");
-            Directory.CreateDirectory(this._instanceFolder);
-            foreach (var fileName in SapsUtilsTests.CnfFileNames.Union(SapsUtilsTests.NonCnfFileNames))
-            {
-                var handle = File.Create(Path.Combine(this._instanceFolder, fileName));
-                handle.Close();
-            }
         }
 
         #endregion
@@ -96,7 +65,6 @@ namespace Optano.Algorithm.Tuner.Saps.Tests
         /// <inheritdoc/>
         public void Dispose()
         {
-            Directory.Delete(this._instanceFolder, recursive: true);
         }
 
         /// <summary>
@@ -134,92 +102,6 @@ namespace Optano.Algorithm.Tuner.Saps.Tests
             TestUtils.CheckRange((ContinuousDomain)ps.Domain, "ps", 0, 0.2);
             (wp.Domain is ContinuousDomain).ShouldBeTrue("wp should be distributed uniformly.");
             TestUtils.CheckRange((ContinuousDomain)wp.Domain, "wp", 0, 0.06);
-        }
-
-        /// <summary>
-        /// Checks that <see cref="SapsUtils.SeedsToUse"/> returns the correct number of seeds.
-        /// </summary>
-        [Fact]
-        public void SeedsToUseReturnsCorrectNumberOfSeeds()
-        {
-            var numberOfSeeds = 6;
-            var seedsToUse = SapsUtils.SeedsToUse(numberOfSeeds, 42);
-            seedsToUse.Count().ShouldBe(numberOfSeeds);
-        }
-
-        /// <summary>
-        /// Verifies that calling <see cref="SapsUtils.CreateInstances"/> with a non existant directory throws
-        /// a <see cref="DirectoryNotFoundException"/>.
-        /// </summary>
-        [Fact]
-        public void CreateInstancesThrowsExceptionIfItCannotOpenFolder()
-        {
-            Exception exception =
-                Assert.Throws<DirectoryNotFoundException>(
-                    () => { SapsUtils.CreateInstances("foobarFolder", 1, 42); });
-        }
-
-        /// <summary>
-        /// Verifies that calling <see cref="SapsUtils.CreateInstances"/> with a non existant directory prints
-        /// out a message to the console telling the user the directory doesn't exist.
-        /// </summary>
-        [Fact]
-        public void CreateInstancesPrintsMessageIfItCannotOpenFolder()
-        {
-            TestUtils.CheckOutput(
-                action: () =>
-                    {
-                        // Call CreateInstances with a non existant directory path.
-                        try
-                        {
-                            SapsUtils.CreateInstances("foobarFolder", 1, 42);
-                        }
-                        catch (DirectoryNotFoundException)
-                        {
-                            // This is expected.
-                        }
-                    },
-                check: consoleOutput =>
-                    {
-                        // Check that information about it is written to console.
-                        StringReader reader = new StringReader(consoleOutput.ToString());
-                        reader.ReadLine().ShouldContain("foobarFolder", "The problematic path did not get printed.");
-                        reader.ReadLine().ShouldBe("Cannot open folder.", "Cause of exception has not been printed.");
-                    });
-        }
-
-        /// <summary>
-        /// Checks that <see cref="SapsUtils.CreateInstances"/> creates an instance out of each .cnf file and
-        /// the instance's file name matches the complete path to that file.
-        /// </summary>
-        [Fact]
-        public void CreateInstancesCorrectlyExtractsPathsToCnfFiles()
-        {
-            // Call method.
-            var instances = SapsUtils.CreateInstances(this._instanceFolder, 1, 42);
-
-            // Check that file names of instances match the complete paths of all .cnf files.
-            var expectedPaths = SapsUtilsTests.CnfFileNames.Select(name => this._instanceFolder + Path.DirectorySeparatorChar + name);
-            var instancePaths = instances.Select(instance => instance.Path);
-            expectedPaths.ShouldBe(
-                instancePaths,
-                true,
-                $"{TestUtils.PrintList(instancePaths)} should have been equal to {TestUtils.PrintList(expectedPaths)}.");
-        }
-
-        /// <summary>
-        /// Checks that <see cref="SapsUtils.CreateInstances"/> ignores files which are not in .cnf format.
-        /// </summary>
-        [Fact]
-        public void CreateInstancesIgnoresFilesNotInCnfFormat()
-        {
-            // Call method.
-            var instances = SapsUtils.CreateInstances(this._instanceFolder, 1, 42);
-
-            // Check that no non-cnf file has been translated into an instance.
-            var instancePaths = instances.Select(instance => instance.Path);
-            instancePaths.Any(path => SapsUtilsTests.NonCnfFileNames.Any(file => path.Contains(file)))
-                .ShouldBeFalse("Not all non-cnf files have been ignored.");
         }
 
         #endregion

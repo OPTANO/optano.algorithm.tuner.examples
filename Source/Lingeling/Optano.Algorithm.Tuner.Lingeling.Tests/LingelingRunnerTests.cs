@@ -34,6 +34,7 @@ namespace Optano.Algorithm.Tuner.Lingeling.Tests
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
+    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
@@ -103,6 +104,10 @@ namespace Optano.Algorithm.Tuner.Lingeling.Tests
         /// Checks that <see cref="LingelingRunner.Run"/> can be cancelled.
         /// This test only works on a Linux machine.
         /// </summary>
+        [SuppressMessage(
+            "NDepend",
+            "ND2502:DontUseDangerousThreadingMethods",
+            Justification = "Usage of Thread.Sleep() is suitable for this use case.")]
         [SkippableFact]
         public void CancellationWorks()
         {

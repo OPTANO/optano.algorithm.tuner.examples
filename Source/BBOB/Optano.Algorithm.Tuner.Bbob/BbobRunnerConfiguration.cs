@@ -32,6 +32,7 @@
 namespace Optano.Algorithm.Tuner.Bbob
 {
     using System;
+    using System.Diagnostics.CodeAnalysis;
     using System.Text;
 
     using Optano.Algorithm.Tuner.Configuration;
@@ -146,7 +147,10 @@ namespace Optano.Algorithm.Tuner.Bbob
         /// <summary>
         /// Builds the configuration to tune BBOB.
         /// </summary>
-        /// <seealso cref="Optano.Algorithm.Tuner.Configuration.IConfigBuilder{BbobRunnerConfiguration}" />
+        [SuppressMessage(
+            "NDepend",
+            "ND1305:NestedTypesShouldNotBeVisible",
+            Justification = "This type is part of the Builder pattern.")]
         public class BbobRunnerConfigurationBuilder : IConfigBuilder<BbobRunnerConfiguration>
         {
             #region Static Fields

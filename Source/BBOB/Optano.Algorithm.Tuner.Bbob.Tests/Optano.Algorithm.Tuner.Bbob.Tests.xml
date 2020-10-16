@@ -94,11 +94,6 @@
             Contains tests for the <see cref="T:Optano.Algorithm.Tuner.Bbob.BbobRunner"/> class.
             </summary>
         </member>
-        <member name="F:Optano.Algorithm.Tuner.Bbob.Tests.BbobRunnerTests.PythonBinary">
-            <summary>
-            The python binary used in tests.
-            </summary>
-        </member>
         <member name="F:Optano.Algorithm.Tuner.Bbob.Tests.BbobRunnerTests.BbobScript">
             <summary>
             The bbob script used in tests.
@@ -198,6 +193,21 @@
             </summary>
             <param name="action">The action to invoke.</param>
             <param name="check">Checks to do on the output.</param>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Bbob.Tests.TestUtils.ResolvePython27Binary">
+            <summary>
+            Tries to resolve a python 2.7 binary from the PATH environment variables.
+            </summary>
+            <returns>The python binary.</returns>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Bbob.Tests.TestUtils.TryResolvePythonBinaryFromDirectory(System.String,System.IO.DirectoryInfo,System.IO.FileInfo@)">
+            <summary>
+            Looks for a file named <paramref name="binaryName"/> in the given directory.
+            </summary>
+            <param name="binaryName">The binary name to look up.</param>
+            <param name="dir">The target directory.</param>
+            <param name="pythonBinary">The python binary.</param>
+            <returns>True, if the python binary exists.</returns>
         </member>
     </members>
 </doc>

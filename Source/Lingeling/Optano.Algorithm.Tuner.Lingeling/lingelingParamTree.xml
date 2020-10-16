@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<node xsi:type="and" xsi:noNamespaceSchemaLocation="parameterTree.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<node xsi:type="and" xsi:noNamespaceSchemaLocation="../parameterTree.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<node xsi:type="value" id="activity">
 		<domain xsi:type="categorical" ints="0 1 2"/>
 	</node>
@@ -85,7 +85,7 @@
 		<domain xsi:type="categorical" strings="unlimited disabled active" />
 		<choice>
 			<string>active</string>
-			<child xsi:type="value" id="blkmaxeff"> 
+			<child xsi:type="value" id="blkmaxeff">
 				<domain xsi:type="discrete" log="true" start="1" end="2147483647" />
 			</child>
 		</choice>
@@ -157,7 +157,7 @@
 		<domain xsi:type="categorical" strings="unlimited disabled active" />
 		<choice>
 			<string>active</string>
-			<child xsi:type="value" id="cardmaxeff"> 
+			<child xsi:type="value" id="cardmaxeff">
 				<domain xsi:type="discrete" log="true" start="1" end="2147483647" />
 			</child>
 		</choice>
@@ -268,7 +268,7 @@
 		<domain xsi:type="categorical" strings="unlimited disabled active" />
 		<choice>
 			<string>active</string>
-			<child xsi:type="value" id="ccemaxeff"> 
+			<child xsi:type="value" id="ccemaxeff">
 				<domain xsi:type="discrete" log="true" start="1" end="2147483647" />
 			</child>
 		</choice>
@@ -361,7 +361,7 @@
 		<domain xsi:type="categorical" strings="unlimited disabled active" />
 		<choice>
 			<string>active</string>
-			<child xsi:type="value" id="elmaxeff"> 
+			<child xsi:type="value" id="elmaxeff">
 				<domain xsi:type="discrete" log="true" start="1" end="2147483647" />
 			</child>
 		</choice>
@@ -475,7 +475,7 @@
 		<domain xsi:type="categorical" strings="unlimited disabled active" />
 		<choice>
 			<string>active</string>
-			<child xsi:type="value" id="gaussmaxeff"> 
+			<child xsi:type="value" id="gaussmaxeff">
 				<domain xsi:type="discrete" log="true" start="1" end="2147483647" />
 			</child>
 		</choice>
@@ -574,7 +574,7 @@
 		<domain xsi:type="categorical" strings="unlimited disabled active" />
 		<choice>
 			<string>active</string>
-			<child xsi:type="value" id="locs"> 
+			<child xsi:type="value" id="locs">
 				<domain xsi:type="discrete" log="true" start="1" end="2147483647" />
 			</child>
 		</choice>
@@ -715,7 +715,7 @@
 		<domain xsi:type="categorical" strings="unlimited disabled active" />
 		<choice>
 			<string>active</string>
-			<child xsi:type="value" id="prbasicmaxeff"> 
+			<child xsi:type="value" id="prbasicmaxeff">
 				<domain xsi:type="discrete" log="true" start="1" end="2147483647" />
 			</child>
 		</choice>
@@ -754,7 +754,7 @@
 		<domain xsi:type="categorical" strings="unlimited disabled active" />
 		<choice>
 			<string>active</string>
-			<child xsi:type="value" id="prbsimplemaxeff"> 
+			<child xsi:type="value" id="prbsimplemaxeff">
 				<domain xsi:type="discrete" log="true" start="1" end="2147483647" />
 			</child>
 		</choice>
@@ -982,7 +982,7 @@
 		<domain xsi:type="categorical" strings="unlimited disabled active" />
 		<choice>
 			<string>active</string>
-			<child xsi:type="value" id="simpcintmaxhard"> 
+			<child xsi:type="value" id="simpcintmaxhard">
 				<domain xsi:type="discrete" log="true" start="1" end="2147483647" />
 			</child>
 		</choice>
@@ -991,7 +991,7 @@
 		<domain xsi:type="categorical" strings="unlimited disabled active" />
 		<choice>
 			<string>active</string>
-			<child xsi:type="value" id="simpcintmaxsoft"> 
+			<child xsi:type="value" id="simpcintmaxsoft">
 				<domain xsi:type="discrete" log="true" start="1" end="2147483647" />
 			</child>
 		</choice>
@@ -1135,7 +1135,7 @@
 		<domain xsi:type="categorical" strings="unlimited disabled active" />
 		<choice>
 			<string>active</string>
-			<child xsi:type="value" id="sweepmaxeff"> 
+			<child xsi:type="value" id="sweepmaxeff">
 				<domain xsi:type="discrete" log="true" start="1" end="2147483647" />
 			</child>
 		</choice>
@@ -1144,7 +1144,7 @@
 		<domain xsi:type="categorical" strings="unlimited disabled active" />
 		<choice>
 			<string>active</string>
-			<child xsi:type="value" id="sweepmaxround"> 
+			<child xsi:type="value" id="sweepmaxround">
 				<domain xsi:type="discrete" log="true" start="1" end="2147483647" />
 			</child>
 		</choice>
@@ -1249,7 +1249,7 @@
 		<domain xsi:type="categorical" strings="unlimited disabled active" />
 		<choice>
 			<string>active</string>
-			<child xsi:type="value" id="trdmaxeff"> 
+			<child xsi:type="value" id="trdmaxeff">
 				<domain xsi:type="discrete" log="true" start="1" end="2147483647" />
 			</child>
 		</choice>
@@ -1279,7 +1279,7 @@
 		<domain xsi:type="categorical" strings="unlimited disabled active" />
 		<choice>
 			<string>active</string>
-			<child xsi:type="value" id="treelookmaxeff"> 
+			<child xsi:type="value" id="treelookmaxeff">
 				<domain xsi:type="discrete" log="true" start="1" end="2147483647" />
 			</child>
 		</choice>
@@ -1306,7 +1306,7 @@
 		<domain xsi:type="categorical" strings="unlimited disabled active" />
 		<choice>
 			<string>active</string>
-			<child xsi:type="value" id="trnrmaxeff"> 
+			<child xsi:type="value" id="trnrmaxeff">
 				<domain xsi:type="discrete" log="true" start="1" end="2147483647" />
 			</child>
 		</choice>
@@ -1342,7 +1342,7 @@
 		<domain xsi:type="categorical" strings="unlimited disabled active" />
 		<choice>
 			<string>active</string>
-			<child xsi:type="value" id="unhdmaxeff"> 
+			<child xsi:type="value" id="unhdmaxeff">
 				<domain xsi:type="discrete" log="true" start="1" end="2147483647" />
 			</child>
 		</choice>
@@ -1378,7 +1378,7 @@
 		<domain xsi:type="categorical" strings="unlimited disabled active" />
 		<choice>
 			<string>active</string>
-			<child xsi:type="value" id="waitmax"> 
+			<child xsi:type="value" id="waitmax">
 				<domain xsi:type="discrete" log="true" start="1" end="2147483647" />
 			</child>
 		</choice>

@@ -101,12 +101,12 @@ namespace Optano.Algorithm.Tuner.Saps
             var tuner = new AlgorithmTuner<SapsRunner, InstanceSeedFile, RuntimeResult, TLearnerModel, TPredictorModel, TSamplingStrategy>(
                 targetAlgorithmFactory: new SapsRunnerFactory(runnerConfig.PathToExecutable, tunerConfig.CpuTimeout),
                 runEvaluator: new SortByRuntime(runnerConfig.FactorParK),
-                trainingInstances: SapsUtils.CreateInstances(trainingInstanceFolder, runnerConfig.NumberOfSeeds, runnerConfig.RngSeed),
+                trainingInstances: InstanceSeedFile.CreateInstanceSeedFilesFromDirectory(trainingInstanceFolder, SapsUtils.ListOfValidFileExtensions, runnerConfig.NumberOfSeeds, runnerConfig.RngSeed),
                 parameterTree: SapsUtils.CreateParameterTree(),
                 configuration: tunerConfig);
             if (!string.IsNullOrWhiteSpace(testInstanceFolder))
             {
-                tuner.SetTestInstances(SapsUtils.CreateInstances(testInstanceFolder, runnerConfig.NumberOfSeeds, runnerConfig.RngSeed));
+                tuner.SetTestInstances(InstanceSeedFile.CreateInstanceSeedFilesFromDirectory(testInstanceFolder, SapsUtils.ListOfValidFileExtensions, runnerConfig.NumberOfSeeds, runnerConfig.RngSeed));
             }
 
             return tuner;

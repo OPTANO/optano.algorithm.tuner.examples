@@ -58,10 +58,6 @@ namespace Optano.Algorithm.Tuner.Application.Tests
 
         #region Constructors and Destructors
 
-        #endregion
-
-        #region Constructors and Destructors
-
         /// <summary>
         /// Initializes a new instance of the <see cref="ArgumentParserTest"/> class.
         /// </summary>
@@ -128,10 +124,6 @@ namespace Optano.Algorithm.Tuner.Application.Tests
             this._parser.ParseArguments(args);
             Assert.True(this._parser.HelpTextRequested, "Help text should have been requested.");
         }
-
-        #endregion
-
-        #region Public Methods and Operators
 
         /// <summary>
         /// Verifies that accessing <see cref="ArgumentParser.BasicCommand"/> before calling

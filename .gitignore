@@ -26,3 +26,5 @@ launchSettings.json
 /Tools/ubcsat.exe
 
 **/Optano.Algorithm.Tuner.0.0.0.1/
+**/PublishProfiles/
+Source/Gurobi/SmacAdapter/Template/TargetAlgorithm

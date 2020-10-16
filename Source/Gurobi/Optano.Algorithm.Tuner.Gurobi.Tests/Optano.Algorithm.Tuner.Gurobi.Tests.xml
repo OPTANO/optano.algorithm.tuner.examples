@@ -90,11 +90,6 @@
             The seed to the instance we run Gurobi on for testing.
             </summary>
         </member>
-        <member name="F:Optano.Algorithm.Tuner.Gurobi.Tests.GurobiRunnerTests._cancellationTokenSource">
-            <summary>
-            A <see cref="T:System.Threading.CancellationTokenSource"/>.
-            </summary>
-        </member>
         <member name="M:Optano.Algorithm.Tuner.Gurobi.Tests.GurobiRunnerTests.#ctor">
             <summary>
             Initializes a new instance of the <see cref="T:Optano.Algorithm.Tuner.Gurobi.Tests.GurobiRunnerTests"/> class.
@@ -114,21 +109,6 @@
             Contains tests for the <see cref="T:Optano.Algorithm.Tuner.Gurobi.GurobiUtils"/> class.
             </summary>
         </member>
-        <member name="F:Optano.Algorithm.Tuner.Gurobi.Tests.GurobiUtilsTests.MpsFileNames">
-            <summary>
-            File names that should be translated into instances on <see cref="M:Optano.Algorithm.Tuner.Gurobi.GurobiUtils.CreateInstances(System.String,System.Int32,System.Int32)"/>.
-            </summary>
-        </member>
-        <member name="F:Optano.Algorithm.Tuner.Gurobi.Tests.GurobiUtilsTests.NonMpsFileNames">
-            <summary>
-            File names that should not be translated into instances on <see cref="M:Optano.Algorithm.Tuner.Gurobi.GurobiUtils.CreateInstances(System.String,System.Int32,System.Int32)"/>.
-            </summary>
-        </member>
-        <member name="F:Optano.Algorithm.Tuner.Gurobi.Tests.GurobiUtilsTests._instanceFolder">
-            <summary>
-            Path to the folder containing test data. Has to be initialized.
-            </summary>
-        </member>
         <member name="M:Optano.Algorithm.Tuner.Gurobi.Tests.GurobiUtilsTests.#ctor">
             <summary>
             Initializes a new instance of the <see cref="T:Optano.Algorithm.Tuner.Gurobi.Tests.GurobiUtilsTests"/> class.
@@ -138,32 +118,27 @@
         <member name="M:Optano.Algorithm.Tuner.Gurobi.Tests.GurobiUtilsTests.Dispose">
             <inheritdoc/>
         </member>
-        <member name="M:Optano.Algorithm.Tuner.Gurobi.Tests.GurobiUtilsTests.SeedsToUseReturnsCorrectNumberOfSeeds">
+        <member name="M:Optano.Algorithm.Tuner.Gurobi.Tests.GurobiUtilsTests.GetFileNameWithoutGurobiExtensionReturnsCorrectFileName(System.String,System.String)">
             <summary>
-            Checks that <see cref="M:Optano.Algorithm.Tuner.Gurobi.GurobiUtils.SeedsToUse(System.Int32,System.Int32)"/> returns the correct number of seeds.
+            Checks, that <see cref="M:Optano.Algorithm.Tuner.Gurobi.GurobiUtils.GetFileNameWithoutGurobiExtension(System.IO.FileInfo)"/> returns correct file name.
+            </summary>
+            <param name="fileName">The file name.</param>
+            <param name="extension">The extension.</param>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Gurobi.Tests.GurobiUtilsTests.GetFileNameWithoutGurobiExtensionThrowsIfExtensionIsNotValid(System.String)">
+            <summary>
+            Checks, that <see cref="M:Optano.Algorithm.Tuner.Gurobi.GurobiUtils.GetFileNameWithoutGurobiExtension(System.IO.FileInfo)"/> throws an <see cref="T:System.ArgumentException"/>, if the given file has not a valid Gurobi model extension.
+            </summary>
+            <param name="fileName">The file name.</param>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Gurobi.Tests.GurobiUtilsTests.CreateParameterTreeThrowsNoException">
+            <summary>
+            Checks that <see cref="M:Optano.Algorithm.Tuner.Gurobi.GurobiUtils.CreateParameterTree"/> throws no exception.
             </summary>
         </member>
-        <member name="M:Optano.Algorithm.Tuner.Gurobi.Tests.GurobiUtilsTests.CreateInstancesThrowsExceptionIfItCannotOpenFolder">
+        <member name="M:Optano.Algorithm.Tuner.Gurobi.Tests.GurobiUtilsTests.AllDummyParametersAreFiltered">
             <summary>
-            Verifies that calling <see cref="M:Optano.Algorithm.Tuner.Gurobi.GurobiUtils.CreateInstances(System.String,System.Int32,System.Int32)"/> with a non existant directory throws
-            a <see cref="T:System.IO.DirectoryNotFoundException"/>.
-            </summary>
-        </member>
-        <member name="M:Optano.Algorithm.Tuner.Gurobi.Tests.GurobiUtilsTests.CreateInstancesPrintsMessageIfItCannotOpenFolder">
-            <summary>
-            Verifies that calling <see cref="M:Optano.Algorithm.Tuner.Gurobi.GurobiUtils.CreateInstances(System.String,System.Int32,System.Int32)"/> with a non existant directory prints
-            out a message to the console telling the user the directory doesn't exist.
-            </summary>
-        </member>
-        <member name="M:Optano.Algorithm.Tuner.Gurobi.Tests.GurobiUtilsTests.CreateInstancesCorrectlyExtractsPathsToMpsFiles">
-            <summary>
-            Checks that <see cref="M:Optano.Algorithm.Tuner.Gurobi.GurobiUtils.CreateInstances(System.String,System.Int32,System.Int32)"/> creates an instance out of each .mps file and
-            the instance's file name matches the complete path to that file.
-            </summary>
-        </member>
-        <member name="M:Optano.Algorithm.Tuner.Gurobi.Tests.GurobiUtilsTests.CreateInstancesIgnoresFilesNotInMpsFormat">
-            <summary>
-            Checks that <see cref="M:Optano.Algorithm.Tuner.Gurobi.GurobiUtils.CreateInstances(System.String,System.Int32,System.Int32)"/> ignores files which are not in .mps format.
+            Checks that <see cref="M:Optano.Algorithm.Tuner.Gurobi.GurobiUtils.CreateParameterTree"/> filters all dummy / indicator parameters.
             </summary>
         </member>
         <member name="T:Optano.Algorithm.Tuner.Gurobi.Tests.TestUtils">

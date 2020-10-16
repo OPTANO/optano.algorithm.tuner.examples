@@ -32,21 +32,26 @@
 namespace Optano.Algorithm.Tuner.Lingeling
 {
     using System;
-    using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.IO;
-    using System.Linq;
-    using System.Text;
 
-    using Optano.Algorithm.Tuner.Logging;
     using Optano.Algorithm.Tuner.Parameters;
     using Optano.Algorithm.Tuner.ParameterTreeReader;
-    using Optano.Algorithm.Tuner.TargetAlgorithm.Instances;
 
     /// <summary>
     /// Utility methods for starting a tuner instance that tunes Lingeling.
     /// </summary>
     public static class LingelingUtils
     {
+        #region Static Fields
+
+        /// <summary>
+        /// The list of valid file extensions of Lingeling.
+        /// </summary>
+        public static readonly string[] ListOfValidFileExtensions = { ".cnf" };
+
+        #endregion
+
         #region Public Methods and Operators
 
         /// <summary>
@@ -56,65 +61,9 @@ namespace Optano.Algorithm.Tuner.Lingeling
         public static ParameterTree CreateParameterTree()
         {
             var parameterTree = ParameterTreeConverter.ConvertToParameterTree(
-                Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"lingelingParamTree.xml"));
+                Path.Combine(AppDomain.CurrentDomain.BaseDirectory ?? throw new InvalidOperationException(), @"lingelingParamTree.xml"));
             LingelingUtils.AddAllActiveParameterWrappers(parameterTree);
             return parameterTree;
-        }
-
-        /// <summary>
-        /// Creates the list of SAT instances to train on using .cnf files in the given directory.
-        /// </summary>
-        /// <param name="pathToInstanceFolder">Path to the folder containing the instance .cnf files.</param>
-        /// <param name="numSeedsToUse">The number of seeds to use.</param>
-        /// <param name="rngSeed">The random number generator seed.</param>
-        /// <returns>
-        /// The created list.
-        /// </returns>
-        public static List<InstanceSeedFile> CreateInstances(string pathToInstanceFolder, int numSeedsToUse, int rngSeed)
-        {
-            try
-            {
-                // Find all .cnf files in directory and set them as instances.
-                var instanceDirectory = new DirectoryInfo(pathToInstanceFolder);
-                var instanceSeedCombinations = new List<string>();
-                var instanceSeedFiles = new List<InstanceSeedFile>();
-                foreach (var instanceFilePath in instanceDirectory.EnumerateFiles()
-                    .Where(file => file.Extension.ToLower() == ".cnf"))
-                {
-                    var fileAndSeedCsv = instanceFilePath.FullName;
-                    foreach (var seed in LingelingUtils.SeedsToUse(numSeedsToUse, rngSeed))
-                    {
-                        instanceSeedFiles.Add(new InstanceSeedFile(instanceFilePath.FullName, seed));
-                        fileAndSeedCsv += $";{seed}";
-                    }
-
-                    instanceSeedCombinations.Add(fileAndSeedCsv);
-                }
-
-                LingelingUtils.DumpFileSeedCombinations(instanceDirectory, instanceSeedCombinations);
-                return instanceSeedFiles;
-            }
-            catch (Exception e)
-            {
-                Console.Out.WriteLine(e.Message);
-                Console.Out.WriteLine("Cannot open folder.");
-                throw;
-            }
-        }
-
-        /// <summary>
-        /// Generates the seeds to use for the file seed combinations.
-        /// </summary>
-        /// <param name="numSeedsToUse">The number of seeds.</param>
-        /// <param name="rngSeed">The random number generator seed.</param>
-        /// <returns>The seeds.</returns>
-        public static IEnumerable<int> SeedsToUse(int numSeedsToUse, int rngSeed)
-        {
-            var random = new Random(rngSeed);
-            for (var i = 0; i < numSeedsToUse; i++)
-            {
-                yield return random.Next();
-            }
         }
 
         #endregion
@@ -122,34 +71,15 @@ namespace Optano.Algorithm.Tuner.Lingeling
         #region Methods
 
         /// <summary>
-        /// Dumps the file seed combinations.
-        /// </summary>
-        /// <param name="instanceDirectory">The instance directory.</param>
-        /// <param name="instanceSeedCombinations">The instance seed combinations.</param>
-        private static void DumpFileSeedCombinations(
-            DirectoryInfo instanceDirectory,
-            IEnumerable<string> instanceSeedCombinations)
-        {
-            var fileName = Path.Combine(
-                instanceDirectory.FullName,
-                $"lingelingFileSeedCombinations_{DateTime.Now:MM-dd-hh-mm-ss}.csv");
-            try
-            {
-                File.WriteAllLines(fileName, instanceSeedCombinations, Encoding.UTF8);
-            }
-            catch (Exception e)
-            {
-                LoggingHelper.WriteLine(VerbosityLevel.Warn, $"Could not write Instance-Seed combinations to destination {fileName}");
-                LoggingHelper.WriteLine(VerbosityLevel.Warn, e.Message);
-            }
-        }
-
-        /// <summary>
         /// Adds all required parameter replacements to the <paramref name="parameterTree"/>.
         /// </summary>
         /// <param name="parameterTree">
         /// The parameter tree.
         /// </param>
+        [SuppressMessage(
+            "NDepend",
+            "ND1004:MethodsTooBig",
+            Justification = "Need to replace all active parameters. Can not split method meaningfully.")]
         private static void AddAllActiveParameterWrappers(ParameterTree parameterTree)
         {
             parameterTree.AddParameterReplacementDefinition("bcamaxeffActive", false, "bcamaxeff", 0, true);

@@ -140,7 +140,6 @@
             <summary>
             Builds the configuration to tune BBOB.
             </summary>
-            <seealso cref="T:Optano.Algorithm.Tuner.Configuration.IConfigBuilder`1" />
         </member>
         <member name="F:Optano.Algorithm.Tuner.Bbob.BbobRunnerConfiguration.BbobRunnerConfigurationBuilder.IsMasterDefault">
             <summary>
@@ -437,7 +436,7 @@
         </member>
         <member name="T:Optano.Algorithm.Tuner.Bbob.GenericBbobEntryPoint`3">
             <summary>
-            Generic entry point for different Saps runner parametrizations.
+            Generic entry point for different BBOB runner parametrizations.
             </summary>
             <typeparam name="TLearnerModel">The learner model.</typeparam>
             <typeparam name="TPredictorModel">The predictor model.</typeparam>
@@ -457,6 +456,13 @@
             <param name="bestParameters">The best parameters.</param>
             <param name="bbobConfig">The bbob configuration.</param>
             <param name="pathToInstanceFolder">The path to instance folder.</param>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Bbob.GenericBbobEntryPoint`3.FormatParametersAsEnumerable(System.Collections.Generic.Dictionary{System.String,Optano.Algorithm.Tuner.Genomes.Values.IAllele})">
+            <summary>
+            Formats the parameters as enumerable.
+            </summary>
+            <param name="bestParameters">The parameters.</param>
+            <returns>The enumerable.</returns>
         </member>
         <member name="M:Optano.Algorithm.Tuner.Bbob.GenericBbobEntryPoint`3.BuildBbobRunner(Optano.Algorithm.Tuner.Configuration.AlgorithmTunerConfiguration,System.String,System.String,Optano.Algorithm.Tuner.Bbob.BbobRunnerConfiguration)">
             <summary>

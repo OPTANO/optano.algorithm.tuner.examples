@@ -296,13 +296,13 @@ namespace Optano.Algorithm.Tuner.Bbob.Tests
             TestUtils.CheckOutput(
                 action: () => this._parser.PrintHelp(),
                 check: consoleOutput =>
-                {
-                    var reader = new StringReader(consoleOutput.ToString());
-                    var text = reader.ReadToEnd();
-                    text.ShouldContain("Arguments for the application:", "Application arguments are missing.");
-                    text.ShouldContain("Arguments for master:", "General master arguments are missing.");
-                    text.ShouldContain("Arguments for worker:", "General worker arguments are missing.");
-                });
+                    {
+                        var reader = new StringReader(consoleOutput.ToString());
+                        var text = reader.ReadToEnd();
+                        text.ShouldContain("Arguments for the application:", "Application arguments are missing.");
+                        text.ShouldContain("Arguments for master:", "General master arguments are missing.");
+                        text.ShouldContain("Arguments for worker:", "General worker arguments are missing.");
+                    });
         }
 
         #endregion

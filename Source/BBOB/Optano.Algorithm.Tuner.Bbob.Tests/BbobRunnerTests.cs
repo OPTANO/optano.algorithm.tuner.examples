@@ -1,30 +1,30 @@
 ﻿#region Copyright (c) OPTANO GmbH
 
 // ////////////////////////////////////////////////////////////////////////////////
-// 
+//
 //        OPTANO GmbH Source Code
 //        Copyright (c) 2010-2020 OPTANO GmbH
 //        ALL RIGHTS RESERVED.
-// 
+//
 //    The entire contents of this file is protected by German and
 //    International Copyright Laws. Unauthorized reproduction,
 //    reverse-engineering, and distribution of all or any portion of
 //    the code contained in this file is strictly prohibited and may
 //    result in severe civil and criminal penalties and will be
 //    prosecuted to the maximum extent possible under the law.
-// 
+//
 //    RESTRICTIONS
-// 
+//
 //    THIS SOURCE CODE AND ALL RESULTING INTERMEDIATE FILES
 //    ARE CONFIDENTIAL AND PROPRIETARY TRADE SECRETS OF
 //    OPTANO GMBH.
-// 
+//
 //    THE SOURCE CODE CONTAINED WITHIN THIS FILE AND ALL RELATED
 //    FILES OR ANY PORTION OF ITS CONTENTS SHALL AT NO TIME BE
 //    COPIED, TRANSFERRED, SOLD, DISTRIBUTED, OR OTHERWISE MADE
 //    AVAILABLE TO OTHER INDIVIDUALS WITHOUT WRITTEN CONSENT
 //    AND PERMISSION FROM OPTANO GMBH.
-// 
+//
 // ////////////////////////////////////////////////////////////////////////////////
 
 #endregion
@@ -51,11 +51,6 @@ namespace Optano.Algorithm.Tuner.Bbob.Tests
     public class BbobRunnerTests : IDisposable
     {
         #region Static Fields
-
-        /// <summary>
-        /// The python binary used in tests.
-        /// </summary>
-        private static readonly string PythonBinary = @"C:\PortablePython\python-2.7.13.amd64\python.exe";
 
         /// <summary>
         /// The bbob script used in tests.
@@ -105,13 +100,15 @@ namespace Optano.Algorithm.Tuner.Bbob.Tests
         [InlineData(13, 16, 4, 19, 7, 3502.952977)]
         public void BbobRunnerReturnsCorrectResult(int functionId, int instanceSeed, double x0, double x1, double x2, double expectedResult)
         {
-            Assert.True(File.Exists(PythonBinary), "The python binary cannot be found. Please adopt its path in BbobRunnerTests.cs.");
+            var pythonBinary = TestUtils.ResolvePython27Binary();
 
-            var parameters = new Dictionary<string, IAllele>();
-            parameters["x0"] = new Allele<double>(x0);
-            parameters["x1"] = new Allele<double>(x1);
-            parameters["x2"] = new Allele<double>(x2);
-            var bbobRunner = new BbobRunner(functionId, parameters, BbobRunnerTests.PythonBinary, BbobRunnerTests.BbobScript);
+            var parameters = new Dictionary<string, IAllele>
+                                 {
+                                     ["x0"] = new Allele<double>(x0),
+                                     ["x1"] = new Allele<double>(x1),
+                                     ["x2"] = new Allele<double>(x2),
+                                 };
+            var bbobRunner = new BbobRunner(functionId, parameters, pythonBinary.FullName, BbobRunnerTests.BbobScript);
 
             var instance = BbobRunnerTests.CreateInstanceFile(instanceSeed);
 

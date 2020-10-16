@@ -17,7 +17,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Optano.Algorithm.Tuner" Version="0.9.0.136" />
+    <PackageReference Include="Optano.Algorithm.Tuner" Version="0.9.1.183" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -25,9 +25,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="parameterTree.xsd">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
 	<AdditionalFiles Include="..\..\..\stylecop.json" />
   </ItemGroup>
   
