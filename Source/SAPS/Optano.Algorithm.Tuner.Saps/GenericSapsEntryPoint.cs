@@ -3,7 +3,7 @@
 // ////////////////////////////////////////////////////////////////////////////////
 // 
 //        OPTANO GmbH Source Code
-//        Copyright (c) 2010-2020 OPTANO GmbH
+//        Copyright (c) 2010-2021 OPTANO GmbH
 //        ALL RIGHTS RESERVED.
 // 
 //    The entire contents of this file is protected by German and
@@ -100,13 +100,22 @@ namespace Optano.Algorithm.Tuner.Saps
         {
             var tuner = new AlgorithmTuner<SapsRunner, InstanceSeedFile, RuntimeResult, TLearnerModel, TPredictorModel, TSamplingStrategy>(
                 targetAlgorithmFactory: new SapsRunnerFactory(runnerConfig.PathToExecutable, tunerConfig.CpuTimeout),
-                runEvaluator: new SortByRuntime(runnerConfig.FactorParK),
-                trainingInstances: InstanceSeedFile.CreateInstanceSeedFilesFromDirectory(trainingInstanceFolder, SapsUtils.ListOfValidFileExtensions, runnerConfig.NumberOfSeeds, runnerConfig.RngSeed),
+                runEvaluator: new SortByRuntime<InstanceSeedFile>(runnerConfig.FactorParK),
+                trainingInstances: InstanceSeedFile.CreateInstanceSeedFilesFromDirectory(
+                    trainingInstanceFolder,
+                    SapsUtils.ListOfValidFileExtensions,
+                    runnerConfig.NumberOfSeeds,
+                    runnerConfig.RngSeed),
                 parameterTree: SapsUtils.CreateParameterTree(),
                 configuration: tunerConfig);
             if (!string.IsNullOrWhiteSpace(testInstanceFolder))
             {
-                tuner.SetTestInstances(InstanceSeedFile.CreateInstanceSeedFilesFromDirectory(testInstanceFolder, SapsUtils.ListOfValidFileExtensions, runnerConfig.NumberOfSeeds, runnerConfig.RngSeed));
+                tuner.SetTestInstances(
+                    InstanceSeedFile.CreateInstanceSeedFilesFromDirectory(
+                        testInstanceFolder,
+                        SapsUtils.ListOfValidFileExtensions,
+                        runnerConfig.NumberOfSeeds,
+                        runnerConfig.RngSeed));
             }
 
             return tuner;

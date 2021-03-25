@@ -133,31 +133,31 @@ namespace Optano.Algorithm.Tuner.Bbob
             var options = base.CreateOptionSet();
             options.Add(
                 "master",
-                "Indicates that this instance of the application should act as master.",
+                () => "Indicates that this instance of the application should act as master.",
                 (string m) => this.InternalConfigurationBuilder.SetIsMaster(true));
             options.Add(
                 "instanceSeed=",
-                $"The random seed for the instance seed generator. Default is {BbobRunnerConfiguration.BbobRunnerConfigurationBuilder.InstanceSeedDefault}.",
+                () => $"The random seed for the instance seed generator. Default is {BbobRunnerConfiguration.BbobRunnerConfigurationBuilder.InstanceSeedDefault}.",
                 (int s) => this.InternalConfigurationBuilder.SetInstanceSeed(s));
             options.Add(
                 BbobRunnerConfigurationParser.PythonBinName + "=",
-                "The path to the python 2.7 binary.",
+                () => "The path to the python 2.7 binary.",
                 p => this.InternalConfigurationBuilder.SetPythonBin(p));
             options.Add(
                 "bbobScript=",
-                $"The path to the BBOB python 2.7 script. Default is {BbobRunnerConfiguration.BbobRunnerConfigurationBuilder.PathToExecutableDefault}.",
+                () => $"The path to the BBOB python 2.7 script. Default is {BbobRunnerConfiguration.BbobRunnerConfigurationBuilder.PathToExecutableDefault}.",
                 b => this.InternalConfigurationBuilder.SetPathToExecutable(b));
             options.Add(
                 BbobRunnerConfigurationParser.FunctionIdName + "=",
-                "The bbob function to use. Must be in the range [1,56].",
+                () => "The bbob function to use. Must be in the range [1,56].",
                 (int f) => this.InternalConfigurationBuilder.SetFunctionId(f));
             options.Add(
                 "dimensions=",
-                $"The number of dimensions for the BBOB function. Must be greater than 0. Default is {BbobRunnerConfiguration.BbobRunnerConfigurationBuilder.DimensionsDefault}.",
+                () => $"The number of dimensions for the BBOB function. Must be greater than 0. Default is {BbobRunnerConfiguration.BbobRunnerConfigurationBuilder.DimensionsDefault}.",
                 (int d) => this.InternalConfigurationBuilder.SetDimensions(d));
             options.Add(
                 "genericParameterization=",
-                $"Specifies the generic parameterization to use for the genetic enginering model. Must be a member of the GenericParameterization enum. Default is {BbobRunnerConfiguration.BbobRunnerConfigurationBuilder.GenericParameterizationDefault}.",
+                () => $"Specifies the generic parameterization to use for the genetic enginering model. Must be a member of the GenericParameterization enum. Default is {BbobRunnerConfiguration.BbobRunnerConfigurationBuilder.GenericParameterizationDefault}.",
                 (GenericParameterization g) => this.InternalConfigurationBuilder.SetGenericParameterization(g));
             return options;
         }

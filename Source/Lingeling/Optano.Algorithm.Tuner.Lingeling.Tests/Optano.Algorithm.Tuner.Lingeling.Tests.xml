@@ -123,6 +123,12 @@
         <member name="M:Optano.Algorithm.Tuner.Lingeling.Tests.LingelingRunnerTests.Dispose">
             <inheritdoc/>
         </member>
+        <member name="M:Optano.Algorithm.Tuner.Lingeling.Tests.LingelingRunnerTests.SmokeTest">
+            <summary>
+            Run a small tuning without exception.
+            This test only works on a Linux machine.
+            </summary>
+        </member>
         <member name="M:Optano.Algorithm.Tuner.Lingeling.Tests.LingelingRunnerTests.CancellationWorks">
             <summary>
             Checks that <see cref="M:Optano.Algorithm.Tuner.Lingeling.LingelingRunner.Run(Optano.Algorithm.Tuner.TargetAlgorithm.Instances.InstanceSeedFile,System.Threading.CancellationToken)"/> can be cancelled.

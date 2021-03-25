@@ -1,30 +1,30 @@
 ﻿#region Copyright (c) OPTANO GmbH
 
 // ////////////////////////////////////////////////////////////////////////////////
-//
+// 
 //        OPTANO GmbH Source Code
-//        Copyright (c) 2010-2020 OPTANO GmbH
+//        Copyright (c) 2010-2021 OPTANO GmbH
 //        ALL RIGHTS RESERVED.
-//
+// 
 //    The entire contents of this file is protected by German and
 //    International Copyright Laws. Unauthorized reproduction,
 //    reverse-engineering, and distribution of all or any portion of
 //    the code contained in this file is strictly prohibited and may
 //    result in severe civil and criminal penalties and will be
 //    prosecuted to the maximum extent possible under the law.
-//
+// 
 //    RESTRICTIONS
-//
+// 
 //    THIS SOURCE CODE AND ALL RESULTING INTERMEDIATE FILES
 //    ARE CONFIDENTIAL AND PROPRIETARY TRADE SECRETS OF
 //    OPTANO GMBH.
-//
+// 
 //    THE SOURCE CODE CONTAINED WITHIN THIS FILE AND ALL RELATED
 //    FILES OR ANY PORTION OF ITS CONTENTS SHALL AT NO TIME BE
 //    COPIED, TRANSFERRED, SOLD, DISTRIBUTED, OR OTHERWISE MADE
 //    AVAILABLE TO OTHER INDIVIDUALS WITHOUT WRITTEN CONSENT
 //    AND PERMISSION FROM OPTANO GMBH.
-//
+// 
 // ////////////////////////////////////////////////////////////////////////////////
 
 #endregion
@@ -33,6 +33,7 @@ namespace Optano.Algorithm.Tuner.Bbob.Tests
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Globalization;
     using System.IO;
     using System.Threading;
@@ -83,6 +84,24 @@ namespace Optano.Algorithm.Tuner.Bbob.Tests
         public void Dispose()
         {
             BbobRunnerTests.DeleteInstanceFile();
+        }
+
+        /// <summary>
+        /// Smoke test for the BBOB adapter.
+        /// </summary>
+        [Fact]
+        public void SmokeTest()
+        {
+            var timer = Stopwatch.StartNew();
+            var args = new[]
+                           {
+                               "--master", "--maxParallelEvaluations=2", "--trainingInstanceFolder=Tools",
+                               "--popSize=8", "--miniTournamentSize=4", "--cpuTimeout=5", "--instanceNumbers=1:1",
+                               "--numGens=2", "--goalGen=0", "--pythonBin=python", "--functionId=17",
+                           };
+            Program.Main(args);
+            timer.Stop();
+            timer.Elapsed.TotalMilliseconds.ShouldBeGreaterThan(2000);
         }
 
         /// <summary>

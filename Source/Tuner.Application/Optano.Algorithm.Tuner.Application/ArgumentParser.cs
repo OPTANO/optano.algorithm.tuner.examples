@@ -3,7 +3,7 @@
 // ////////////////////////////////////////////////////////////////////////////////
 // 
 //        OPTANO GmbH Source Code
-//        Copyright (c) 2010-2020 OPTANO GmbH
+//        Copyright (c) 2010-2021 OPTANO GmbH
 //        ALL RIGHTS RESERVED.
 // 
 //    The entire contents of this file is protected by German and
@@ -290,26 +290,33 @@ namespace Optano.Algorithm.Tuner.Application
         protected override OptionSet CreateOptionSet()
         {
             var options = base.CreateOptionSet();
-            options.Add("master", "Indicates that this instance of the application should act as master.", m => this._isMaster = true);
+            options.Add(
+                "master",
+                () => "Indicates that this instance of the application should act as master.",
+                m => this._isMaster = true);
             options.Add(
                 "basicCommand=",
-                "The basic {COMMAND} to the target algorithm as it should be executed by the command line. The path to the instance file and the parameters will be set by replacing '{{instance}}' and '{{arguments}}'.\nUse iff --master is used.",
+                () =>
+                    "The basic {COMMAND} to the target algorithm as it should be executed by the command line. The path to the instance file and the parameters will be set by replacing '{{instance}}' and '{{arguments}}'.\nUse iff --master is used.",
                 c => this._basicCommand = c);
             options.Add(
                 "parameterTree=",
-                "{PATH} to an XML file specifying a paramter tree.\nUse iff --master is used.",
+                () => "{PATH} to an XML file specifying a paramter tree.\nUse iff --master is used.",
                 p => this._pathToParameterTree = p);
             options.Add(
                 "byValue",
-                "Indicates that the target algorithm should be tuned by last number in its output instead of by process runtime.\nUsually, you should set --enableRacing=false and refrain from setting --cpuTimeout when using this.",
+                () =>
+                    "Indicates that the target algorithm should be tuned by last number in its output instead of by process runtime.\nUsually, you should set --enableRacing=false and refrain from setting --cpuTimeout when using this.",
                 v => this._tuneByValue = true);
             options.Add(
                 "ascending=",
-                "Additional parameter if --byValue is set. Indicates whether low values are better than high ones.\nDefault is true.\nMust be a boolean.",
+                () =>
+                    "Additional parameter if --byValue is set. Indicates whether low values are better than high ones.\nDefault is true.\nMust be a boolean.",
                 (bool a) => this._sortValuesAscendingly = a);
             options.Add(
                 "k|parK=",
-                "The penalization factor for timed out evaluations. \nDefault is 1.\nThis must be an integer greater or equal than 1. Factor is only applied when \"byValue\" flag is not set.",
+                () =>
+                    "The penalization factor for timed out evaluations. \nDefault is 1.\nThis must be an integer greater or equal than 1. Factor is only applied when \"byValue\" flag is not set.",
                 (int k) => this._factorPar = k);
 
             return options;

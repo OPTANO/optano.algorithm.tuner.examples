@@ -3,7 +3,7 @@
 // ////////////////////////////////////////////////////////////////////////////////
 // 
 //        OPTANO GmbH Source Code
-//        Copyright (c) 2010-2020 OPTANO GmbH
+//        Copyright (c) 2010-2021 OPTANO GmbH
 //        ALL RIGHTS RESERVED.
 // 
 //    The entire contents of this file is protected by German and
@@ -31,6 +31,8 @@
 
 namespace Optano.Algorithm.Tuner.Gurobi
 {
+    using System.Globalization;
+
     using Optano.Algorithm.Tuner.Configuration;
     using Optano.Algorithm.Tuner.DistributedExecution;
     using Optano.Algorithm.Tuner.MachineLearning.RandomForest;
@@ -55,6 +57,8 @@ namespace Optano.Algorithm.Tuner.Gurobi
         /// Otherwise, a <see cref="Worker"/> is started with the provided arguments.</param>
         public static void Main(string[] args)
         {
+            ProcessUtils.SetDefaultCultureInfo(CultureInfo.InvariantCulture);
+
             var parser = new GurobiRunnerConfigurationParser();
             parser.ParseArguments(args);
 
@@ -98,7 +102,11 @@ namespace Optano.Algorithm.Tuner.Gurobi
             var tuner = new AlgorithmTuner<GurobiRunner, InstanceSeedFile, GurobiResult>(
                 targetAlgorithmFactory: new GurobiRunnerFactory(gurobiConfig),
                 runEvaluator: new GurobiRunEvaluator(),
-                trainingInstances: InstanceSeedFile.CreateInstanceSeedFilesFromDirectory(pathToTrainingInstanceFolder, GurobiUtils.ListOfValidFileExtensions, gurobiConfig.NumberOfSeeds, gurobiConfig.RngSeed),
+                trainingInstances: InstanceSeedFile.CreateInstanceSeedFilesFromDirectory(
+                    pathToTrainingInstanceFolder,
+                    GurobiUtils.ListOfValidFileExtensions,
+                    gurobiConfig.NumberOfSeeds,
+                    gurobiConfig.RngSeed),
                 parameterTree: GurobiUtils.CreateParameterTree(),
                 configuration: configuration);
 
@@ -106,7 +114,11 @@ namespace Optano.Algorithm.Tuner.Gurobi
             {
                 if (!string.IsNullOrWhiteSpace(pathToTestInstanceFolder))
                 {
-                    var testInstances = InstanceSeedFile.CreateInstanceSeedFilesFromDirectory(pathToTestInstanceFolder, GurobiUtils.ListOfValidFileExtensions, gurobiConfig.NumberOfSeeds, gurobiConfig.RngSeed);
+                    var testInstances = InstanceSeedFile.CreateInstanceSeedFilesFromDirectory(
+                        pathToTestInstanceFolder,
+                        GurobiUtils.ListOfValidFileExtensions,
+                        gurobiConfig.NumberOfSeeds,
+                        gurobiConfig.RngSeed);
                     tuner.SetTestInstances(testInstances);
                 }
             }

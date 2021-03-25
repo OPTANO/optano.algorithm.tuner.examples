@@ -3,7 +3,7 @@
 // ////////////////////////////////////////////////////////////////////////////////
 // 
 //        OPTANO GmbH Source Code
-//        Copyright (c) 2010-2020 OPTANO GmbH
+//        Copyright (c) 2010-2021 OPTANO GmbH
 //        ALL RIGHTS RESERVED.
 // 
 //    The entire contents of this file is protected by German and
@@ -279,7 +279,7 @@ namespace Optano.Algorithm.Tuner.Application.Tests
                         using (StringReader reader = new StringReader(consoleOutput.ToString()))
                         {
                             Assert.True(
-                                reader.ReadLine().Contains("WARNING"),
+                                reader.ReadLine()?.Contains("WARNING"),
                                 "Parameter tree was specified for worker, but no warning was printed.");
                         }
                     });
@@ -299,7 +299,7 @@ namespace Optano.Algorithm.Tuner.Application.Tests
                         using (StringReader reader = new StringReader(consoleOutput.ToString()))
                         {
                             Assert.True(
-                                reader.ReadLine().Contains("WARNING"),
+                                reader.ReadLine()?.Contains("WARNING"),
                                 "Kind of tuning was specified for worker, but no warning was printed.");
                         }
                     });
@@ -319,7 +319,7 @@ namespace Optano.Algorithm.Tuner.Application.Tests
                         using (StringReader reader = new StringReader(consoleOutput.ToString()))
                         {
                             Assert.True(
-                                reader.ReadLine().Contains("WARNING"),
+                                reader.ReadLine()?.Contains("WARNING"),
                                 "Sort direction was specified for worker, but no warning was printed.");
                         }
                     });
@@ -346,7 +346,7 @@ namespace Optano.Algorithm.Tuner.Application.Tests
                         using (StringReader reader = new StringReader(consoleOutput.ToString()))
                         {
                             Assert.True(
-                                reader.ReadLine().Contains("WARNING"),
+                                reader.ReadLine()?.Contains("WARNING"),
                                 "Sort direction without value tuning specified for master, but no warning was printed.");
                         }
                     });
@@ -366,7 +366,7 @@ namespace Optano.Algorithm.Tuner.Application.Tests
                         StringReader reader = new StringReader(consoleOutput.ToString());
                         var text = reader.ReadToEnd();
                         Assert.True(
-                            text.Contains("Arguments for the application:"),
+                            text?.Contains("Arguments for the application:"),
                             "Application arguments are missing.");
                         Assert.True(text.Contains("Arguments for master:"), "Master arguments are missing.");
                         Assert.True(text.Contains("Arguments for worker:"), "Worker arguments are missing.");

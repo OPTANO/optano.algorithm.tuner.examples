@@ -3,7 +3,7 @@
 // ////////////////////////////////////////////////////////////////////////////////
 // 
 //        OPTANO GmbH Source Code
-//        Copyright (c) 2010-2020 OPTANO GmbH
+//        Copyright (c) 2010-2021 OPTANO GmbH
 //        ALL RIGHTS RESERVED.
 // 
 //    The entire contents of this file is protected by German and
@@ -227,7 +227,8 @@ namespace Optano.Algorithm.Tuner.Gurobi
         private static bool TryToGetMstFile(string instanceDirectoryName, string instanceFileNameWithoutExtension, out string mstFileFullName)
         {
             mstFileFullName = GurobiUtils.ListOfValidFileCompressionExtensions.Select(
-                    compressionExtension => instanceDirectoryName + Path.DirectorySeparatorChar + instanceFileNameWithoutExtension + ".mst" + compressionExtension)
+                    compressionExtension => instanceDirectoryName + Path.DirectorySeparatorChar + instanceFileNameWithoutExtension + ".mst"
+                                            + compressionExtension)
                 .FirstOrDefault(File.Exists);
 
             return mstFileFullName != null;

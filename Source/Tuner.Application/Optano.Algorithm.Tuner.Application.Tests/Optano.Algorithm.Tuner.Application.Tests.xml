@@ -4,6 +4,16 @@
         <name>Optano.Algorithm.Tuner.Application.Tests</name>
     </assembly>
     <members>
+        <member name="T:Optano.Algorithm.Tuner.Application.Tests.ApplicationSmokeTest">
+            <summary>
+            Smoke test for the adapter.
+            </summary>
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Application.Tests.ApplicationSmokeTest.SmokeTest">
+            <summary>
+            Start adapter. Make sure that some time was spent during the tuning.
+            </summary>
+        </member>
         <member name="T:Optano.Algorithm.Tuner.Application.Tests.ArgumentParserTest">
             <summary>
             Contains tests for the <see cref="T:Optano.Algorithm.Tuner.Application.ArgumentParser"/> class.

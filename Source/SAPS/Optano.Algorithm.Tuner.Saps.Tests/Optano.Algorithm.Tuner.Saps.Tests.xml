@@ -117,6 +117,11 @@
         <member name="M:Optano.Algorithm.Tuner.Saps.Tests.SapsRunnerTests.Dispose">
             <inheritdoc/>
         </member>
+        <member name="M:Optano.Algorithm.Tuner.Saps.Tests.SapsRunnerTests.SmokeTest">
+            <summary>
+            Run a small tuning without exception.
+            </summary>
+        </member>
         <member name="M:Optano.Algorithm.Tuner.Saps.Tests.SapsRunnerTests.CancellationWorks">
             <summary>
             Checks that <see cref="M:Optano.Algorithm.Tuner.Saps.SapsRunner.Run(Optano.Algorithm.Tuner.TargetAlgorithm.Instances.InstanceSeedFile,System.Threading.CancellationToken)"/> can be cancelled.

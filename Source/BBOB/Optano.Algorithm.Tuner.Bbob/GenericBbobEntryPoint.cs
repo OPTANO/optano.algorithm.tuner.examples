@@ -3,7 +3,7 @@
 // ////////////////////////////////////////////////////////////////////////////////
 // 
 //        OPTANO GmbH Source Code
-//        Copyright (c) 2010-2020 OPTANO GmbH
+//        Copyright (c) 2010-2021 OPTANO GmbH
 //        ALL RIGHTS RESERVED.
 // 
 //    The entire contents of this file is protected by German and
@@ -219,7 +219,7 @@ namespace Optano.Algorithm.Tuner.Bbob
                     bbobRunnerConfig.PythonBin,
                     bbobRunnerConfig.PathToExecutable,
                     bbobRunnerConfig.FunctionId),
-                runEvaluator: new SortByValue(@ascending: true),
+                runEvaluator: new SortByValue<InstanceFile>(@ascending: true),
                 trainingInstances: BbobUtils.CreateInstancesFilesAndReturnAsList(trainingInstanceFolder, requiredInstances, random),
                 parameterTree: BbobUtils.CreateParameterTree(bbobRunnerConfig.Dimensions),
                 configuration: configuration);

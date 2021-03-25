@@ -373,15 +373,15 @@
       "Comment": null
     },
     {
-      "PackageId": "NDesk.Options",
-      "VersionString": "0.2.1",
-      "LicenceUrl": "http://www.opensource.org/licenses/mit-license.php",
-      "ProjectUrl": "",
-      "CopyrightOrOwner": "NDesk",
+      "PackageId": "NDesk.Options.Patched",
+      "VersionString": "0.3.2",
+      "LicenceUrl": "https://licenses.nuget.org/MIT",
+      "ProjectUrl": "https://github.com/nano-byte/NDesk.Options",
+      "CopyrightOrOwner": "Copyright (C) 2008 Novell",
       "UsedInProjects": [
-        "Optano.Algorithm.Tuner.Gurobi.csproj"
+        "Optano.Algorithm.Tuner.csproj"
       ],
-      "SourceCodeUrl": null,
+      "SourceCodeUrl": "https://github.com/nano-byte/NDesk.Options",
       "Comment": null
     },
     {
@@ -439,6 +439,18 @@
       "ProjectUrl": null,
       "CopyrightOrOwner": null,
       "UsedInProjects": [],
+      "SourceCodeUrl": null,
+      "Comment": null
+    },
+	{
+      "PackageId": "OptimizedPriorityQueue",
+      "VersionString": "5.0.0",
+      "LicenceUrl": "https://github.com/BlueRaja/High-Speed-Priority-Queue-for-C-Sharp/blob/master/LICENSE.txt",
+      "ProjectUrl": "https://github.com/BlueRaja/High-Speed-Priority-Queue-for-C-Sharp",
+      "CopyrightOrOwner": "Copyright 2020",
+      "UsedInProjects": [
+        "Optano.Algorithm.Tuner.csproj"
+      ],
       "SourceCodeUrl": null,
       "Comment": null
     },
@@ -1706,12 +1718,12 @@
     null,
     "http://go.microsoft.com/fwlink/?LinkId=329770",
     "http://www.microsoft.com/web/webpi/eula/net_library_eula_enu.htm",
-    "http://www.opensource.org/licenses/mit-license.php",
     "http://www.quanttec.com/fparsec/license.html",
     "https://github.com/akkadotnet/akka.net/blob/master/LICENSE",
     "https://github.com/akkadotnet/Hyperion/blob/master/LICENSE",
     "https://github.com/AkkaNetContrib/Akka.Logger.Nlog/blob/master/LICENSE",
     "https://github.com/Azure/DotNetty/blob/master/LICENSE.txt",
+	"https://github.com/BlueRaja/High-Speed-Priority-Queue-for-C-Sharp/blob/master/LICENSE.txt",
     "https://github.com/dotnet/corefx/blob/master/LICENSE.TXT",
     "https://github.com/Microsoft/visualfsharp/blob/master/License.txt",
     "https://github.com/NLog/NLog/blob/master/LICENSE.txt",

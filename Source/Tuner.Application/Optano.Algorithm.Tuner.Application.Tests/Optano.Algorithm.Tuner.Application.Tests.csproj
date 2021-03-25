@@ -48,10 +48,13 @@
 	<None Include="..\..\..\Tools\TestApplication.runtimeconfig.json" Link="Tools\TestApplication.runtimeconfig.json">
 		<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	</None>
+	<None Include="..\..\..\Tools\testInstance.cnf" Link="Tools\Instances\testInstance.cnf">
+		<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	</None>
 	<None Include="..\..\..\Tools\ubcsat.exe" Link="Tools\ubcsat.exe">
 		<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	</None>
-	<None Include="..\..\..\Tools\testInstance.cnf" Link="Tools\testInstance.cnf">
+	<None Include="..\..\..\Tools\sapsParameterTree.xml" Link="Tools\sapsParameterTree.xml">
 		<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	</None>
 	<AdditionalFiles Include="..\..\..\stylecop.json" />

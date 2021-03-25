@@ -63,17 +63,17 @@
         </member>
         <member name="T:Optano.Algorithm.Tuner.Gurobi.GurobiRunEvaluator">
             <summary>
-                Responsible for sorting <see cref="T:Optano.Algorithm.Tuner.Genomes.Genome" />s according to their <see cref="T:Optano.Algorithm.Tuner.Gurobi.GurobiResult" />s.
+            An implementation of <see cref="T:Optano.Algorithm.Tuner.TargetAlgorithm.RunEvaluators.IRunEvaluator`2" /> that sorts genomes according to their <see cref="T:Optano.Algorithm.Tuner.Gurobi.GurobiResult"/>s.
             </summary>
         </member>
-        <member name="M:Optano.Algorithm.Tuner.Gurobi.GurobiRunEvaluator.Sort(System.Collections.Generic.Dictionary{Optano.Algorithm.Tuner.Genomes.ImmutableGenome,System.Collections.Generic.IEnumerable{Optano.Algorithm.Tuner.Gurobi.GurobiResult}})">
-            <summary>
-            Sorts the genomes by results, best genome first.
-            In this case, we first solve by number solved instances, then by number not cancelled instances, then by
-            average MIP gap of cancelled instances and finally by average runtime.
-            </summary>
-            <param name="runResults">Results from target algorithm runs, grouped by genome.</param>
-            <returns>The sorted genomes, best genomes first.</returns>
+        <member name="M:Optano.Algorithm.Tuner.Gurobi.GurobiRunEvaluator.Sort(System.Collections.Generic.IEnumerable{Optano.Algorithm.Tuner.GenomeEvaluation.Evaluation.ImmutableGenomeStats{Optano.Algorithm.Tuner.TargetAlgorithm.Instances.InstanceSeedFile,Optano.Algorithm.Tuner.Gurobi.GurobiResult}})">
+            <inheritdoc />
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Gurobi.GurobiRunEvaluator.GetGenomesThatCanBeCancelledByRacing(System.Collections.Generic.IReadOnlyList{Optano.Algorithm.Tuner.GenomeEvaluation.Evaluation.ImmutableGenomeStats{Optano.Algorithm.Tuner.TargetAlgorithm.Instances.InstanceSeedFile,Optano.Algorithm.Tuner.Gurobi.GurobiResult}},System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:Optano.Algorithm.Tuner.Gurobi.GurobiRunEvaluator.ComputeEvaluationPriorityOfGenome(Optano.Algorithm.Tuner.GenomeEvaluation.Evaluation.ImmutableGenomeStats{Optano.Algorithm.Tuner.TargetAlgorithm.Instances.InstanceSeedFile,Optano.Algorithm.Tuner.Gurobi.GurobiResult},System.TimeSpan)">
+            <inheritdoc />
         </member>
         <member name="T:Optano.Algorithm.Tuner.Gurobi.GurobiRunner">
             <summary>

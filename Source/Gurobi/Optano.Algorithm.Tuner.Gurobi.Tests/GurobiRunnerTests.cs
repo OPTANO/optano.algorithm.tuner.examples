@@ -83,6 +83,23 @@ namespace Optano.Algorithm.Tuner.Gurobi.Tests
         }
 
         /// <summary>
+        /// Smoke test for the Gurobi adapter.
+        /// </summary>
+        [Fact]
+        public void SmokeTest()
+        {
+            var timer = Stopwatch.StartNew();
+            var args = new[]
+                           {
+                               "--master", "--maxParallelEvaluations=2", "--trainingInstanceFolder=Tools", "--numGens=2", "--goalGen=0",
+                               "--popSize=8", "--miniTournamentSize=4", "--cpuTimeout=1", "--instanceNumbers=1:1", "--enableRacing=True",
+                           };
+            Program.Main(args);
+            timer.Stop();
+            timer.Elapsed.TotalMilliseconds.ShouldBeGreaterThan(2000);
+        }
+
+        /// <summary>
         /// Checks that <see cref="GurobiRunner.Run"/> can be cancelled.
         /// </summary>
         [Fact]

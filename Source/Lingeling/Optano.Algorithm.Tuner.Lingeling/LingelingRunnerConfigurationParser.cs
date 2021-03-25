@@ -3,7 +3,7 @@
 // ////////////////////////////////////////////////////////////////////////////////
 // 
 //        OPTANO GmbH Source Code
-//        Copyright (c) 2010-2020 OPTANO GmbH
+//        Copyright (c) 2010-2021 OPTANO GmbH
 //        ALL RIGHTS RESERVED.
 // 
 //    The entire contents of this file is protected by German and
@@ -153,7 +153,7 @@ namespace Optano.Algorithm.Tuner.Lingeling
             var options = this.CreateOptionSet();
             options.Add(
                 "master",
-                "Indicates that this instance of the application should act as master.",
+                () => "Indicates that this instance of the application should act as master.",
                 (string m) => this.InternalConfigurationBuilder.SetIsMaster(true));
             return options;
         }
@@ -168,32 +168,36 @@ namespace Optano.Algorithm.Tuner.Lingeling
                               {
                                   {
                                       "executable=",
-                                      "{PATH} to the executable",
+                                      () => "{PATH} to the executable",
                                       p => this.InternalConfigurationBuilder.SetPathToExecutable(p)
                                   },
                                   {
                                       "genericParameterization=",
-                                      "Specifies the generic parameterization to use for the genetic enginering model. Must be a member of the {LingelingTuner.GenericParameterization} enum.",
+                                      () =>
+                                          "Specifies the generic parameterization to use for the genetic enginering model. Must be a member of the {LingelingTuner.GenericParameterization} enum.",
                                       (string p) => this.SetGenericParameterization(p)
                                   },
                                   {
                                       "factorParK=",
-                                      "The factor for the penalization of the average runtime. Needs to be greater than 0. Default is 10.",
+                                      () => "The factor for the penalization of the average runtime. Needs to be greater than 0. Default is 10.",
                                       (int f) => this.InternalConfigurationBuilder.SetFactorParK(f)
                                   },
                                   {
                                       "rngSeed=",
-                                      "The random number generator seed, which generates #numberOfSeeds seeds for every instance of the Lingeling algorithm. Default is 42.",
+                                      () =>
+                                          "The random number generator seed, which generates #numberOfSeeds seeds for every instance of the Lingeling algorithm. Default is 42.",
                                       (int s) => this.InternalConfigurationBuilder.SetRngSeed(s)
                                   },
                                   {
                                       "numberOfSeeds=",
-                                      "Specifies the number of seeds, which are used for every instance of the Lingeling algorithm. Needs to be greater than 0. Default is 1.",
+                                      () =>
+                                          "Specifies the number of seeds, which are used for every instance of the Lingeling algorithm. Needs to be greater than 0. Default is 1.",
                                       (int n) => this.InternalConfigurationBuilder.SetNumberOfSeeds(n)
                                   },
                                   {
                                       "memoryLimitMegabyte=",
-                                      "Specifies the memory limit (in megabyte), which is used for the algorithm. Needs to be greater than 0. Default is 4000.",
+                                      () =>
+                                          "Specifies the memory limit (in megabyte), which is used for the algorithm. Needs to be greater than 0. Default is 4000.",
                                       (int m) => this.InternalConfigurationBuilder.SetMemoryLimitMegabyte(m)
                                   },
                               };

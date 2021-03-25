@@ -3,7 +3,7 @@
 // ////////////////////////////////////////////////////////////////////////////////
 // 
 //        OPTANO GmbH Source Code
-//        Copyright (c) 2010-2020 OPTANO GmbH
+//        Copyright (c) 2010-2021 OPTANO GmbH
 //        ALL RIGHTS RESERVED.
 // 
 //    The entire contents of this file is protected by German and
@@ -165,7 +165,7 @@ namespace Optano.Algorithm.Tuner.Gurobi
             var options = this.CreateOptionSet();
             options.Add(
                 "master",
-                "Indicates that this instance of the application should act as master.",
+                () => "Indicates that this instance of the application should act as master.",
                 m => this.InternalConfigurationBuilder.SetIsMaster(true));
             return options;
         }
@@ -180,32 +180,37 @@ namespace Optano.Algorithm.Tuner.Gurobi
                               {
                                   {
                                       "grbThreadCount=",
-                                      "Sets the maximum number of threads that may be used by Gurobi.\r\nDefault is 4. Needs to be greater than 0.",
+                                      () =>
+                                          "Sets the maximum number of threads that may be used by Gurobi.\r\nDefault is 4. Needs to be greater than 0.",
                                       (int t) => this.InternalConfigurationBuilder.SetThreadCount(t)
                                   },
                                   {
                                       "numberOfSeeds=",
-                                      "Sets the number of random seeds to use for every .mps file found in the instance folder.\r\nFor each file, numberOfSeeds many independent seeds will be used,\r\neffectively increasing the instance count by a factor of numberOfSeeds.\r\nDefault is 1. Needs to be greater than 0.",
+                                      () =>
+                                          "Sets the number of random seeds to use for every .mps file found in the instance folder.\r\nFor each file, numberOfSeeds many independent seeds will be used,\r\neffectively increasing the instance count by a factor of numberOfSeeds.\r\nDefault is 1. Needs to be greater than 0.",
                                       (int n) => this.InternalConfigurationBuilder.SetNumberOfSeeds(n)
                                   },
                                   {
                                       "rngSeed=",
-                                      "Sets the random number generator seed, which generates #numberOfSeeds seeds for every instance of the Gurobi algorithm. Default is 42.",
+                                      () =>
+                                          "Sets the random number generator seed, which generates #numberOfSeeds seeds for every instance of the Gurobi algorithm. Default is 42.",
                                       (int s) => this.InternalConfigurationBuilder.SetRngSeed(s)
                                   },
                                   {
                                       "grbNodefileDirectory=",
-                                      "Sets the nodefile directory of Gurobi. Default is a subfolder 'nodefiles' in the current working directory.",
+                                      () =>
+                                          "Sets the nodefile directory of Gurobi. Default is a subfolder 'nodefiles' in the current working directory.",
                                       (string nd) => this.InternalConfigurationBuilder.SetNodefileDirectory(nd)
                                   },
                                   {
                                       "grbNodefileStartSizeGigabyte=",
-                                      "Sets the memory threshold in gigabyte of Gurobi for writing MIP tree nodes in nodefile on disk. Default is 0.5 GB. Needs to be greater than or equal to 0.",
+                                      () =>
+                                          "Sets the memory threshold in gigabyte of Gurobi for writing MIP tree nodes in nodefile on disk. Default is 0.5 GB. Needs to be greater than or equal to 0.",
                                       (double nss) => this.InternalConfigurationBuilder.SetNodefileStartSizeGigabyte(nss)
                                   },
                                   {
                                       "grbTerminationMipGap=",
-                                      "Sets the termination mip gap of Gurobi. Default is 0.01. Needs to be greater than or equal to 0.",
+                                      () => "Sets the termination mip gap of Gurobi. Default is 0.01. Needs to be greater than or equal to 0.",
                                       (double mg) => this.InternalConfigurationBuilder.SetTerminationMipGap(mg)
                                   },
                               };

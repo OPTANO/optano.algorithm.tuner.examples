@@ -3,7 +3,7 @@
 // ////////////////////////////////////////////////////////////////////////////////
 // 
 //        OPTANO GmbH Source Code
-//        Copyright (c) 2010-2020 OPTANO GmbH
+//        Copyright (c) 2010-2021 OPTANO GmbH
 //        ALL RIGHTS RESERVED.
 // 
 //    The entire contents of this file is protected by German and
@@ -31,6 +31,8 @@
 
 namespace Optano.Algorithm.Tuner.Bbob
 {
+    using System.Globalization;
+
     using Optano.Algorithm.Tuner.Configuration.ArgumentParsers;
     using Optano.Algorithm.Tuner.DistributedExecution;
     using Optano.Algorithm.Tuner.Logging;
@@ -54,6 +56,8 @@ namespace Optano.Algorithm.Tuner.Bbob
         /// Otherwise, a <see cref="Worker"/> is started with the provided arguments.</param>
         public static void Main(string[] args)
         {
+            ProcessUtils.SetDefaultCultureInfo(CultureInfo.InvariantCulture);
+
             LoggingHelper.Configure("bbobParserLog.txt");
 
             var configParser = new BbobRunnerConfigurationParser();

@@ -3,7 +3,7 @@
 // ////////////////////////////////////////////////////////////////////////////////
 // 
 //        OPTANO GmbH Source Code
-//        Copyright (c) 2010-2020 OPTANO GmbH
+//        Copyright (c) 2010-2021 OPTANO GmbH
 //        ALL RIGHTS RESERVED.
 // 
 //    The entire contents of this file is protected by German and
@@ -98,6 +98,26 @@ namespace Optano.Algorithm.Tuner.Saps.Tests
         /// <inheritdoc/>
         public void Dispose()
         {
+        }
+
+        /// <summary>
+        /// Run a small tuning without exception.
+        /// </summary>
+        [Fact]
+        public void SmokeTest()
+        {
+            var timer = Stopwatch.StartNew();
+            Program.Main(
+                new[]
+                    {
+                        "--master", "--port=1234",
+                        "--executable=Tools/ubcsat.exe",
+                        "--trainingInstanceFolder=Tools",
+                        "--popSize=8", "--goalGen=0", "--numGens=1", "--instanceNumbers=1:1", "--miniTournamentSize=2",
+                        "--maxParallelEvaluations=2", "--cpuTimeout=1",
+                    });
+            timer.Stop();
+            timer.Elapsed.TotalMilliseconds.ShouldBeGreaterThan(2000);
         }
 
         /// <summary>

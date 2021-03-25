@@ -99,6 +99,11 @@
         <member name="M:Optano.Algorithm.Tuner.Gurobi.Tests.GurobiRunnerTests.Dispose">
             <inheritdoc/>
         </member>
+        <member name="M:Optano.Algorithm.Tuner.Gurobi.Tests.GurobiRunnerTests.SmokeTest">
+            <summary>
+            Smoke test for the Gurobi adapter.
+            </summary>
+        </member>
         <member name="M:Optano.Algorithm.Tuner.Gurobi.Tests.GurobiRunnerTests.CancellationWorks">
             <summary>
             Checks that <see cref="M:Optano.Algorithm.Tuner.Gurobi.GurobiRunner.Run(Optano.Algorithm.Tuner.TargetAlgorithm.Instances.InstanceSeedFile,System.Threading.CancellationToken)"/> can be cancelled.

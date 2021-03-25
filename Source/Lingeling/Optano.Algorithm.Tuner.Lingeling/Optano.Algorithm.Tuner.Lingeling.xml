@@ -480,7 +480,7 @@
         </member>
         <member name="M:Optano.Algorithm.Tuner.Lingeling.LingelingUtils.CreateParameterTree">
             <summary>
-            Creates a parameter tree from the "lingelingParamTree.xml" in the working directory.
+            Creates a parameter tree from the "parameterTree.xml" in the working directory.
             </summary>
             <returns>The <see cref="T:Optano.Algorithm.Tuner.Parameters.ParameterTree"/>.</returns>
         </member>

@@ -3,7 +3,7 @@
 // ////////////////////////////////////////////////////////////////////////////////
 // 
 //        OPTANO GmbH Source Code
-//        Copyright (c) 2010-2020 OPTANO GmbH
+//        Copyright (c) 2010-2021 OPTANO GmbH
 //        ALL RIGHTS RESERVED.
 // 
 //    The entire contents of this file is protected by German and
@@ -35,6 +35,7 @@ namespace Optano.Algorithm.Tuner.Application
 {
     using System;
     using System.Collections.Generic;
+    using System.Globalization;
     using System.IO;
     using System.Linq;
 
@@ -61,6 +62,8 @@ namespace Optano.Algorithm.Tuner.Application
         /// <param name="args">Program arguments. Call the program with --help for more information.</param>
         public static void Main(string[] args)
         {
+            ProcessUtils.SetDefaultCultureInfo(CultureInfo.InvariantCulture);
+
             // Parse arguments.
             var argsParser = new ArgumentParser();
             if (!ArgumentParserUtils.ParseArguments(argsParser, args))
@@ -77,10 +80,6 @@ namespace Optano.Algorithm.Tuner.Application
             {
                 Worker.Run(argsParser.AdditionalArguments.ToArray());
             }
-#if DEBUG
-            Console.WriteLine("Press any key to exit...");
-            Console.ReadLine();
-#endif
         }
 
         #endregion
@@ -146,7 +145,7 @@ namespace Optano.Algorithm.Tuner.Application
         {
             var tuner = new AlgorithmTuner<ValueReadingExecutor, InstanceFile, ContinuousResult>(
                 targetAlgorithmFactory: new ValueReadingExecutorFactory(basicCommand, config.CpuTimeout),
-                runEvaluator: new SortByValue(ascending),
+                runEvaluator: new SortByValue<InstanceFile>(ascending),
                 trainingInstances: ExtractInstances(trainingInstanceFolder),
                 parameterTree: ParameterTreeConverter.ConvertToParameterTree(pathToParameterTree),
                 configuration: config);
@@ -195,7 +194,7 @@ namespace Optano.Algorithm.Tuner.Application
         {
             var tuner = new AlgorithmTuner<TimeMeasuringExecutor, InstanceFile, RuntimeResult>(
                 targetAlgorithmFactory: new TimeMeasuringExecutorFactory(basicCommand, config.CpuTimeout),
-                runEvaluator: new SortByRuntime(factorParK),
+                runEvaluator: new SortByRuntime<InstanceFile>(factorParK),
                 trainingInstances: ExtractInstances(trainingInstanceFolder),
                 parameterTree: ParameterTreeConverter.ConvertToParameterTree(pathToParameterTree),
                 configuration: config);

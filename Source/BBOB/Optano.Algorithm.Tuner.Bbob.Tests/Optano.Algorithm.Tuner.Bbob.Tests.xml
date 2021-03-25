@@ -113,6 +113,11 @@
         <member name="M:Optano.Algorithm.Tuner.Bbob.Tests.BbobRunnerTests.Dispose">
             <inheritdoc/>
         </member>
+        <member name="M:Optano.Algorithm.Tuner.Bbob.Tests.BbobRunnerTests.SmokeTest">
+            <summary>
+            Smoke test for the BBOB adapter.
+            </summary>
+        </member>
         <member name="M:Optano.Algorithm.Tuner.Bbob.Tests.BbobRunnerTests.BbobRunnerReturnsCorrectResult(System.Int32,System.Int32,System.Double,System.Double,System.Double,System.Double)">
             <summary>
             Checks, if the example runs get the right results.

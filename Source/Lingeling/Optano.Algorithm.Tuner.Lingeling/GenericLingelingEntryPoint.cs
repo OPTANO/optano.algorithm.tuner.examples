@@ -3,7 +3,7 @@
 // ////////////////////////////////////////////////////////////////////////////////
 // 
 //        OPTANO GmbH Source Code
-//        Copyright (c) 2010-2020 OPTANO GmbH
+//        Copyright (c) 2010-2021 OPTANO GmbH
 //        ALL RIGHTS RESERVED.
 // 
 //    The entire contents of this file is protected by German and
@@ -103,14 +103,23 @@ namespace Optano.Algorithm.Tuner.Lingeling
                 TPredictorModel,
                 TSamplingStrategy>(
                 targetAlgorithmFactory: new LingelingRunnerFactory(runnerConfig.PathToExecutable, tunerConfig, runnerConfig.MemoryLimitMegabyte),
-                runEvaluator: new SortByRuntime(runnerConfig.FactorParK),
-                trainingInstances: InstanceSeedFile.CreateInstanceSeedFilesFromDirectory(trainingInstanceFolder, LingelingUtils.ListOfValidFileExtensions, runnerConfig.NumberOfSeeds, runnerConfig.RngSeed),
+                runEvaluator: new SortByRuntime<InstanceSeedFile>(runnerConfig.FactorParK),
+                trainingInstances: InstanceSeedFile.CreateInstanceSeedFilesFromDirectory(
+                    trainingInstanceFolder,
+                    LingelingUtils.ListOfValidFileExtensions,
+                    runnerConfig.NumberOfSeeds,
+                    runnerConfig.RngSeed),
                 parameterTree: LingelingUtils.CreateParameterTree(),
                 configuration: tunerConfig);
 
             if (!string.IsNullOrWhiteSpace(testInstanceFolder))
             {
-                tuner.SetTestInstances(InstanceSeedFile.CreateInstanceSeedFilesFromDirectory(testInstanceFolder, LingelingUtils.ListOfValidFileExtensions, runnerConfig.NumberOfSeeds, runnerConfig.RngSeed));
+                tuner.SetTestInstances(
+                    InstanceSeedFile.CreateInstanceSeedFilesFromDirectory(
+                        testInstanceFolder,
+                        LingelingUtils.ListOfValidFileExtensions,
+                        runnerConfig.NumberOfSeeds,
+                        runnerConfig.RngSeed));
             }
 
             return tuner;

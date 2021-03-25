@@ -55,13 +55,13 @@ namespace Optano.Algorithm.Tuner.Lingeling
         #region Public Methods and Operators
 
         /// <summary>
-        /// Creates a parameter tree from the "lingelingParamTree.xml" in the working directory.
+        /// Creates a parameter tree from the "parameterTree.xml" in the working directory.
         /// </summary>
         /// <returns>The <see cref="ParameterTree"/>.</returns>
         public static ParameterTree CreateParameterTree()
         {
             var parameterTree = ParameterTreeConverter.ConvertToParameterTree(
-                Path.Combine(AppDomain.CurrentDomain.BaseDirectory ?? throw new InvalidOperationException(), @"lingelingParamTree.xml"));
+                Path.Combine(AppDomain.CurrentDomain.BaseDirectory ?? throw new InvalidOperationException(), @"parameterTree.xml"));
             LingelingUtils.AddAllActiveParameterWrappers(parameterTree);
             return parameterTree;
         }

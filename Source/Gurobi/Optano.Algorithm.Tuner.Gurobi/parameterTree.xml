@@ -151,10 +151,9 @@ Descriptions are taken from https://www.gurobi.com/documentation/9.0/refman/para
 		<domain xsi:type="continuous" start="0" end="1" defaultIndexOrValue="0.05" />
 	</node>
 
-	<!-- Algorithm used to solve continuous models or the root node of a MIP model.
-	Options are: -1=automatic, 0=primal simplex, 1=dual simplex, 2=barrier, 3=concurrent, 4=deterministic concurrent. -->
+	<!-- Algorithm used to solve continuous models or the root node of a MIP model. Options are: -1=automatic, 0=primal simplex, 1=dual simplex, 2=barrier, 3=concurrent, 4=deterministic concurrent, 5=deterministic concurrent simplex. -->
 	<node xsi:type="value" id="Method">
-		<domain xsi:type="categorical" ints="-1 0 1 2 3 4" defaultIndexOrValue="0" />
+		<domain xsi:type="categorical" ints="-1 0 1 2 3 4 5" defaultIndexOrValue="0" />
 	</node>
 
 	<!-- Number of nodes to explore in the minimum relaxation heuristic. -->
