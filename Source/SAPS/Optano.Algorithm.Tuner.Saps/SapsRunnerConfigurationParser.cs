@@ -32,84 +32,22 @@
 namespace Optano.Algorithm.Tuner.Saps
 {
     using System;
-    using System.Collections.Generic;
 
     using NDesk.Options;
 
     using Optano.Algorithm.Tuner.Configuration.ArgumentParsers;
-    using Optano.Algorithm.Tuner.DistributedExecution;
 
     /// <summary>
     /// A parser for all SAPS-specific arguments.
     /// </summary>
-    public class SapsRunnerConfigurationParser : HelpSupportingArgumentParser<SapsRunnerConfiguration.SapsConfigBuilder>
+    public class SapsRunnerConfigurationParser : AdapterArgumentParser<SapsRunnerConfiguration.SapsConfigBuilder>
     {
-        #region Fields
+        #region Methods
 
-        /// <summary>
-        /// List of arguments that could not be parsed when calling <see cref="ParseArguments(string[])"/>.
-        /// </summary>
-        private List<string> _remainingArguments;
-
-        #endregion
-
-        #region Constructors and Destructors
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="SapsRunnerConfigurationParser"/> class.
-        /// </summary>
-        public SapsRunnerConfigurationParser()
-            : base(allowAdditionalArguments: true)
+        /// <inheritdoc />
+        protected override void CheckForRequiredArgumentsAndThrowException()
         {
-        }
-
-        #endregion
-
-        #region Public properties
-
-        /// <summary>
-        /// Gets the arguments that could not be parsed when calling <see cref="ParseArguments(string[])"/>.
-        /// </summary>
-        public List<string> RemainingArguments
-        {
-            get
-            {
-                this.ThrowExceptionIfNoParsingHasBeenDone();
-                return this._remainingArguments;
-            }
-        }
-
-        #endregion
-
-        #region Public Methods and Operators
-
-        /// <summary>
-        /// Parses the provided arguments.
-        /// </summary>
-        /// <param name="args">Arguments to parse.</param>
-        /// <exception cref="OptionException">Thrown if required parameters have not been set.</exception>
-        public override void ParseArguments(string[] args)
-        {
-            // First check for options influencing which other options are possible.
-            this._remainingArguments = this.CreatePreprocessingOptionSet().Parse(args);
-            this.FinishedPreProcessing();
-
-            // Don't verify further if help was requested.
-            if (this.HelpTextRequested)
-            {
-                return;
-            }
-
-            // If we look at the master, parse remaining arguments.
-            if (this.InternalConfigurationBuilder.IsMaster)
-            {
-                this._remainingArguments = this.CreateMasterOptionSet().Parse(this._remainingArguments);
-            }
-
-            this.FinishedParsing();
-
-            // Finally check for required arguments.
-            if (this.InternalConfigurationBuilder.IsMaster)
+            if (this.IsMaster)
             {
                 if (!this.InternalConfigurationBuilder.HasPathToExecutable)
                 {
@@ -118,51 +56,8 @@ namespace Optano.Algorithm.Tuner.Saps
             }
         }
 
-        /// <summary>
-        /// Prints a description on how to use command line arguments.
-        /// </summary>
-        public override void PrintHelp()
-        {
-            // Print own arguments.
-            Console.Out.WriteLine("Arguments for the application:");
-            this.CreatePreprocessingOptionSet().WriteOptionDescriptions(Console.Out);
-            Console.Out.WriteLine("\nAdditional required arguments if this instance acts as master (i.e. --master provided):");
-            this.CreateMasterOptionSet().WriteOptionDescriptions(Console.Out);
-            Console.Out.WriteLine();
-
-            // Print arguments for master and worker.
-            Console.Out.WriteLine(
-                "Additional arguments depending on whether this instance of Optano.Algorithm.Tuner acts as a worker or the master:");
-            Console.Out.WriteLine();
-            new MasterArgumentParser().PrintHelp(false);
-            Console.Out.WriteLine();
-            new WorkerArgumentParser().PrintHelp(false);
-        }
-
-        #endregion
-
-        #region Methods
-
-        /// <summary>
-        /// Creates an <see cref="OptionSet"/> containing all options that somehow influence which other options can be
-        /// set.
-        /// </summary>
-        /// <returns>The created <see cref="OptionSet"/>.</returns>
-        private OptionSet CreatePreprocessingOptionSet()
-        {
-            var options = this.CreateOptionSet();
-            options.Add(
-                "master",
-                () => "Indicates that this instance of the application should act as master.",
-                (string m) => this.InternalConfigurationBuilder.SetIsMaster(true));
-            return options;
-        }
-
-        /// <summary>
-        /// Creates an <see cref="OptionSet"/> containing all options that can only be set if the "--master" option is set.
-        /// </summary>
-        /// <returns>The created <see cref="OptionSet"/>.</returns>
-        private OptionSet CreateMasterOptionSet()
+        /// <inheritdoc />
+        protected override OptionSet CreateAdapterMasterOptionSet()
         {
             var options = new OptionSet
                               {
@@ -174,12 +69,23 @@ namespace Optano.Algorithm.Tuner.Saps
                                   {
                                       "genericParameterization=",
                                       () =>
-                                          "Specifies the generic parameterization to use for the genetic enginering model. Must be a member of the {Optano.Algorithm.Tuner.Saps.CustomModel.GenericParameterization} enum.",
-                                      g => this.SetGenericParameterization(g)
+                                          "Specifies the generic parameterization to use for the genetic enginering model. Must be a member of the GenericParameterization enum.",
+                                      (string genericParamString) =>
+                                          {
+                                              if (!Enum.TryParse(genericParamString, true, out GenericParameterization genericParam))
+                                              {
+                                                  throw new OptionException(
+                                                      "The given generic parameterization is not a member of the GenericParameterization enum.",
+                                                      "genericParameterization");
+                                              }
+
+                                              this.InternalConfigurationBuilder.SetGenericParameterization(genericParam);
+                                          }
                                   },
                                   {
                                       "factorParK=",
-                                      () => "The factor for the penalization of the average runtime. Needs to be greater than 0. Default is 10.",
+                                      () =>
+                                          "The factor for the penalization of the average runtime. Needs to be greater or equal to 0. If 0, OAT sorts first by highest number of uncancelled runs and then by unpenalized average runtime. Default is 0.",
                                       (int f) => this.InternalConfigurationBuilder.SetFactorParK(f)
                                   },
                                   {
@@ -196,21 +102,6 @@ namespace Optano.Algorithm.Tuner.Saps
                                   },
                               };
             return options;
-        }
-
-        /// <summary>
-        /// Sets the <see cref="GenericParameterization"/> of the tuner.
-        /// </summary>
-        /// <param name="genericParam">GenericParameterization to set.</param>
-        private void SetGenericParameterization(string genericParam)
-        {
-            var success = Enum.TryParse(genericParam, true, out GenericParameterization input);
-            if (!success)
-            {
-                throw new OptionException($"Not a member of GenericParameterization: {genericParam}", "genericParameterization");
-            }
-
-            this.InternalConfigurationBuilder.SetGenericParameterization(input);
         }
 
         #endregion

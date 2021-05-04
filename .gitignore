@@ -27,6 +27,5 @@ launchSettings.json
 
 **/Optano.Algorithm.Tuner.0.0.0.1/
 **/PublishProfiles/
-Source/Gurobi/SmacAdapter/Template/TargetAlgorithm
 **/.idea
-Tools/*.csv
+**/Optano.Algorithm.Tuner*.xml

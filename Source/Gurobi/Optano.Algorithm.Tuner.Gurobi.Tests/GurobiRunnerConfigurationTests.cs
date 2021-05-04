@@ -32,7 +32,6 @@
 namespace Optano.Algorithm.Tuner.Gurobi.Tests
 {
     using System;
-    using System.IO;
     using System.Linq;
 
     using Shouldly;
@@ -76,69 +75,57 @@ namespace Optano.Algorithm.Tuner.Gurobi.Tests
         }
 
         /// <summary>
-        /// Checks that trying to use the builder throws an
-        /// <see cref="InvalidOperationException"/> if <see cref="GurobiRunnerConfigurationParser.ParseArguments"/>
-        /// was not called beforehand.
+        /// Checks that all arguments get parsed correctly.
         /// </summary>
-        [Fact]
-        public void ConfigurationParserThrowsIfNoPreprocessingWasDone()
-        {
-            Exception exception =
-                Assert.Throws<InvalidOperationException>(
-                    () =>
-                        {
-                            var builder = this._parser.ConfigurationBuilder;
-                        });
-        }
-
-        /// <summary>
-        /// Checks that all possible arguments to an instance acting as master get parsed correctly.
-        /// </summary>
-        [Fact]
-        public void MasterArgumentsAreParsedCorrectly()
+        /// <param name="runMode">The run mode.</param>
+        [Theory]
+        [InlineData("master")]
+        [InlineData("postTuning")]
+        public void ArgumentsGetParsedCorrectly(string runMode)
         {
             const int ThreadCount = 8;
-            const int NumberOfSeeds = 42;
-            const int RngSeed = 7;
             const string NodefileDir = "dummy_directory";
             const double NodefileSize = 2;
             const double TerminationMipGap = 0.05;
+            const int NumberOfSeeds = 42;
+            const int RngSeed = 7;
 
             var args = new[]
                            {
-                               "--master", $"--grbThreadCount={ThreadCount}", $"--numberOfSeeds={NumberOfSeeds}", $"--rngSeed={RngSeed}",
-                               $"--grbNodefileDirectory={NodefileDir}", $"--grbNodefileStartSizeGigabyte={NodefileSize}",
+                               $"--{runMode}",
+                               $"--grbThreadCount={ThreadCount}",
+                               $"--grbNodefileDirectory={NodefileDir}",
+                               $"--grbNodefileStartSizeGigabyte={NodefileSize}",
                                $"--grbTerminationMipGap={TerminationMipGap}",
+                               $"--numberOfSeeds={NumberOfSeeds}",
+                               $"--rngSeed={RngSeed}",
                            };
 
             this._parser.ParseArguments(args);
-
             var config = this._parser.ConfigurationBuilder.Build(TimeSpan.FromSeconds(5));
 
-            config.IsMaster.ShouldBeTrue("Expected master to be requested.");
-            config.ThreadCount.ShouldBe(ThreadCount, "Expected different number of threads.");
-            config.NumberOfSeeds.ShouldBe(NumberOfSeeds, "Expected different number of seeds.");
-            config.RngSeed.ShouldBe(RngSeed, "Expected different random number generator seed.");
-            config.NodefileDirectory.Name.ShouldBe(NodefileDir, "Expected different nodefile directory.");
-            config.NodefileStartSizeGigabyte.ShouldBe(NodefileSize, "Expected different nodefile start size.");
-            config.TerminationMipGap.ShouldBe(TerminationMipGap, "Expected different termination mip gap.");
-        }
+            config.ThreadCount.ShouldBe(ThreadCount);
+            config.NodefileDirectory.Name.ShouldBe(NodefileDir);
+            config.NodefileStartSizeGigabyte.ShouldBe(NodefileSize);
+            config.TerminationMipGap.ShouldBe(TerminationMipGap);
 
-        /// <summary>
-        /// Checks that all possible arguments to an instance acting as worker get parsed correctly.
-        /// </summary>
-        [Fact]
-        public void NonMasterArgumentsAreParsedCorrectly()
-        {
-            const string RemainingArgs = "test";
-            var args = new[] { RemainingArgs };
-            this._parser.ParseArguments(args);
-
-            var config = this._parser.ConfigurationBuilder.Build(TimeSpan.FromSeconds(5));
-
-            config.IsMaster.ShouldBeFalse("Did not expect master to be requested.");
-            this._parser.RemainingArguments.Count().ShouldBe(1, "Expected one remaining argument.");
-            this._parser.RemainingArguments.First().ShouldBe(RemainingArgs, "Expected different remaining argument.");
+            switch (runMode)
+            {
+                case "master":
+                    this._parser.IsMaster.ShouldBeTrue();
+                    config.NumberOfSeeds.ShouldBe(NumberOfSeeds);
+                    config.RngSeed.ShouldBe(RngSeed);
+                    break;
+                case "postTuning":
+                    this._parser.IsPostTuningRunner.ShouldBeTrue();
+                    this._parser.AdditionalArguments.Count().ShouldBe(2);
+                    this._parser.AdditionalArguments.First().ShouldBe($"--numberOfSeeds={NumberOfSeeds}");
+                    this._parser.AdditionalArguments.Skip(1).First().ShouldBe($"--rngSeed={RngSeed}");
+                    break;
+                default:
+                    Assert.True(false);
+                    break;
+            }
         }
 
         /// <summary>
@@ -151,9 +138,8 @@ namespace Optano.Algorithm.Tuner.Gurobi.Tests
         public void ParserThrowsIfThreadCountIsNegativeOrZero(int threadCount)
         {
             var args = new[] { "--master", $"--grbThreadCount={threadCount}" };
-            Exception exception =
-                Assert.Throws<ArgumentOutOfRangeException>(
-                    () => this._parser.ParseArguments(args));
+            Assert.Throws<ArgumentOutOfRangeException>(
+                () => this._parser.ParseArguments(args));
         }
 
         /// <summary>
@@ -166,9 +152,8 @@ namespace Optano.Algorithm.Tuner.Gurobi.Tests
         public void ParserThrowsIfNumberOfSeedsIsNegativeOrZero(int numberOfSeeds)
         {
             var args = new[] { "--master", $"--numberOfSeeds={numberOfSeeds}" };
-            Exception exception =
-                Assert.Throws<ArgumentOutOfRangeException>(
-                    () => this._parser.ParseArguments(args));
+            Assert.Throws<ArgumentOutOfRangeException>(
+                () => this._parser.ParseArguments(args));
         }
 
         /// <summary>
@@ -181,9 +166,8 @@ namespace Optano.Algorithm.Tuner.Gurobi.Tests
         public void ParserThrowsIfNodeFileStartSizeGigabyteIsNegative(double nodefileSize)
         {
             var args = new[] { "--master", $"--grbNodefileStartSizeGigabyte={nodefileSize}" };
-            Exception exception =
-                Assert.Throws<ArgumentOutOfRangeException>(
-                    () => this._parser.ParseArguments(args));
+            Assert.Throws<ArgumentOutOfRangeException>(
+                () => this._parser.ParseArguments(args));
         }
 
         /// <summary>
@@ -196,9 +180,8 @@ namespace Optano.Algorithm.Tuner.Gurobi.Tests
         public void ParserThrowsIfTerminationMipGapIsNegative(double terminationMipGap)
         {
             var args = new[] { "--master", $"--grbTerminationMipGap={terminationMipGap}" };
-            Exception exception =
-                Assert.Throws<ArgumentOutOfRangeException>(
-                    () => this._parser.ParseArguments(args));
+            Assert.Throws<ArgumentOutOfRangeException>(
+                () => this._parser.ParseArguments(args));
         }
 
         /// <summary>
@@ -221,25 +204,6 @@ namespace Optano.Algorithm.Tuner.Gurobi.Tests
 
             config.ThreadCount.ShouldBe(GurobiRunnerConfiguration.GurobiRunnerConfigBuilder.ThreadCountDefault);
             config.NumberOfSeeds.ShouldBe(NumberOfSeedsFallback);
-        }
-
-        /// <summary>
-        /// Checks that <see cref="GurobiRunnerConfigurationParser.PrintHelp"/> prints help about general worker arguments, general
-        /// master arguments, and custom Gurobi arguments.
-        /// </summary>
-        [Fact]
-        public void PrintHelpPrintsAllArguments()
-        {
-            TestUtils.CheckOutput(
-                action: () => this._parser.PrintHelp(),
-                check: consoleOutput =>
-                    {
-                        var reader = new StringReader(consoleOutput.ToString());
-                        var text = reader.ReadToEnd();
-                        text.ShouldContain("Arguments for the application:", "Application arguments are missing.");
-                        text.ShouldContain("Arguments for master:", "General master arguments are missing.");
-                        text.ShouldContain("Arguments for worker:", "General worker arguments are missing.");
-                    });
         }
 
         #endregion

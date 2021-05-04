@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -16,8 +16,9 @@
     <DefineConstants>DEBUG;TRACE;CODE_ANALYSIS</DefineConstants>
   </PropertyGroup>
 
+
   <ItemGroup>
-    <PackageReference Include="Optano.Algorithm.Tuner" Version="1.0.0.218" />
+    <PackageReference Include="OPTANO.Algorithm.Tuner" Version="2.0.0.232" />
     <PackageReference Include="OPTANO.Modeling.Gurobi" Version="9.0.1.23" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
       <PrivateAssets>all</PrivateAssets>
@@ -32,11 +33,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Properties\" />
-  </ItemGroup>
-
-  <ItemGroup>
 	<AdditionalFiles Include="..\..\..\stylecop.json" />
   </ItemGroup>
+ 
 
 </Project>

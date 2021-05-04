@@ -98,9 +98,19 @@ namespace Optano.Algorithm.Tuner.Saps
                 string testInstanceFolder,
                 SapsRunnerConfiguration runnerConfig)
         {
+            IRunEvaluator<InstanceSeedFile, RuntimeResult> runEvaluator;
+            if (runnerConfig.FactorParK == 0)
+            {
+                runEvaluator = new SortByUnpenalizedRuntime<InstanceSeedFile>(tunerConfig.CpuTimeout);
+            }
+            else
+            {
+                runEvaluator = new SortByPenalizedRuntime<InstanceSeedFile>(runnerConfig.FactorParK, tunerConfig.CpuTimeout);
+            }
+
             var tuner = new AlgorithmTuner<SapsRunner, InstanceSeedFile, RuntimeResult, TLearnerModel, TPredictorModel, TSamplingStrategy>(
                 targetAlgorithmFactory: new SapsRunnerFactory(runnerConfig.PathToExecutable, tunerConfig.CpuTimeout),
-                runEvaluator: new SortByRuntime<InstanceSeedFile>(runnerConfig.FactorParK),
+                runEvaluator: runEvaluator,
                 trainingInstances: InstanceSeedFile.CreateInstanceSeedFilesFromDirectory(
                     trainingInstanceFolder,
                     SapsUtils.ListOfValidFileExtensions,

@@ -38,6 +38,7 @@ namespace Optano.Algorithm.Tuner.Gurobi
 
     using global::Gurobi;
 
+    using Optano.Algorithm.Tuner.Gurobi.GurobiAdapterFeatures;
     using Optano.Algorithm.Tuner.Parameters;
     using Optano.Algorithm.Tuner.ParameterTreeReader;
 
@@ -85,6 +86,42 @@ namespace Optano.Algorithm.Tuner.Gurobi
         #region Public Methods and Operators
 
         /// <summary>
+        /// Composes the given adapter features to a single array.
+        /// </summary>
+        /// <param name="currentRuntimeFeatures">The current runtime features.</param>
+        /// <param name="lastRuntimeFeatures">The last runtime features.</param>
+        /// <param name="instanceFeatures">The instance features.</param>
+        /// <returns>The composed array.</returns>
+        public static double[] ComposeAdapterFeatures(
+            GurobiRuntimeFeatures currentRuntimeFeatures,
+            GurobiRuntimeFeatures lastRuntimeFeatures,
+            GurobiInstanceFeatures instanceFeatures)
+        {
+            return currentRuntimeFeatures.ToArray()
+                .Concat(lastRuntimeFeatures.ToArray())
+                .Concat(instanceFeatures.ToArray())
+                .ToArray();
+        }
+
+        /// <summary>
+        /// Composes the header of the given adapter features to a single array.
+        /// </summary>
+        /// <param name="currentRuntimeFeatures">The current runtime features.</param>
+        /// <param name="lastRuntimeFeatures">The last runtime features.</param>
+        /// <param name="instanceFeatures">The instance features.</param>
+        /// <returns>The composed array.</returns>
+        public static string[] ComposeAdapterFeaturesHeader(
+            GurobiRuntimeFeatures currentRuntimeFeatures,
+            GurobiRuntimeFeatures lastRuntimeFeatures,
+            GurobiInstanceFeatures instanceFeatures)
+        {
+            return currentRuntimeFeatures.GetHeader("RuntimeFeature_", "_Current")
+                .Concat(lastRuntimeFeatures.GetHeader("RuntimeFeature_", "_Last"))
+                .Concat(instanceFeatures.GetHeader("InstanceFeature_"))
+                .ToArray();
+        }
+
+        /// <summary>
         /// Returns the file name without its extension, if the file has a valid Gurobi model extension.
         /// </summary>
         /// <param name="fileInfo">The file info.</param>
@@ -113,6 +150,23 @@ namespace Optano.Algorithm.Tuner.Gurobi
                 Path.Combine(AppDomain.CurrentDomain.BaseDirectory ?? throw new InvalidOperationException(), @"parameterTree.xml"));
             GurobiUtils.AddAllIndicatorParameterWrappers(parameterTree);
             return parameterTree;
+        }
+
+        /// <summary>
+        /// Returns the mip gap.
+        /// </summary>
+        /// <param name="bestObjective">The best objective.</param>
+        /// <param name="bestObjectiveBound">The best objective bound.</param>
+        /// <returns>The mip gap.</returns>
+        public static double GetMipGap(double bestObjective, double bestObjectiveBound)
+        {
+            if (bestObjective.Equals(0) || double.IsNaN(bestObjective) || double.IsNaN(bestObjectiveBound)
+                || Math.Abs(bestObjective).Equals(GRB.INFINITY) || Math.Abs(bestObjectiveBound).Equals(GRB.INFINITY))
+            {
+                return GRB.INFINITY;
+            }
+
+            return Math.Abs(bestObjectiveBound - bestObjective) / Math.Abs(bestObjective);
         }
 
         #endregion

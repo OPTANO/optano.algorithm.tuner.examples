@@ -31,12 +31,15 @@
 
 namespace Optano.Algorithm.Tuner.Gurobi
 {
+    using System;
     using System.Collections.Generic;
+    using System.Globalization;
     using System.IO;
     using System.Linq;
 
     using global::Gurobi;
 
+    using Optano.Algorithm.Tuner.Configuration;
     using Optano.Algorithm.Tuner.Genomes.Values;
     using Optano.Algorithm.Tuner.Logging;
     using Optano.Algorithm.Tuner.TargetAlgorithm;
@@ -47,26 +50,33 @@ namespace Optano.Algorithm.Tuner.Gurobi
     /// </summary>
     public class GurobiRunnerFactory : ITargetAlgorithmFactory<GurobiRunner, InstanceSeedFile, GurobiResult>
     {
+        #region Fields
+
+        /// <summary>
+        /// The tuner configuration.
+        /// </summary>
+        private readonly AlgorithmTunerConfiguration _tunerConfiguration;
+
+        /// <summary>
+        /// The gurobi runner configuration.
+        /// </summary>
+        private readonly GurobiRunnerConfiguration _runnerConfiguration;
+
+        #endregion
+
         #region Constructors and Destructors
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GurobiRunnerFactory"/> class.
         /// </summary>
-        /// <param name="gurobiSettings">The gurobi settings.</param>
-        public GurobiRunnerFactory(GurobiRunnerConfiguration gurobiSettings)
+        /// <param name="runnerConfiguration">The <see cref="GurobiRunnerConfiguration"/>.</param>
+        /// <param name="tunerConfiguration">The <see cref="AlgorithmTunerConfiguration"/>.</param>
+        public GurobiRunnerFactory(GurobiRunnerConfiguration runnerConfiguration, AlgorithmTunerConfiguration tunerConfiguration)
 
         {
-            this.GurobiSettings = gurobiSettings;
+            this._runnerConfiguration = runnerConfiguration;
+            this._tunerConfiguration = tunerConfiguration;
         }
-
-        #endregion
-
-        #region Properties
-
-        /// <summary>
-        /// Gets or sets the configuration of the Gurobi runner.
-        /// </summary>
-        private GurobiRunnerConfiguration GurobiSettings { get; set; }
 
         #endregion
 
@@ -94,19 +104,62 @@ namespace Optano.Algorithm.Tuner.Gurobi
             // Log which settings will be used for the next Gurobi run(s).
             LoggingHelper.WriteLine(VerbosityLevel.Info, string.Join(", ", parameters.Select(parameter => $"{parameter.Key}: {parameter.Value}")));
 
-            gurobiEnvironment.Threads = this.GurobiSettings.ThreadCount;
+            gurobiEnvironment.Threads = this._runnerConfiguration.ThreadCount;
 
-            gurobiEnvironment.NodefileStart = this.GurobiSettings.NodefileStartSizeGigabyte;
+            gurobiEnvironment.NodefileStart = this._runnerConfiguration.NodefileStartSizeGigabyte;
 
-            if (!Directory.Exists(this.GurobiSettings.NodefileDirectory.FullName))
+            if (!Directory.Exists(this._runnerConfiguration.NodefileDirectory.FullName))
             {
-                this.GurobiSettings.NodefileDirectory.Create();
+                this._runnerConfiguration.NodefileDirectory.Create();
             }
 
-            gurobiEnvironment.NodefileDir = this.GurobiSettings.NodefileDirectory.FullName;
+            gurobiEnvironment.NodefileDir = this._runnerConfiguration.NodefileDirectory.FullName;
 
             // Return the new gurobi runner.
-            return new GurobiRunner(gurobiEnvironment, this.GurobiSettings);
+            return new GurobiRunner(gurobiEnvironment, this._runnerConfiguration, this._tunerConfiguration);
+        }
+
+        /// <summary>
+        /// Tries to get the result from the given string array. This method is the counterpart to <see cref="GurobiResult.ToStringArray"/>.
+        /// </summary>
+        /// <param name="stringArray">The string array.</param>
+        /// <param name="result">The result.</param>
+        /// <returns>True, if successful.</returns>
+        public bool TryToGetResultFromStringArray(string[] stringArray, out GurobiResult result)
+        {
+            result = null;
+
+            if (stringArray.Length != 4)
+            {
+                return false;
+            }
+
+            if (!Enum.TryParse(stringArray[0], true, out TargetAlgorithmStatus targetAlgorithmStatus))
+            {
+                return false;
+            }
+
+            if (!double.TryParse(stringArray[1], NumberStyles.Any, CultureInfo.InvariantCulture, out var runtime))
+            {
+                return false;
+            }
+
+            if (!double.TryParse(stringArray[2], NumberStyles.Any, CultureInfo.InvariantCulture, out var gap))
+            {
+                return false;
+            }
+
+            if (!bool.TryParse(stringArray[3], out var hasValidResult))
+            {
+                return false;
+            }
+
+            result = new GurobiResult(
+                gap,
+                TimeSpan.FromMilliseconds(runtime),
+                targetAlgorithmStatus,
+                hasValidResult);
+            return true;
         }
 
         #endregion

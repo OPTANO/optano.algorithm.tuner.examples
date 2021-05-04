@@ -74,7 +74,7 @@ namespace Optano.Algorithm.Tuner.Bbob
             if (!File.Exists(pathToBenchmarkScript))
             {
                 throw new FileNotFoundException(
-                    "You need to provide bbobbenchmarks.py next to your BBOB python script. For further information please consult the documentation at https://docs.optano.com/algorithmtuner/current/userDoc/bbob.html.");
+                    "You need to provide the bbobbenchmarks python script 'bbobbenchmarks.py' next to your BBOB python adapter script 'bbobeval.py'. For further information please consult the documentation at https://docs.optano.com/algorithmtuner/current/userDoc/bbob.html.");
             }
 
             // Render the parameters as accepted by the command line.

@@ -1,577 +1,574 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <node xsi:type="and" xsi:noNamespaceSchemaLocation="../parameterTree.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<node xsi:type="value" id="activity">
-		<domain xsi:type="categorical" ints="0 1 2"/>
+		<domain xsi:type="categorical" ints="0 1 2" defaultIndexOrValue="0" />
 	</node>
 	<node xsi:type="value" id="agility">
-		<domain xsi:type="categorical" ints="0 1"/>
+		<domain defaultIndexOrValue="1" xsi:type="categorical" ints="0 1"/>
 	</node>
 	<node xsi:type="value" id="agilitylim">
-		<domain xsi:type="discrete" start="0" end="100"/>
+		<domain defaultIndexOrValue="70" xsi:type="discrete" start="0" end="100"/>
 	</node>
-	<node xsi:type="value" id="bate">
-		<domain xsi:type="categorical" ints="0 1"/>
+	<node xsi:type="value" id="bate" >
+		<domain defaultIndexOrValue="1" xsi:type="categorical" ints="0 1"/>
 	</node>
 	<node xsi:type="value" id="batewait">
-		<domain xsi:type="categorical" ints="0 1 2"/>
+		<domain defaultIndexOrValue="2" xsi:type="categorical" ints="0 1 2"/>
 	</node>
 	<node xsi:type="value" id="bca">
-		<domain xsi:type="categorical" ints="0 1 2"/>
+		<domain defaultIndexOrValue="1" xsi:type="categorical" ints="0 1 2"/>
 		<node xsi:type="and">
 			<node xsi:type="value" id="bcaddlimldscale">
-				<domain xsi:type="discrete" start="-7" end="7"/>
+		<domain defaultIndexOrValue="2" xsi:type="discrete" start="-7" end="7"/>
 			</node>
 			<node xsi:type="or" id="bcamaxeffActive">
-				<domain xsi:type="categorical" booleans="true false"/>
+		<domain defaultIndexOrValue="0" xsi:type="categorical" booleans="true false"/>
 				<choice>
 					<boolean>true</boolean>
 					<child xsi:type="value" id="bcamaxeff">
-						<domain xsi:type="discrete" log="true" start="1" end="247483647"/>
+		<domain defaultIndexOrValue="10000000" xsi:type="discrete" log="true" start="1" end="247483647"/>
 					</child>
 				</choice>
 			</node>
 			<node xsi:type="or" id="bcaminuseActive">
-				<domain xsi:type="categorical" booleans="true false"/>
+		<domain defaultIndexOrValue="0" xsi:type="categorical" booleans="true false"/>
 				<choice>
 					<boolean>true</boolean>
 					<child xsi:type="value" id="bcaminuse">
-						<domain xsi:type="discrete" log="true" start="1" end="247483647"/>
+		<domain defaultIndexOrValue="100" xsi:type="discrete" log="true" start="1" end="247483647"/>
 					</child>
 				</choice>
 			</node>
 			<node xsi:type="value" id="bcawait">
-				<domain xsi:type="categorical" ints="0 1 2"/>
+		<domain defaultIndexOrValue="2" xsi:type="categorical" ints="0 1 2"/>
 			</node>
 		</node>
 	</node>
 	<node xsi:type="or" id="bkwdocclimActive">
-		<domain xsi:type="categorical" booleans="true false"/>
+		<domain defaultIndexOrValue="0" xsi:type="categorical" booleans="true false"/>
 		<choice>
 			<boolean>true</boolean>
 			<child xsi:type="value" id="bkwdocclim">
-				<domain xsi:type="discrete" log="true" start="1" end="247483647"/>
+		<domain defaultIndexOrValue="100" xsi:type="discrete" log="true" start="1" end="247483647"/>
 			</child>
 		</choice>
 	</node>
 	<node xsi:type="value" id="bkwdresched">
-		<domain xsi:type="categorical" ints="0 1"/>
+		<domain defaultIndexOrValue="1" xsi:type="categorical" ints="0 1"/>
 	</node>
 	<node xsi:type="value" id="bkwdroundlim">
-		<domain xsi:type="discrete" log="true" start="1" end="247483647"/>
+		<domain defaultIndexOrValue="7" xsi:type="discrete" log="true" start="1" end="247483647"/>
 	</node>
 	<node xsi:type="value" id="bkwdscale">
-		<domain xsi:type="discrete" start="1" end="10000"/>
+		<domain defaultIndexOrValue="100" xsi:type="discrete" start="1" end="10000"/>
 	</node>
 	<node xsi:type="value" id="blkboost">
-		<domain xsi:type="discrete" start="1" end="10000"/>
+		<domain defaultIndexOrValue="10" xsi:type="discrete" start="1" end="10000"/>
 	</node>
 	<node xsi:type="or" id="blkboostvlimActive">
-		<domain xsi:type="categorical" booleans="true false"/>
+		<domain defaultIndexOrValue="0" xsi:type="categorical" booleans="true false"/>
 		<choice>
 			<boolean>true</boolean>
 			<child xsi:type="value" id="blkboostvlim">
-				<domain xsi:type="discrete" log="true" start="1" end="247483647"/>
+		<domain defaultIndexOrValue="10000000" xsi:type="discrete" log="true" start="1" end="247483647"/>
 			</child>
 		</choice>
 	</node>
 	<node xsi:type="value" id="blkclslim">
-		<domain xsi:type="discrete" log="true" start="3" end="247483647"/>
+		<domain defaultIndexOrValue="1000000" xsi:type="discrete" log="true" start="3" end="247483647"/>
 	</node>
 	<node xsi:type="value" id="blklarge">
-		<domain xsi:type="categorical" ints="0 1"/>
+		<domain defaultIndexOrValue="1" xsi:type="categorical" ints="0 1"/>
 	</node>
 	<!-- blkmaxeff: max effort in BCE (-1=unlimited) [800000000] -->
 	<node xsi:type="or" id="blkmaxeffActive">
-		<domain xsi:type="categorical" strings="unlimited disabled active" />
+		<domain xsi:type="categorical" strings="unlimited disabled active" defaultIndexOrValue="2"/>
 		<choice>
 			<string>active</string>
 			<child xsi:type="value" id="blkmaxeff">
-				<domain xsi:type="discrete" log="true" start="1" end="2147483647" />
+		<domain defaultIndexOrValue="800000000" xsi:type="discrete" log="true" start="1" end="2147483647" />
 			</child>
 		</choice>
 	</node>
 	<node xsi:type="or" id="blkmineffActive">
-		<domain xsi:type="categorical" booleans="true false"/>
+		<domain defaultIndexOrValue="0" xsi:type="categorical" booleans="true false"/>
 		<choice>
 			<boolean>true</boolean>
-			<child xsi:type="value" id="blkmineff">
-				<domain xsi:type="discrete" log="true" start="1" end="247483647"/>
+			<child xsi:type="value" id="blkmineff" >
+		<domain defaultIndexOrValue="50000000" xsi:type="discrete" log="true" start="1" end="247483647"/>
 			</child>
 		</choice>
 	</node>
 	<node xsi:type="value" id="blkocclim1">
-		<domain xsi:type="discrete" log="true" start="1" end="247483647"/>
+		<domain defaultIndexOrValue="100000" xsi:type="discrete" log="true" start="1" end="247483647"/>
 	</node>
-	<node xsi:type="value" id="blkocclim">
-		<domain xsi:type="discrete" log="true" start="3" end="247483647"/>
+	<node xsi:type="value" id="blkocclim" >
+		<domain defaultIndexOrValue="1000000" xsi:type="discrete" log="true" start="3" end="247483647"/>
 	</node>
 	<node xsi:type="value" id="blkocclim2">
-		<domain xsi:type="discrete" log="true" start="2" end="247483647"/>
+		<domain defaultIndexOrValue="10000" xsi:type="discrete" log="true" start="2" end="247483647"/>
 	</node>
 	<node xsi:type="value" id="blkreleff">
-		<domain xsi:type="discrete" start="0" end="1000"/>
+		<domain defaultIndexOrValue="100" xsi:type="discrete" start="0" end="1000"/>
 	</node>
 	<node xsi:type="value" id="blkresched">
-		<domain xsi:type="categorical" ints="0 1"/>
+		<domain defaultIndexOrValue="1" xsi:type="categorical" ints="0 1"/>
 	</node>
 	<node xsi:type="value" id="blkrtc">
-		<domain xsi:type="categorical" ints="0 1"/>
+		<domain defaultIndexOrValue="0" xsi:type="categorical" ints="0 1"/>
 	</node>
 	<node xsi:type="value" id="blksmall">
-		<domain xsi:type="categorical" ints="0 1"/>
+		<domain defaultIndexOrValue="1" xsi:type="categorical" ints="0 1"/>
 	</node>
 	<node xsi:type="value" id="blksuccessmaxwortc">
-		<domain xsi:type="discrete" log="true" start="1" end="247483647"/>
+		<domain defaultIndexOrValue="6" xsi:type="discrete" log="true" start="1" end="247483647"/>
 	</node>
 	<node xsi:type="value" id="blksuccessrat">
-		<domain xsi:type="discrete" log="true" start="1" end="247483647"/>
+		<domain defaultIndexOrValue="100" xsi:type="discrete" log="true" start="1" end="247483647"/>
 	</node>
 	<node xsi:type="value" id="block">
-		<domain xsi:type="categorical" ints="0 1"/>
+		<domain defaultIndexOrValue="1" xsi:type="categorical" ints="0 1"/>
 	</node>
 	<node xsi:type="value" id="blockwait">
-		<domain xsi:type="categorical" ints="0 1"/>
+		<domain defaultIndexOrValue="1" xsi:type="categorical" ints="0 1"/>
 	</node>
 	<node xsi:type="value" id="boost">
-		<domain xsi:type="categorical" ints="0 1"/>
+		<domain defaultIndexOrValue="1" xsi:type="categorical" ints="0 1"/>
 	</node>
 	<node xsi:type="value" id="bumpsimp">
-		<domain xsi:type="categorical" ints="0 1"/>
+		<domain defaultIndexOrValue="1" xsi:type="categorical" ints="0 1"/>
 	</node>
 	<node xsi:type="value" id="card">
-		<domain xsi:type="categorical" ints="0 1"/>
+		<domain defaultIndexOrValue="1" xsi:type="categorical" ints="0 1"/>
 	</node>
 	<node xsi:type="value" id="cardcut">
-		<domain xsi:type="categorical" ints="0 1 2"/>
+		<domain defaultIndexOrValue="2" xsi:type="categorical" ints="0 1 2"/>
 	</node>
 	<node xsi:type="value" id="cardexpam1">
-		<domain xsi:type="discrete" log="true" start="2" end="247483647"/>
+		<domain defaultIndexOrValue="3" xsi:type="discrete" log="true" start="2" end="247483647"/>
 	</node>
 	<node xsi:type="value" id="cardglue">
-		<domain xsi:type="categorical" ints="-1 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15"/>
+		<domain defaultIndexOrValue="0" xsi:type="categorical" ints="-1 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15"/>
 	</node>
 	<node xsi:type="value" id="cardignused">
-		<domain xsi:type="categorical" ints="0 1"/>
+		<domain defaultIndexOrValue="0" xsi:type="categorical" ints="0 1"/>
 	</node>
 	<node xsi:type="or" id="cardmaxeffActive">
-		<domain xsi:type="categorical" strings="unlimited disabled active" />
+		<domain defaultIndexOrValue="2" xsi:type="categorical" strings="unlimited disabled active" />
 		<choice>
 			<string>active</string>
 			<child xsi:type="value" id="cardmaxeff">
-				<domain xsi:type="discrete" log="true" start="1" end="2147483647" />
+		<domain defaultIndexOrValue="300000000" xsi:type="discrete" log="true" start="1" end="2147483647" />
 			</child>
 		</choice>
 	</node>
 	<node xsi:type="or" id="cardmaxlenActive">
-		<domain xsi:type="categorical" booleans="true false"/>
+		<domain defaultIndexOrValue="0" xsi:type="categorical" booleans="true false"/>
 		<choice>
 			<boolean>true</boolean>
 			<child xsi:type="value" id="cardmaxlen">
-				<domain xsi:type="discrete" log="true" start="1" end="247483647"/>
+		<domain defaultIndexOrValue="1000" xsi:type="discrete" log="true" start="1" end="247483647"/>
 			</child>
 		</choice>
 	</node>
 	<node xsi:type="or" id="cardmineffActive">
-		<domain xsi:type="categorical" booleans="true false"/>
+		<domain defaultIndexOrValue="0" xsi:type="categorical" booleans="true false"/>
 		<choice>
 			<boolean>true</boolean>
 			<child xsi:type="value" id="cardmineff">
-				<domain xsi:type="discrete" log="true" start="1" end="247483647"/>
+		<domain defaultIndexOrValue="2000000" xsi:type="discrete" log="true" start="1" end="247483647"/>
 			</child>
 		</choice>
 	</node>
 	<node xsi:type="or" id="cardminlenActive">
-		<domain xsi:type="categorical" booleans="true false"/>
+		<domain defaultIndexOrValue="0" xsi:type="categorical" booleans="true false"/>
 		<choice>
 			<boolean>true</boolean>
 			<child xsi:type="value" id="cardminlen">
-				<domain xsi:type="discrete" log="true" start="1" end="247483647"/>
+		<domain defaultIndexOrValue="3" xsi:type="discrete" log="true" start="1" end="247483647"/>
 			</child>
 		</choice>
 	</node>
 	<node xsi:type="or" id="cardocclim1Active">
-		<domain xsi:type="categorical" booleans="true false"/>
+		<domain defaultIndexOrValue="0" xsi:type="categorical" booleans="true false"/>
 		<choice>
 			<boolean>true</boolean>
 			<child xsi:type="value" id="cardocclim1">
-				<domain xsi:type="discrete" log="true" start="1" end="247483647"/>
+		<domain defaultIndexOrValue="300" xsi:type="discrete" log="true" start="1" end="247483647"/>
 			</child>
 		</choice>
 	</node>
 	<node xsi:type="or" id="cardocclim2Active">
-		<domain xsi:type="categorical" booleans="true false"/>
+		<domain defaultIndexOrValue="0" xsi:type="categorical" booleans="true false"/>
 		<choice>
 			<boolean>true</boolean>
 			<child xsi:type="value" id="cardocclim2">
-				<domain xsi:type="discrete" log="true" start="1" end="247483647"/>
+		<domain defaultIndexOrValue="15" xsi:type="discrete" log="true" start="1" end="247483647"/>
 			</child>
 		</choice>
 	</node>
 	<node xsi:type="value" id="cardreleff">
-		<domain xsi:type="discrete" start="0" end="10000"/>
+		<domain defaultIndexOrValue="5" xsi:type="discrete" start="0" end="10000"/>
 	</node>
 	<node xsi:type="value" id="cardreschedint">
-		<domain xsi:type="discrete" log="true" start="1" end="247483647"/>
+		<domain defaultIndexOrValue="10" xsi:type="discrete" log="true" start="1" end="247483647"/>
 	</node>
 	<node xsi:type="value" id="carduse">
-		<domain xsi:type="categorical" ints="0 1 2 3"/>
+		<domain defaultIndexOrValue="2" xsi:type="categorical" ints="0 1 2 3"/>
 	</node>
 	<node xsi:type="value" id="cardwait">
-		<domain xsi:type="categorical" ints="0 1 2"/>
+		<domain defaultIndexOrValue="0" xsi:type="categorical" ints="0 1 2"/>
 	</node>
 	<node xsi:type="value" id="classify">
-		<domain xsi:type="categorical" ints="0 1 2 3"/>
+		<domain defaultIndexOrValue="2" xsi:type="categorical" ints="0 1 2 3"/>
 	</node>
 	<node xsi:type="or" id="cce2waitActive">
-		<domain xsi:type="categorical" booleans="true false"/>
+		<domain defaultIndexOrValue="0" xsi:type="categorical" booleans="true false"/>
 		<choice>
 			<boolean>true</boolean>
 			<child xsi:type="value" id="cce2wait">
-				<domain xsi:type="discrete" log="true" start="1" end="247483647"/>
+		<domain defaultIndexOrValue="1" xsi:type="discrete" log="true" start="1" end="247483647"/>
 			</child>
 		</choice>
 	</node>
 	<node xsi:type="value" id="cce">
-		<domain xsi:type="categorical" ints="0 1 2 3"/>
+		<domain defaultIndexOrValue="3" xsi:type="categorical" ints="0 1 2 3"/>
 	</node>
 	<node xsi:type="or" id="cce3waitActive">
-		<domain xsi:type="categorical" booleans="true false"/>
+		<domain defaultIndexOrValue="0" xsi:type="categorical" booleans="true false"/>
 		<choice>
 			<boolean>true</boolean>
 			<child xsi:type="value" id="cce3wait">
-				<domain xsi:type="discrete" log="true" start="1" end="247483647"/>
+		<domain defaultIndexOrValue="2" xsi:type="discrete" log="true" start="1" end="247483647"/>
 			</child>
 		</choice>
 	</node>
 	<node xsi:type="value" id="cceateint">
-		<domain xsi:type="discrete" log="true" start="1" end="247483647"/>
+		<domain defaultIndexOrValue="2" xsi:type="discrete" log="true" start="1" end="247483647"/>
 	</node>
 	<node xsi:type="value" id="cceboost">
-		<domain xsi:type="discrete" start="1" end="1000"/>
+		<domain defaultIndexOrValue="10" xsi:type="discrete" start="1" end="1000"/>
 	</node>
 	<node xsi:type="value" id="cceboostdel">
-		<domain xsi:type="discrete" start="0" end="100"/>
+		<domain defaultIndexOrValue="3" xsi:type="discrete" start="0" end="100"/>
 	</node>
 	<node xsi:type="value" id="cceboostint">
-		<domain xsi:type="discrete" log="true" start="1" end="247483647"/>
+		<domain defaultIndexOrValue="5" xsi:type="discrete" log="true" start="1" end="247483647"/>
 	</node>
 	<node xsi:type="or" id="cceboostvlimActive">
-		<domain xsi:type="categorical" booleans="true false"/>
+		<domain defaultIndexOrValue="0" xsi:type="categorical" booleans="true false"/>
 		<choice>
 			<boolean>true</boolean>
 			<child xsi:type="value" id="cceboostvlim">
-				<domain xsi:type="discrete" log="true" start="1" end="247483647"/>
+		<domain defaultIndexOrValue="10000000" xsi:type="discrete" log="true" start="1" end="247483647"/>
 			</child>
 		</choice>
 	</node>
 	<node xsi:type="or" id="ccemaxeffActive">
-		<domain xsi:type="categorical" strings="unlimited disabled active" />
+		<domain defaultIndexOrValue="2" xsi:type="categorical" strings="unlimited disabled active" />
 		<choice>
 			<string>active</string>
 			<child xsi:type="value" id="ccemaxeff">
-				<domain xsi:type="discrete" log="true" start="1" end="2147483647" />
+		<domain defaultIndexOrValue="2147483647" xsi:type="discrete" log="true" start="1" end="2147483647" />
 			</child>
 		</choice>
 	</node>
 	<node xsi:type="or" id="ccemaxroundActive">
-		<domain xsi:type="categorical" booleans="true false"/>
+		<domain defaultIndexOrValue="0" xsi:type="categorical" booleans="true false"/>
 		<choice>
 			<boolean>true</boolean>
 			<child xsi:type="value" id="ccemaxround">
-				<domain xsi:type="discrete" log="true" start="1" end="247483647"/>
+		<domain defaultIndexOrValue="3" xsi:type="discrete" log="true" start="1" end="247483647"/>
 			</child>
 		</choice>
 	</node>
 	<node xsi:type="or" id="ccemineffActive">
-		<domain xsi:type="categorical" booleans="true false"/>
+		<domain defaultIndexOrValue="0" xsi:type="categorical" booleans="true false"/>
 		<choice>
 			<boolean>true</boolean>
 			<child xsi:type="value" id="ccemineff">
-				<domain xsi:type="discrete" log="true" start="1" end="247483647"/>
+		<domain defaultIndexOrValue="30000000" xsi:type="discrete" log="true" start="1" end="247483647"/>
 			</child>
 		</choice>
 	</node>
 	<node xsi:type="value" id="ccereleff">
-		<domain xsi:type="discrete" start="0" end="1000"/>
+		<domain defaultIndexOrValue="50" xsi:type="discrete" start="0" end="1000"/>
 	</node>
 	<node xsi:type="value" id="ccertc">
-		<domain xsi:type="categorical" ints="0 1 2"/>
+		<domain defaultIndexOrValue="0" xsi:type="categorical" ints="0 1 2"/>
 	</node>
 	<node xsi:type="value" id="ccertcint">
-		<domain xsi:type="discrete" log="true" start="1" end="247483647"/>
+		<domain defaultIndexOrValue="15" xsi:type="discrete" log="true" start="1" end="247483647"/>
 	</node>
 	<node xsi:type="value" id="ccertcintvlim">
-		<domain xsi:type="discrete" log="true" start="1" end="247483647"/>
+		<domain defaultIndexOrValue="2000000" xsi:type="discrete" log="true" start="1" end="247483647"/>
 	</node>
 	<node xsi:type="value" id="ccesuccessrat">
-		<domain xsi:type="discrete" log="true" start="1" end="247483647"/>
+		<domain defaultIndexOrValue="100" xsi:type="discrete" log="true" start="1" end="247483647"/>
 	</node>
 	<node xsi:type="value" id="ccewait">
-		<domain xsi:type="categorical" ints="0 1 2"/>
+		<domain defaultIndexOrValue="2" xsi:type="categorical" ints="0 1 2"/>
 	</node>
 	<node xsi:type="value" id="check">
-		<domain xsi:type="categorical" ints="0 1 2 3"/>
+		<domain defaultIndexOrValue="0" xsi:type="categorical" ints="0 1 2 3"/>
 	</node>
 	<node xsi:type="value" id="compact">
-		<domain xsi:type="categorical" ints="0 1 2"/>
+		<domain defaultIndexOrValue="0" xsi:type="categorical" ints="0 1 2"/>
 	</node>
 	<node xsi:type="value" id="deco">
-		<domain xsi:type="categorical" ints="0 1"/>
+		<domain defaultIndexOrValue="1" xsi:type="categorical" ints="0 1"/>
 	</node>
 	<node xsi:type="value" id="deco1opt">
-		<domain xsi:type="categorical" ints="0 1"/>
+		<domain defaultIndexOrValue="1" xsi:type="categorical" ints="0 1"/>
 	</node>
 	<node xsi:type="or" id="decolimActive">
-		<domain xsi:type="categorical" booleans="true false"/>
+		<domain defaultIndexOrValue="0" xsi:type="categorical" booleans="true false"/>
 		<choice>
 			<boolean>true</boolean>
 			<child xsi:type="value" id="decolim">
-				<domain xsi:type="discrete" log="true" start="1" end="247483647"/>
+		<domain defaultIndexOrValue="100" xsi:type="discrete" log="true" start="1" end="247483647"/>
 			</child>
 		</choice>
 	</node>
 	<node xsi:type="value" id="decompose">
-		<domain xsi:type="categorical" ints="0 1"/>
+		<domain defaultIndexOrValue="1" xsi:type="categorical" ints="0 1"/>
 	</node>
 	<node xsi:type="value" id="defragfree">
-		<domain xsi:type="discrete" start="10" end="1000"/>
+		<domain defaultIndexOrValue="50" xsi:type="discrete" start="10" end="1000"/>
 	</node>
 	<node xsi:type="value" id="defragint">
-		<domain xsi:type="discrete" log="true" start="100" end="247483647"/>
+		<domain defaultIndexOrValue="10000000" xsi:type="discrete" log="true" start="100" end="247483647"/>
 	</node>
 	<node xsi:type="value" id="delmax">
-		<domain xsi:type="discrete" start="0" end="10"/>
+		<domain defaultIndexOrValue="10" xsi:type="discrete" start="0" end="10"/>
 	</node>
 	<node xsi:type="value" id="druplig">
-		<domain xsi:type="categorical" ints="0 1"/>
+		<domain defaultIndexOrValue="0" xsi:type="categorical" ints="0 1"/>
 	</node>
 	<node xsi:type="value" id="drupligcheck">
-		<domain xsi:type="categorical" ints="0 1"/>
+		<domain defaultIndexOrValue="0" xsi:type="categorical" ints="0 1"/>
 	</node>
 	<node xsi:type="value" id="drupligtrace">
-		<domain xsi:type="categorical" ints="0 1"/>
+		<domain defaultIndexOrValue="0" xsi:type="categorical" ints="0 1"/>
 	</node>
 	<node xsi:type="value" id="drupligtraceorig">
-		<domain xsi:type="categorical" ints="0 1"/>
+		<domain defaultIndexOrValue="0" xsi:type="categorical" ints="0 1"/>
 	</node>
 	<node xsi:type="value" id="elim">
-		<domain xsi:type="categorical" ints="0 1"/>
+		<domain defaultIndexOrValue="1" xsi:type="categorical" ints="0 1"/>
 	</node>
 	<node xsi:type="or" id="elmaxeffActive">
-		<domain xsi:type="categorical" strings="unlimited disabled active" />
+		<domain defaultIndexOrValue="2" xsi:type="categorical" strings="unlimited disabled active" />
 		<choice>
 			<string>active</string>
 			<child xsi:type="value" id="elmaxeff">
-				<domain xsi:type="discrete" log="true" start="1" end="2147483647" />
+		<domain defaultIndexOrValue="800000000" xsi:type="discrete" log="true" start="1" end="2147483647" />
 			</child>
 		</choice>
 	</node>
 	<node xsi:type="value" id="elmblk">
-		<domain xsi:type="categorical" ints="0 1"/>
+		<domain defaultIndexOrValue="1" xsi:type="categorical" ints="0 1"/>
 	</node>
 	<node xsi:type="value" id="elmblkwait">
-		<domain xsi:type="categorical" ints="0 1"/>
+		<domain defaultIndexOrValue="1" xsi:type="categorical" ints="0 1"/>
 	</node>
 	<node xsi:type="value" id="elmboost">
-		<domain xsi:type="discrete" start="1" end="1000"/>
+		<domain defaultIndexOrValue="20" xsi:type="discrete" start="1" end="1000"/>
 	</node>
 	<node xsi:type="value" id="elmboostdel">
-		<domain xsi:type="discrete" start="0" end="100"/>
+		<domain defaultIndexOrValue="3" xsi:type="discrete" start="0" end="100"/>
 	</node>
 	<node xsi:type="value" id="elmboostint">
-		<domain xsi:type="discrete" log="true" start="1" end="247483647"/>
+		<domain defaultIndexOrValue="5" xsi:type="discrete" log="true" start="1" end="247483647"/>
 	</node>
 	<node xsi:type="value" id="elmboostvlim">
-		<domain xsi:type="discrete" log="true" start="1" end="247483647"/>
+		<domain defaultIndexOrValue="4000000" xsi:type="discrete" log="true" start="1" end="247483647"/>
 	</node>
 	<node xsi:type="value" id="elmclslim">
-		<domain xsi:type="discrete" log="true" start="3" end="247483647"/>
+		<domain defaultIndexOrValue="1000000" xsi:type="discrete" log="true" start="3" end="247483647"/>
 	</node>
 	<node xsi:type="value" id="elmfull">
-		<domain xsi:type="categorical" ints="0 1"/>
+		<domain defaultIndexOrValue="0" xsi:type="categorical" ints="0 1"/>
 	</node>
 	<node xsi:type="or" id="elmineffActive">
-		<domain xsi:type="categorical" booleans="true false"/>
+		<domain defaultIndexOrValue="0" xsi:type="categorical" booleans="true false"/>
 		<choice>
 			<boolean>true</boolean>
 			<child xsi:type="value" id="elmineff">
-				<domain xsi:type="discrete" log="true" start="1" end="247483647"/>
+		<domain defaultIndexOrValue="20000000" xsi:type="discrete" log="true" start="1" end="247483647"/>
 			</child>
 		</choice>
 	</node>
 	<node xsi:type="or" id="elmlitslimActive">
-		<domain xsi:type="categorical" booleans="true false"/>
+		<domain defaultIndexOrValue="0" xsi:type="categorical" booleans="true false"/>
 		<choice>
 			<boolean>true</boolean>
 			<child xsi:type="value" id="elmlitslim">
-				<domain xsi:type="discrete" log="true" start="1" end="247483647"/>
+		<domain defaultIndexOrValue="200" xsi:type="discrete" log="true" start="1" end="247483647"/>
 			</child>
 		</choice>
 	</node>
 	<node xsi:type="value" id="elmocclim1">
-		<domain xsi:type="discrete" log="true" start="1" end="247483647"/>
+		<domain defaultIndexOrValue="1000" xsi:type="discrete" log="true" start="1" end="247483647"/>
 	</node>
 	<node xsi:type="value" id="elmocclim">
-		<domain xsi:type="discrete" log="true" start="3" end="247483647"/>
+		<domain defaultIndexOrValue="1000000" xsi:type="discrete" log="true" start="3" end="247483647"/>
 	</node>
 	<node xsi:type="value" id="elmocclim2">
-		<domain xsi:type="discrete" log="true" start="2" end="247483647"/>
+		<domain defaultIndexOrValue="100" xsi:type="discrete" log="true" start="2" end="247483647"/>
 	</node>
 	<node xsi:type="value" id="elmoccsumforced">
-		<domain xsi:type="discrete" start="0" end="10"/>
+		<domain defaultIndexOrValue="0" xsi:type="discrete" start="0" end="10"/>
 	</node>
 	<node xsi:type="value" id="elmreleff">
-		<domain xsi:type="discrete" start="0" end="10000"/>
+		<domain defaultIndexOrValue="200" xsi:type="discrete" start="0" end="10000"/>
 	</node>
 	<node xsi:type="value" id="elmresched">
-		<domain xsi:type="categorical" ints="0 1 2 3 4 5 6 7"/>
+		<domain defaultIndexOrValue="0" xsi:type="categorical" ints="0 1 2 3 4 5 6 7"/>
 	</node>
 	<node xsi:type="value" id="elmroundlim">
-		<domain xsi:type="discrete" log="true" start="1" end="247483647"/>
+		<domain defaultIndexOrValue="3" xsi:type="discrete" log="true" start="1" end="247483647"/>
 	</node>
 	<node xsi:type="value" id="elmrtc">
-		<domain xsi:type="categorical" ints="0 1 2"/>
+		<domain defaultIndexOrValue="0" xsi:type="categorical" ints="0 1 2"/>
 	</node>
 	<node xsi:type="value" id="elmrtcint">
-		<domain xsi:type="discrete" log="true" start="1" end="247483647"/>
+		<domain defaultIndexOrValue="10" xsi:type="discrete" log="true" start="1" end="247483647"/>
 	</node>
 	<node xsi:type="value" id="elmrtcintvlim">
-		<domain xsi:type="discrete" log="true" start="1" end="247483647"/>
+		<domain defaultIndexOrValue="500000" xsi:type="discrete" log="true" start="1" end="247483647"/>
 	</node>
 	<node xsi:type="value" id="elmotfstr">
-		<domain xsi:type="categorical" ints="0 1"/>
+		<domain defaultIndexOrValue="1" xsi:type="categorical" ints="0 1"/>
 	</node>
 	<node xsi:type="value" id="elmotfsub">
-		<domain xsi:type="categorical" ints="0 1"/>
+		<domain defaultIndexOrValue="1" xsi:type="categorical" ints="0 1"/>
 	</node>
 	<node xsi:type="value" id="elmsuccessmaxwortc">
-		<domain xsi:type="discrete" log="true" start="1" end="247483647"/>
+		<domain defaultIndexOrValue="4" xsi:type="discrete" log="true" start="1" end="247483647"/>
 	</node>
 	<node xsi:type="value" id="elmsuccessrat">
-		<domain xsi:type="discrete" log="true" start="1" end="247483647"/>
-	</node>
-	<node xsi:type="value" id="exitonabort">
-		<domain xsi:type="categorical" ints="0 1"/>
+		<domain defaultIndexOrValue="100" xsi:type="discrete" log="true" start="1" end="247483647"/>
 	</node>
 	<node xsi:type="value" id="factmax">
-		<domain xsi:type="discrete" log="true" start="1" end="247483647"/>
+		<domain defaultIndexOrValue="100000" xsi:type="discrete" log="true" start="1" end="247483647"/>
 	</node>
 	<node xsi:type="value" id="factor">
-		<domain xsi:type="categorical" ints="0 1 2 3"/>
+		<domain defaultIndexOrValue="3" xsi:type="categorical" ints="0 1 2 3"/>
 	</node>
 	<node xsi:type="value" id="gauss">
-		<domain xsi:type="categorical" ints="0 1"/>
+		<domain defaultIndexOrValue="1" xsi:type="categorical" ints="0 1"/>
 	</node>
 	<node xsi:type="value" id="gausscardweak">
-		<domain xsi:type="categorical" ints="0 1"/>
+		<domain defaultIndexOrValue="1" xsi:type="categorical" ints="0 1"/>
 	</node>
 	<node xsi:type="value" id="gaussexptrn">
-		<domain xsi:type="categorical" ints="0 1"/>
+		<domain defaultIndexOrValue="1" xsi:type="categorical" ints="0 1"/>
 	</node>
 	<node xsi:type="value" id="gaussextrall">
-		<domain xsi:type="categorical" ints="0 1"/>
+		<domain defaultIndexOrValue="1" xsi:type="categorical" ints="0 1"/>
 	</node>
 	<node xsi:type="or" id="gaussmaxeffActive">
-		<domain xsi:type="categorical" strings="unlimited disabled active" />
+		<domain defaultIndexOrValue="2" xsi:type="categorical" strings="unlimited disabled active" />
 		<choice>
 			<string>active</string>
 			<child xsi:type="value" id="gaussmaxeff">
-				<domain xsi:type="discrete" log="true" start="1" end="2147483647" />
+		<domain defaultIndexOrValue="50000000" xsi:type="discrete" log="true" start="1" end="2147483647" />
 			</child>
 		</choice>
 	</node>
 	<node xsi:type="value" id="gaussmaxor">
-		<domain xsi:type="discrete" start="2" end="64"/>
+		<domain defaultIndexOrValue="20" xsi:type="discrete" start="2" end="64"/>
 	</node>
 	<node xsi:type="or" id="gaussmineffActive">
-		<domain xsi:type="categorical" booleans="true false"/>
+		<domain defaultIndexOrValue="0" xsi:type="categorical" booleans="true false"/>
 		<choice>
 			<boolean>true</boolean>
 			<child xsi:type="value" id="gaussmineff">
-				<domain xsi:type="discrete" log="true" start="1" end="247483647"/>
+		<domain defaultIndexOrValue="2000000" xsi:type="discrete" log="true" start="1" end="247483647"/>
 			</child>
 		</choice>
 	</node>
 	<node xsi:type="value" id="gaussreleff">
-		<domain xsi:type="discrete" start="0" end="10000"/>
+		<domain defaultIndexOrValue="2" xsi:type="discrete" start="0" end="10000"/>
 	</node>
 	<node xsi:type="value" id="gausswait">
-		<domain xsi:type="categorical" ints="0 1 2"/>
+		<domain defaultIndexOrValue="2" xsi:type="categorical" ints="0 1 2"/>
 	</node>
 	<node xsi:type="value" id="gluekeep">
-		<domain xsi:type="discrete" log="true" start="1" end="247483647"/>
+		<domain defaultIndexOrValue="4" xsi:type="discrete" log="true" start="1" end="247483647"/>
 	</node>
 	<node xsi:type="value" id="gluekeepsize">
-		<domain xsi:type="discrete" log="true" start="1" end="247483647"/>
+		<domain defaultIndexOrValue="15" xsi:type="discrete" log="true" start="1" end="247483647"/>
 	</node>
 	<node xsi:type="value" id="gluemacdfast">
-		<domain xsi:type="discrete" start="0" end="32"/>
+		<domain defaultIndexOrValue="5" xsi:type="discrete" start="0" end="32"/>
 	</node>
 	<node xsi:type="value" id="gluemacdslow">
-		<domain xsi:type="discrete" start="0" end="32"/>
+		<domain defaultIndexOrValue="16" xsi:type="discrete" start="0" end="32"/>
 	</node>
 	<node xsi:type="value" id="gluemacdsmooth">
-		<domain xsi:type="discrete" start="0" end="32"/>
+		<domain defaultIndexOrValue="3" xsi:type="discrete" start="0" end="32"/>
 	</node>
 	<node xsi:type="value" id="gluescale">
-		<domain xsi:type="categorical" ints="1 2 3 4 5"/>
+		<domain defaultIndexOrValue="4" xsi:type="categorical" ints="1 2 3 4 5"/>
 	</node>
 	<node xsi:type="value" id="hbrdom">
-		<domain xsi:type="categorical" ints="0 1 2"/>
+		<domain defaultIndexOrValue="2" xsi:type="categorical" ints="0 1 2"/>
 	</node>
 	<node xsi:type="value" id="import">
-		<domain xsi:type="categorical" ints="0 1"/>
+		<domain defaultIndexOrValue="1" xsi:type="categorical" ints="0 1"/>
 	</node>
 	<node xsi:type="value" id="incredcint">
-		<domain xsi:type="discrete" log="true" start="1" end="247483647"/>
+		<domain defaultIndexOrValue="1" xsi:type="discrete" log="true" start="1" end="247483647"/>
 	</node>
 	<node xsi:type="value" id="incredconfslim">
-		<domain xsi:type="discrete" start="0" end="100"/>
+		<domain defaultIndexOrValue="0" xsi:type="discrete" start="0" end="100"/>
 	</node>
 	<node xsi:type="value" id="incsavevisits">
-		<domain xsi:type="categorical" ints="0 1"/>
+		<domain defaultIndexOrValue="0" xsi:type="categorical" ints="0 1"/>
 	</node>
 	<node xsi:type="value" id="inprocessing">
-		<domain xsi:type="categorical" ints="0 1"/>
+		<domain defaultIndexOrValue="1" xsi:type="categorical" ints="0 1"/>
 	</node>
 	<node xsi:type="value" id="irrlim">
-		<domain xsi:type="categorical" ints="0 1"/>
+		<domain defaultIndexOrValue="1" xsi:type="categorical" ints="0 1"/>
 	</node>
 	<node xsi:type="value" id="itsmacdfast">
-		<domain xsi:type="discrete" start="0" end="32"/>
+		<domain defaultIndexOrValue="12" xsi:type="discrete" start="0" end="32"/>
 	</node>
 	<node xsi:type="value" id="itsmacdslow">
-		<domain xsi:type="discrete" start="0" end="32"/>
+		<domain defaultIndexOrValue="18" xsi:type="discrete" start="0" end="32"/>
 	</node>
 	<node xsi:type="value" id="itsmacdsmooth">
-		<domain xsi:type="discrete" start="0" end="32"/>
+		<domain defaultIndexOrValue="10" xsi:type="discrete" start="0" end="32"/>
 	</node>
 	<node xsi:type="value" id="jlevelmacdfast">
-		<domain xsi:type="discrete" start="0" end="32"/>
+		<domain defaultIndexOrValue="12" xsi:type="discrete" start="0" end="32"/>
 	</node>
 	<node xsi:type="value" id="jlevelmacdslow">
-		<domain xsi:type="discrete" start="0" end="32"/>
+		<domain defaultIndexOrValue="14" xsi:type="discrete" start="0" end="32"/>
 	</node>
 	<node xsi:type="value" id="jlevelmacdsmooth">
-		<domain xsi:type="discrete" start="0" end="32"/>
+		<domain defaultIndexOrValue="10" xsi:type="discrete" start="0" end="32"/>
 	</node>
 	<node xsi:type="value" id="jwhred">
-		<domain xsi:type="categorical" ints="0 1 2"/>
+		<domain defaultIndexOrValue="1" xsi:type="categorical" ints="0 1 2"/>
 	</node>
 	<node xsi:type="value" id="keepmaxglue">
-		<domain xsi:type="categorical" ints="0 1"/>
+		<domain defaultIndexOrValue="1" xsi:type="categorical" ints="0 1"/>
 	</node>
 	<node xsi:type="value" id="keepmaxglueint">
-		<domain xsi:type="discrete" log="true" start="1" end="247483647"/>
+		<domain defaultIndexOrValue="1" xsi:type="discrete" log="true" start="1" end="247483647"/>
 	</node>
 	<node xsi:type="value" id="lhbr">
-		<domain xsi:type="categorical" ints="0 1"/>
+		<domain defaultIndexOrValue="1" xsi:type="categorical" ints="0 1"/>
 	</node>
 	<node xsi:type="value" id="lkhd">
-		<domain xsi:type="categorical" ints="-1 0 1 2 3"/>
+		<domain defaultIndexOrValue="2" xsi:type="categorical" ints="-1 0 1 2 3"/>
 	</node>
 	<node xsi:type="or" id="locsActive">
-		<domain xsi:type="categorical" strings="unlimited disabled active" />
+		<domain defaultIndexOrValue="1" xsi:type="categorical" strings="unlimited disabled active" />
 		<choice>
 			<string>active</string>
 			<child xsi:type="value" id="locs">
@@ -580,439 +577,451 @@
 		</choice>
 	</node>
 	<node xsi:type="value" id="locsboost">
-		<domain xsi:type="discrete" start="0" end="100"/>
+		<domain defaultIndexOrValue="2" xsi:type="discrete" start="0" end="100"/>
 	</node>
 	<node xsi:type="value" id="locscint">
-		<domain xsi:type="discrete" log="true" start="1" end="247483647"/>
+		<domain defaultIndexOrValue="10000" xsi:type="discrete" log="true" start="1" end="247483647"/>
 	</node>
 	<node xsi:type="or" id="locsclimActive">
-		<domain xsi:type="categorical" booleans="true false"/>
+		<domain defaultIndexOrValue="0" xsi:type="categorical" booleans="true false"/>
 		<choice>
 			<boolean>true</boolean>
 			<child xsi:type="value" id="locsclim">
-				<domain xsi:type="discrete" log="true" start="1" end="247483647"/>
+		<domain defaultIndexOrValue="1000000" xsi:type="discrete" log="true" start="1" end="247483647"/>
 			</child>
 		</choice>
 	</node>
 	<node xsi:type="value" id="locset">
-		<domain xsi:type="categorical" ints="0 1 2"/>
+		<domain defaultIndexOrValue="2" xsi:type="categorical" ints="0 1 2"/>
 	</node>
 	<node xsi:type="value" id="locsexport">
-		<domain xsi:type="categorical" ints="0 1"/>
+		<domain defaultIndexOrValue="1" xsi:type="categorical" ints="0 1"/>
 	</node>
 	<node xsi:type="or" id="locsmaxeffActive">
-		<domain xsi:type="categorical" booleans="true false"/>
+		<domain defaultIndexOrValue="0" xsi:type="categorical" booleans="true false"/>
 		<choice>
 			<boolean>true</boolean>
 			<child xsi:type="value" id="locsmaxeff">
-				<domain xsi:type="discrete" log="true" start="1" end="247483647"/>
+		<domain defaultIndexOrValue="100000" xsi:type="discrete" log="true" start="1" end="247483647"/>
 			</child>
 		</choice>
 	</node>
 	<node xsi:type="or" id="locsmineffActive">
-		<domain xsi:type="categorical" booleans="true false"/>
+		<domain defaultIndexOrValue="0" xsi:type="categorical" booleans="true false"/>
 		<choice>
 			<boolean>true</boolean>
 			<child xsi:type="value" id="locsmineff">
-				<domain xsi:type="discrete" log="true" start="1" end="247483647"/>
+		<domain defaultIndexOrValue="1000" xsi:type="discrete" log="true" start="1" end="247483647"/>
 			</child>
 		</choice>
 	</node>
 	<node xsi:type="value" id="locsred">
-		<domain xsi:type="categorical" ints="0 1 2 3 4"/>
+		<domain defaultIndexOrValue="0" xsi:type="categorical" ints="0 1 2 3 4"/>
 	</node>
 	<node xsi:type="value" id="locsreleff">
-		<domain xsi:type="discrete" start="0" end="100"/>
+		<domain defaultIndexOrValue="5" xsi:type="discrete" start="0" end="100"/>
 	</node>
 	<node xsi:type="value" id="locsrtc">
-		<domain xsi:type="categorical" ints="0 1"/>
+		<domain defaultIndexOrValue="0" xsi:type="categorical" ints="0 1"/>
 	</node>
 	<node xsi:type="value" id="locsvared">
-		<domain xsi:type="discrete" start="0" end="1000"/>
+		<domain defaultIndexOrValue="100" xsi:type="discrete" start="0" end="1000"/>
 	</node>
 	<node xsi:type="value" id="locswait">
-		<domain xsi:type="categorical" ints="0 1 2"/>
+		<domain defaultIndexOrValue="2" xsi:type="categorical" ints="0 1 2"/>
 	</node>
 	<node xsi:type="value" id="maxscaledglue">
-		<domain xsi:type="discrete" start="0" end="8"/>
+		<domain defaultIndexOrValue="15" xsi:type="discrete" start="0" end="1000"/>
 	</node>
 	<node xsi:type="value" id="minimize">
-		<domain xsi:type="categorical" ints="0 1 2"/>
+		<domain defaultIndexOrValue="2" xsi:type="categorical" ints="0 1 2"/>
 	</node>
 	<node xsi:type="or" id="minlocalgluelimActive">
-		<domain xsi:type="categorical" booleans="true false"/>
+		<domain defaultIndexOrValue="0" xsi:type="categorical" booleans="true false"/>
 		<choice>
 			<boolean>true</boolean>
 			<child xsi:type="value" id="minlocalgluelim">
-				<domain xsi:type="discrete" log="true" start="1" end="247483647"/>
+		<domain defaultIndexOrValue="200" xsi:type="discrete" log="true" start="1" end="247483647"/>
 			</child>
 		</choice>
 	</node>
 	<node xsi:type="or" id="minlocalsizelimActive">
-		<domain xsi:type="categorical" booleans="true false"/>
+		<domain defaultIndexOrValue="0" xsi:type="categorical" booleans="true false"/>
 		<choice>
 			<boolean>true</boolean>
 			<child xsi:type="value" id="minlocalsizelim">
-				<domain xsi:type="discrete" log="true" start="1" end="247483647"/>
+		<domain defaultIndexOrValue="3000" xsi:type="discrete" log="true" start="1" end="247483647"/>
 			</child>
 		</choice>
 	</node>
 	<node xsi:type="or" id="minrecgluelimActive">
-		<domain xsi:type="categorical" booleans="true false"/>
+		<domain defaultIndexOrValue="0" xsi:type="categorical" booleans="true false"/>
 		<choice>
 			<boolean>true</boolean>
 			<child xsi:type="value" id="minrecgluelim">
-				<domain xsi:type="discrete" log="true" start="1" end="247483647"/>
+		<domain defaultIndexOrValue="100" xsi:type="discrete" log="true" start="1" end="247483647"/>
 			</child>
 		</choice>
 	</node>
 	<node xsi:type="or" id="minrecsizelimActive">
-		<domain xsi:type="categorical" booleans="true false"/>
+		<domain defaultIndexOrValue="0" xsi:type="categorical" booleans="true false"/>
 		<choice>
 			<boolean>true</boolean>
 			<child xsi:type="value" id="minrecsizelim">
-				<domain xsi:type="discrete" log="true" start="1" end="247483647"/>
+		<domain defaultIndexOrValue="1000" xsi:type="discrete" log="true" start="1" end="247483647"/>
 			</child>
 		</choice>
 	</node>
 	<node xsi:type="value" id="move">
-		<domain xsi:type="categorical" ints="0 1 2"/>
+		<domain defaultIndexOrValue="2" xsi:type="categorical" ints="0 1 2"/>
 	</node>
 	<node xsi:type="value" id="otfs">
-		<domain xsi:type="categorical" ints="0 1"/>
+		<domain defaultIndexOrValue="1" xsi:type="categorical" ints="0 1"/>
 	</node>
 	<node xsi:type="value" id="penmax">
-		<domain xsi:type="discrete" start="0" end="16"/>
+		<domain defaultIndexOrValue="4" xsi:type="discrete" start="0" end="16"/>
 	</node>
 	<node xsi:type="value" id="phase">
-		<domain xsi:type="categorical" ints="-1 0 1"/>
+		<domain defaultIndexOrValue="0" xsi:type="categorical" ints="-1 0 1"/>
 	</node>
 	<node xsi:type="value" id="phaseluckfactor">
-		<domain xsi:type="discrete" start="100" end="10000"/>
+		<domain defaultIndexOrValue="200" xsi:type="discrete" start="100" end="10000"/>
 	</node>
 	<node xsi:type="value" id="phaselucklim">
-		<domain xsi:type="discrete" start="0" end="1000"/>
+		<domain defaultIndexOrValue="100" xsi:type="discrete" start="0" end="1000"/>
 	</node>
 	<node xsi:type="or" id="phaseluckmaxroundActive">
-		<domain xsi:type="categorical" booleans="true false"/>
+		<domain defaultIndexOrValue="0" xsi:type="categorical" booleans="true false"/>
 		<choice>
 			<boolean>true</boolean>
 			<child xsi:type="value" id="phaseluckmaxround">
-				<domain xsi:type="discrete" log="true" start="1" end="247483647"/>
+		<domain defaultIndexOrValue="10" xsi:type="discrete" log="true" start="1" end="247483647"/>
 			</child>
 		</choice>
 	</node>
 	<node xsi:type="value" id="phasesave">
-		<domain xsi:type="categorical" ints="-1 0 1"/>
+		<domain defaultIndexOrValue="1" xsi:type="categorical" ints="-1 0 1"/>
+	</node>
+	<node xsi:type="value" id="plain">
+		<domain defaultIndexOrValue="0" xsi:type="categorical" ints="0 1"/>
+	</node>
+	<node xsi:type="or" id="plimActive">
+		<domain defaultIndexOrValue="0" xsi:type="categorical" strings="unlimited disabled active" />
+		<choice>
+			<string>active</string>
+			<child xsi:type="value" id="plim" >
+				<domain xsi:type="discrete" log="true" start="1" end="2000000" />
+			</child>
+		</choice>
 	</node>
 	<node xsi:type="value" id="poison">
-		<domain xsi:type="categorical" ints="0 1"/>
+		<domain defaultIndexOrValue="1" xsi:type="categorical" ints="0 1"/>
 	</node>
 	<node xsi:type="value" id="prbasic">
-		<domain xsi:type="categorical" ints="0 1 2"/>
+		<domain defaultIndexOrValue="1" xsi:type="categorical" ints="0 1 2"/>
 	</node>
 	<node xsi:type="or" id="prbasicmaxeffActive">
-		<domain xsi:type="categorical" strings="unlimited disabled active" />
+		<domain defaultIndexOrValue="2" xsi:type="categorical" strings="unlimited disabled active" />
 		<choice>
 			<string>active</string>
 			<child xsi:type="value" id="prbasicmaxeff">
-				<domain xsi:type="discrete" log="true" start="1" end="2147483647" />
+		<domain defaultIndexOrValue="400000000" xsi:type="discrete" log="true" start="1" end="2147483647" />
 			</child>
 		</choice>
 	</node>
 	<node xsi:type="or" id="prbasicmineffActive">
-		<domain xsi:type="categorical" booleans="true false"/>
+		<domain defaultIndexOrValue="0" xsi:type="categorical" booleans="true false"/>
 		<choice>
 			<boolean>true</boolean>
 			<child xsi:type="value" id="prbasicmineff">
-				<domain xsi:type="discrete" log="true" start="1" end="247483647"/>
+		<domain defaultIndexOrValue="1000000" xsi:type="discrete" log="true" start="1" end="247483647"/>
 			</child>
 		</choice>
 	</node>
 	<node xsi:type="value" id="prbasicreleff">
-		<domain xsi:type="discrete" start="0" end="10000"/>
+		<domain defaultIndexOrValue="50" xsi:type="discrete" start="0" end="10000"/>
 	</node>
 	<node xsi:type="value" id="prbasicroundlim">
-		<domain xsi:type="discrete" log="true" start="1" end="247483647"/>
+		<domain defaultIndexOrValue="8" xsi:type="discrete" log="true" start="1" end="247483647"/>
 	</node>
 	<node xsi:type="value" id="prbasicrtc">
-		<domain xsi:type="categorical" ints="0 1"/>
+		<domain defaultIndexOrValue="0" xsi:type="categorical" ints="0 1"/>
 	</node>
 	<node xsi:type="value" id="prbrtc">
-		<domain xsi:type="categorical" ints="0 1"/>
+		<domain defaultIndexOrValue="0" xsi:type="categorical" ints="0 1"/>
 	</node>
 	<node xsi:type="value" id="prbsimple">
-		<domain xsi:type="categorical" ints="0 1 2 3"/>
+		<domain defaultIndexOrValue="2" xsi:type="categorical" ints="0 1 2 3"/>
 	</node>
 	<node xsi:type="value" id="prbsimpleboost">
-		<domain xsi:type="discrete" start="1" end="1000"/>
+		<domain defaultIndexOrValue="10" xsi:type="discrete" start="1" end="1000"/>
 	</node>
 	<node xsi:type="value" id="prbsimpleliftdepth">
-		<domain xsi:type="categorical" ints="1 2 3 4"/>
+		<domain defaultIndexOrValue="2" xsi:type="categorical" ints="1 2 3 4"/>
 	</node>
 	<node xsi:type="or" id="prbsimplemaxeffActive">
-		<domain xsi:type="categorical" strings="unlimited disabled active" />
+		<domain defaultIndexOrValue="2" xsi:type="categorical" strings="unlimited disabled active" />
 		<choice>
 			<string>active</string>
 			<child xsi:type="value" id="prbsimplemaxeff">
-				<domain xsi:type="discrete" log="true" start="1" end="2147483647" />
+		<domain defaultIndexOrValue="200000000" xsi:type="discrete" log="true" start="1" end="2147483647" />
 			</child>
 		</choice>
 	</node>
 	<node xsi:type="or" id="prbsimplemineffActive">
-		<domain xsi:type="categorical" booleans="true false"/>
+		<domain defaultIndexOrValue="0" xsi:type="categorical" booleans="true false"/>
 		<choice>
 			<boolean>true</boolean>
 			<child xsi:type="value" id="prbsimplemineff">
-				<domain xsi:type="discrete" log="true" start="1" end="247483647"/>
+		<domain defaultIndexOrValue="2000000" xsi:type="discrete" log="true" start="1" end="247483647"/>
 			</child>
 		</choice>
 	</node>
 	<node xsi:type="value" id="prbsimplereleff">
-		<domain xsi:type="discrete" start="0" end="10000"/>
+		<domain defaultIndexOrValue="40" xsi:type="discrete" start="0" end="10000"/>
 	</node>
 	<node xsi:type="value" id="prbsimplertc">
-		<domain xsi:type="categorical" ints="0 1"/>
+		<domain defaultIndexOrValue="0" xsi:type="categorical" ints="0 1"/>
 	</node>
 	<node xsi:type="value" id="probe">
-		<domain xsi:type="categorical" ints="0 1"/>
+		<domain defaultIndexOrValue="1" xsi:type="categorical" ints="0 1"/>
 	</node>
 	<node xsi:type="value" id="profile">
-		<domain xsi:type="categorical" ints="0 1 2 3 4"/>
+		<domain defaultIndexOrValue="1" xsi:type="categorical" ints="0 1 2 3 4"/>
 	</node>
 	<node xsi:type="value" id="promote">
-		<domain xsi:type="categorical" ints="0 1"/>
+		<domain defaultIndexOrValue="1" xsi:type="categorical" ints="0 1"/>
 	</node>
 	<node xsi:type="value" id="promotegluelim">
-		<domain xsi:type="discrete" start="0" end="8"/>
+		<domain defaultIndexOrValue="8" xsi:type="discrete" start="0" end="8"/>
 	</node>
 	<node xsi:type="value" id="pure">
-		<domain xsi:type="categorical" ints="0 1"/>
+		<domain defaultIndexOrValue="1" xsi:type="categorical" ints="0 1"/>
 	</node>
 	<node xsi:type="value" id="quatres">
-		<domain xsi:type="categorical" ints="0 1"/>
+		<domain defaultIndexOrValue="1" xsi:type="categorical" ints="0 1"/>
 	</node>
 	<node xsi:type="value" id="quatreswait">
-		<domain xsi:type="categorical" ints="0 1 2"/>
+		<domain defaultIndexOrValue="2" xsi:type="categorical" ints="0 1 2"/>
 	</node>
 	<node xsi:type="value" id="queuesort">
-		<domain xsi:type="categorical" ints="0 1"/>
+		<domain defaultIndexOrValue="1" xsi:type="categorical" ints="0 1"/>
 	</node>
 	<node xsi:type="value" id="randec">
-		<domain xsi:type="categorical" ints="0 1"/>
+		<domain defaultIndexOrValue="0" xsi:type="categorical" ints="0 1"/>
 	</node>
 	<node xsi:type="value" id="randecint">
-		<domain xsi:type="discrete" log="true" start="2" end="107374823"/>
+		<domain defaultIndexOrValue="1000" xsi:type="discrete" log="true" start="2" end="107374823"/>
 	</node>
 	<node xsi:type="value" id="redcls">
-		<domain xsi:type="categorical" ints="0 1"/>
+		<domain defaultIndexOrValue="1" xsi:type="categorical" ints="0 1"/>
 	</node>
 	<node xsi:type="or" id="redclsglueActive">
-		<domain xsi:type="categorical" booleans="true false"/>
+		<domain defaultIndexOrValue="0" xsi:type="categorical" booleans="true false"/>
 		<choice>
 			<boolean>true</boolean>
 			<child xsi:type="value" id="redclsglue">
-				<domain xsi:type="discrete" log="true" start="1" end="247483647"/>
+		<domain defaultIndexOrValue="6" xsi:type="discrete" log="true" start="1" end="247483647"/>
 			</child>
 		</choice>
 	</node>
 	<node xsi:type="or" id="redclsizeActive">
-		<domain xsi:type="categorical" booleans="true false"/>
+		<domain defaultIndexOrValue="0" xsi:type="categorical" booleans="true false"/>
 		<choice>
 			<boolean>true</boolean>
 			<child xsi:type="value" id="redclsize">
-				<domain xsi:type="discrete" log="true" start="1" end="247483647"/>
+		<domain defaultIndexOrValue="30" xsi:type="discrete" log="true" start="1" end="247483647"/>
 			</child>
 		</choice>
 	</node>
 	<node xsi:type="value" id="redclsmaxdec">
-		<domain xsi:type="discrete" log="true" start="1" end="247483647"/>
+		<domain defaultIndexOrValue="5" xsi:type="discrete" log="true" start="1" end="247483647"/>
 	</node>
 	<node xsi:type="value" id="redclsmaxdepth">
-		<domain xsi:type="discrete" log="true" start="1" end="247483647"/>
+		<domain defaultIndexOrValue="10" xsi:type="discrete" log="true" start="1" end="247483647"/>
 	</node>
 	<node xsi:type="or" id="redclsmaxlrgActive">
-		<domain xsi:type="categorical" booleans="true false"/>
+		<domain defaultIndexOrValue="0" xsi:type="categorical" booleans="true false"/>
 		<choice>
 			<boolean>true</boolean>
 			<child xsi:type="value" id="redclsmaxlrg">
-				<domain xsi:type="discrete" log="true" start="1" end="247483647"/>
+		<domain defaultIndexOrValue="10" xsi:type="discrete" log="true" start="1" end="247483647"/>
 			</child>
 		</choice>
 	</node>
 	<node xsi:type="or" id="redclsmaxpropsActive">
-		<domain xsi:type="categorical" booleans="true false"/>
+		<domain defaultIndexOrValue="0" xsi:type="categorical" booleans="true false"/>
 		<choice>
 			<boolean>true</boolean>
 			<child xsi:type="value" id="redclsmaxprops">
-				<domain xsi:type="discrete" log="true" start="1" end="247483647"/>
+		<domain defaultIndexOrValue="100" xsi:type="discrete" log="true" start="1" end="247483647"/>
 			</child>
 		</choice>
 	</node>
 	<node xsi:type="value" id="redclstype">
-		<domain xsi:type="categorical" ints="2 3 4"/>
+		<domain defaultIndexOrValue="2" xsi:type="categorical" ints="2 3 4"/>
 	</node>
 	<node xsi:type="value" id="reduce">
-		<domain xsi:type="categorical" ints="0 1"/>
+		<domain defaultIndexOrValue="1" xsi:type="categorical" ints="0 1"/>
 	</node>
 	<node xsi:type="value" id="reducefixed">
 		<domain xsi:type="categorical" ints="0 1"/>
 	</node>
 	<node xsi:type="value" id="reduceinc">
-		<domain xsi:type="discrete" log="true" start="1" end="10000000"/>
+		<domain defaultIndexOrValue="300" xsi:type="discrete" log="true" start="1" end="10000000"/>
 	</node>
 	<node xsi:type="value" id="reduceinit">
-		<domain xsi:type="discrete" log="true" start="1" end="100000000"/>
+		<domain defaultIndexOrValue="2000" xsi:type="discrete" log="true" start="1" end="100000000"/>
 	</node>
 	<node xsi:type="value" id="reducereset">
-		<domain xsi:type="categorical" ints="0 1 2"/>
+		<domain defaultIndexOrValue="0" xsi:type="categorical" ints="0 1 2"/>
 	</node>
 	<node xsi:type="value" id="restart">
-		<domain xsi:type="categorical" ints="0 1"/>
+		<domain defaultIndexOrValue="1" xsi:type="categorical" ints="0 1"/>
 	</node>
 	<node xsi:type="value" id="restartfixed">
-		<domain xsi:type="categorical" ints="0 1"/>
+		<domain defaultIndexOrValue="0" xsi:type="categorical" ints="0 1"/>
 	</node>
 	<node xsi:type="value" id="restartblock">
-		<domain xsi:type="categorical" ints="0 1 2"/>
+		<domain defaultIndexOrValue="0" xsi:type="categorical" ints="0 1 2"/>
 	</node>
 	<node xsi:type="value" id="restartblocklim">
-		<domain xsi:type="discrete" start="1" end="1000"/>
+		<domain defaultIndexOrValue="200" xsi:type="discrete" start="1" end="1000"/>
 	</node>
 	<node xsi:type="or" id="restartblockboundActive">
-		<domain xsi:type="categorical" booleans="true false"/>
+		<domain defaultIndexOrValue="0" xsi:type="categorical" booleans="true false"/>
 		<choice>
 			<boolean>true</boolean>
 			<child xsi:type="value" id="restartblockbound">
-				<domain xsi:type="discrete" log="true" start="1" end="247483647"/>
+		<domain defaultIndexOrValue="10000" xsi:type="discrete" log="true" start="1" end="247483647"/>
 			</child>
 		</choice>
 	</node>
 	<node xsi:type="value" id="restartcheckforced">
-		<domain xsi:type="categorical" ints="0 1"/>
+		<domain defaultIndexOrValue="1" xsi:type="categorical" ints="0 1"/>
 	</node>
 	<node xsi:type="value" id="restartdelay">
-		<domain xsi:type="categorical" ints="0 1"/>
+		<domain defaultIndexOrValue="1" xsi:type="categorical" ints="0 1"/>
 	</node>
 	<node xsi:type="value" id="restartdelaylim">
-		<domain xsi:type="discrete" start="1" end="1000"/>
+		<domain defaultIndexOrValue="50" xsi:type="discrete" start="1" end="1000"/>
 	</node>
 	<node xsi:type="value" id="restartint">
-		<domain xsi:type="discrete" log="true" start="1" end="247483647"/>
+		<domain defaultIndexOrValue="10" xsi:type="discrete" log="true" start="1" end="247483647"/>
 	</node>
 	<node xsi:type="value" id="restartforcelim">
-		<domain xsi:type="discrete" start="1" end="1000"/>
+		<domain defaultIndexOrValue="115" xsi:type="discrete" start="1" end="1000"/>
 	</node>
 	<node xsi:type="value" id="restartforcemode">
-		<domain xsi:type="categorical" ints="0 1 2"/>
+		<domain defaultIndexOrValue="1" xsi:type="categorical" ints="0 1 2"/>
 	</node>
 	<node xsi:type="value" id="restartpen1">
-		<domain xsi:type="categorical" ints="0 1"/>
+		<domain defaultIndexOrValue="1" xsi:type="categorical" ints="0 1"/>
 	</node>
 	<node xsi:type="value" id="restartpen2">
-		<domain xsi:type="categorical" ints="0 1"/>
+		<domain defaultIndexOrValue="1" xsi:type="categorical" ints="0 1"/>
 	</node>
 	<node xsi:type="value" id="restartpen3">
-		<domain xsi:type="categorical" ints="0 1"/>
+		<domain defaultIndexOrValue="1" xsi:type="categorical" ints="0 1"/>
 	</node>
 	<node xsi:type="value" id="restartpenstab">
-		<domain xsi:type="categorical" ints="0 1"/>
+		<domain defaultIndexOrValue="1" xsi:type="categorical" ints="0 1"/>
 	</node>
 	<node xsi:type="value" id="retireint">
-		<domain xsi:type="discrete" start="0" end="1000"/>
+		<domain defaultIndexOrValue="4" xsi:type="discrete" start="0" end="1000"/>
 	</node>
 	<node xsi:type="or" id="retireminActive">
-		<domain xsi:type="categorical" booleans="true false"/>
+		<domain defaultIndexOrValue="0" xsi:type="categorical" booleans="true false"/>
 		<choice>
 			<boolean>true</boolean>
 			<child xsi:type="value" id="retiremin">
-				<domain xsi:type="discrete" log="true" start="1" end="247483647"/>
+		<domain defaultIndexOrValue="1" xsi:type="discrete" log="true" start="1" end="247483647"/>
 			</child>
 		</choice>
 	</node>
 	<node xsi:type="value" id="retirenb">
-		<domain xsi:type="categorical" ints="0 1"/>
+		<domain defaultIndexOrValue="1" xsi:type="categorical" ints="0 1"/>
 	</node>
 	<node xsi:type="value" id="reusetrail">
-		<domain xsi:type="categorical" ints="0 1"/>
+		<domain defaultIndexOrValue="1" xsi:type="categorical" ints="0 1"/>
 	</node>
 	<node xsi:type="value" id="rmincpen">
-		<domain xsi:type="discrete" start="0" end="32"/>
+		<domain defaultIndexOrValue="4" xsi:type="discrete" start="0" end="32"/>
 	</node>
 	<node xsi:type="value" id="scincinc">
-		<domain xsi:type="discrete" start="1" end="10000"/>
+		<domain defaultIndexOrValue="250" xsi:type="discrete" start="1" end="10000"/>
 	</node>
 	<node xsi:type="value" id="scincincdelta">
-		<domain xsi:type="discrete" start="0" end="10000"/>
+		<domain defaultIndexOrValue="10" xsi:type="discrete" start="0" end="10000"/>
 	</node>
 	<node xsi:type="value" id="scincincincint">
-		<domain xsi:type="discrete" log="true" start="1" end="247483647"/>
+		<domain defaultIndexOrValue="100000" xsi:type="discrete" log="true" start="1" end="247483647"/>
 	</node>
 	<node xsi:type="value" id="scincincmin">
-		<domain xsi:type="discrete" start="1" end="10000"/>
+		<domain defaultIndexOrValue="50" xsi:type="discrete" start="1" end="10000"/>
 	</node>
 	<node xsi:type="value" id="scincincmode">
-		<domain xsi:type="categorical" ints="0 1 2"/>
+		<domain defaultIndexOrValue="1" xsi:type="categorical" ints="0 1 2"/>
 	</node>
 	<node xsi:type="value" id="scoreshift">
-		<domain xsi:type="discrete" start="0" end="64"/>
+		<domain defaultIndexOrValue="24" xsi:type="discrete" start="0" end="64"/>
 	</node>
 	<node xsi:type="value" id="simpbintinc">
-		<domain xsi:type="discrete" log="true" start="1" end="247483647"/>
+		<domain defaultIndexOrValue="100" xsi:type="discrete" log="true" start="1" end="247483647"/>
 	</node>
 	<node xsi:type="value" id="simpbintinclim">
-		<domain xsi:type="discrete" log="true" start="1" end="247483647"/>
+		<domain defaultIndexOrValue="10000" xsi:type="discrete" log="true" start="1" end="247483647"/>
 	</node>
 	<node xsi:type="or" id="simpcintdelayActive">
-		<domain xsi:type="categorical" booleans="true false"/>
+		<domain defaultIndexOrValue="0" xsi:type="categorical" booleans="true false"/>
 		<choice>
 			<boolean>true</boolean>
 			<child xsi:type="value" id="simpcintdelay">
-				<domain xsi:type="discrete" log="true" start="1" end="247483647"/>
+		<domain defaultIndexOrValue="2000" xsi:type="discrete" log="true" start="1" end="247483647"/>
 			</child>
 		</choice>
 	</node>
 	<node xsi:type="value" id="simpcintinc">
-		<domain xsi:type="discrete" start="10" end="1000000"/>
+		<domain defaultIndexOrValue="100" xsi:type="discrete" start="10" end="1000000"/>
 	</node>
 	<node xsi:type="value" id="simpcintincdiv">
-		<domain xsi:type="categorical" ints="0 1 2 3"/>
+		<domain defaultIndexOrValue="1" xsi:type="categorical" ints="0 1 2 3"/>
 	</node>
 	<node xsi:type="or" id="simpcintmaxhardActive">
-		<domain xsi:type="categorical" strings="unlimited disabled active" />
+		<domain defaultIndexOrValue="2" xsi:type="categorical" strings="unlimited disabled active" />
 		<choice>
 			<string>active</string>
 			<child xsi:type="value" id="simpcintmaxhard">
-				<domain xsi:type="discrete" log="true" start="1" end="2147483647" />
+		<domain defaultIndexOrValue="10000000" xsi:type="discrete" log="true" start="1" end="2147483647" />
 			</child>
 		</choice>
 	</node>
 	<node xsi:type="or" id="simpcintmaxsoftActive">
-		<domain xsi:type="categorical" strings="unlimited disabled active" />
+		<domain defaultIndexOrValue="2" xsi:type="categorical" strings="unlimited disabled active" />
 		<choice>
 			<string>active</string>
 			<child xsi:type="value" id="simpcintmaxsoft">
-				<domain xsi:type="discrete" log="true" start="1" end="2147483647" />
+		<domain defaultIndexOrValue="1000000" xsi:type="discrete" log="true" start="1" end="2147483647" />
 			</child>
 		</choice>
 	</node>
 	<node xsi:type="value" id="simpidiv">
-		<domain xsi:type="discrete" start="1" end="100"/>
+		<domain defaultIndexOrValue="3" xsi:type="discrete" start="1" end="100"/>
 	</node>
 	<node xsi:type="value" id="simpincdelmaxfact">
-		<domain xsi:type="discrete" start="0" end="1000"/>
+		<domain defaultIndexOrValue="50" xsi:type="discrete" start="0" end="1000"/>
 	</node>
 	<node xsi:type="or" id="simpincdelmaxminActive">
-		<domain xsi:type="categorical" booleans="true false"/>
+		<domain defaultIndexOrValue="0" xsi:type="categorical" booleans="true false"/>
 		<choice>
 			<boolean>true</boolean>
 			<child xsi:type="value" id="simpincdelmaxmin">
-				<domain xsi:type="discrete" log="true" start="1" end="247483647"/>
+		<domain defaultIndexOrValue="10000" xsi:type="discrete" log="true" start="1" end="247483647"/>
 			</child>
 		</choice>
 	</node>
 	<node xsi:type="or" id="simpinitdelayActive">
-		<domain xsi:type="categorical" booleans="true false"/>
+		<domain defaultIndexOrValue="1" xsi:type="categorical" booleans="true false"/>
 		<choice>
 			<boolean>true</boolean>
 			<child xsi:type="value" id="simpinitdelay">
@@ -1021,365 +1030,365 @@
 		</choice>
 	</node>
 	<node xsi:type="value" id="simpintsizepen">
-		<domain xsi:type="categorical" ints="0 1"/>
+		<domain defaultIndexOrValue="0" xsi:type="categorical" ints="0 1"/>
 	</node>
 	<node xsi:type="value" id="simpiscale">
-		<domain xsi:type="discrete" start="1" end="10000"/>
+		<domain defaultIndexOrValue="100" xsi:type="discrete" start="1" end="10000"/>
 	</node>
 	<node xsi:type="value" id="simpitdelay">
-		<domain xsi:type="discrete" start="0" end="1000"/>
+		<domain defaultIndexOrValue="10" xsi:type="discrete" start="0" end="1000"/>
 	</node>
 	<node xsi:type="value" id="simpjleveldecdelay">
-		<domain xsi:type="categorical" ints="0 1"/>
+		<domain defaultIndexOrValue="1" xsi:type="categorical" ints="0 1"/>
 	</node>
 	<node xsi:type="value" id="simpitintdecdelay">
-		<domain xsi:type="categorical" ints="0 1"/>
+		<domain defaultIndexOrValue="1" xsi:type="categorical" ints="0 1"/>
 	</node>
 	<node xsi:type="value" id="simpitintinc">
-		<domain xsi:type="discrete" log="true" start="1" end="247483647"/>
+		<domain defaultIndexOrValue="10" xsi:type="discrete" log="true" start="1" end="247483647"/>
 	</node>
 	<node xsi:type="value" id="simpitintinclim">
-		<domain xsi:type="discrete" log="true" start="1" end="247483647"/>
+		<domain defaultIndexOrValue="10000" xsi:type="discrete" log="true" start="1" end="247483647"/>
 	</node>
 	<node xsi:type="value" id="simplify">
-		<domain xsi:type="categorical" ints="0 1 2"/>
+		<domain defaultIndexOrValue="2" xsi:type="categorical" ints="0 1 2"/>
 	</node>
 	<node xsi:type="value" id="simprtc">
-		<domain xsi:type="discrete" start="1" end="100"/>
+		<domain defaultIndexOrValue="5" xsi:type="discrete" start="1" end="100"/>
 	</node>
 	<node xsi:type="value" id="simptintinc">
-		<domain xsi:type="discrete" log="true" start="1" end="247483647"/>
+		<domain defaultIndexOrValue="1000" xsi:type="discrete" log="true" start="1" end="247483647"/>
 	</node>
 	<node xsi:type="value" id="simptintinclim">
-		<domain xsi:type="discrete" log="true" start="1" end="247483647"/>
+		<domain defaultIndexOrValue="10000" xsi:type="discrete" log="true" start="1" end="247483647"/>
 	</node>
 	<node xsi:type="value" id="simpvarchg">
-		<domain xsi:type="discrete" start="1" end="1000"/>
+		<domain defaultIndexOrValue="100" xsi:type="discrete" start="1" end="1000"/>
 	</node>
 	<node xsi:type="or" id="simpvarlimActive">
-		<domain xsi:type="categorical" booleans="true false"/>
+		<domain defaultIndexOrValue="0" xsi:type="categorical" booleans="true false"/>
 		<choice>
 			<boolean>true</boolean>
 			<child xsi:type="value" id="simpvarlim">
-				<domain xsi:type="discrete" log="true" start="1" end="247483647"/>
+		<domain defaultIndexOrValue="100" xsi:type="discrete" log="true" start="1" end="247483647"/>
 			</child>
 		</choice>
 	</node>
 	<node xsi:type="value" id="sizemaxpen">
-		<domain xsi:type="discrete" start="0" end="20"/>
+		<domain defaultIndexOrValue="5" xsi:type="discrete" start="0" end="20"/>
 	</node>
 	<node xsi:type="value" id="sizepen">
-		<domain xsi:type="discrete" log="true" start="1" end="247483647"/>
+		<domain defaultIndexOrValue="1000000" xsi:type="discrete" log="true" start="1" end="247483647"/>
 	</node>
 	<node xsi:type="value" id="smallirr">
-		<domain xsi:type="discrete" start="0" end="100"/>
+		<domain defaultIndexOrValue="90" xsi:type="discrete" start="0" end="100"/>
 	</node>
 	<node xsi:type="value" id="smallve">
-		<domain xsi:type="categorical" ints="0 1"/>
+		<domain defaultIndexOrValue="1" xsi:type="categorical" ints="0 1"/>
 	</node>
 	<node xsi:type="value" id="smallvevars">
-		<domain xsi:type="discrete" start="4" end="12"/>
+		<domain defaultIndexOrValue="12" xsi:type="discrete" start="4" end="12"/>
 	</node>
 	<node xsi:type="value" id="smallvewait">
-		<domain xsi:type="categorical" ints="0 1"/>
+		<domain defaultIndexOrValue="0" xsi:type="categorical" ints="0 1"/>
 	</node>
 	<node xsi:type="value" id="sortlits">
-		<domain xsi:type="categorical" ints="0 1"/>
+		<domain defaultIndexOrValue="0" xsi:type="categorical" ints="0 1"/>
 	</node>
 	<node xsi:type="value" id="stabema">
-		<domain xsi:type="discrete" start="0" end="32"/>
+		<domain defaultIndexOrValue="7" xsi:type="discrete" start="0" end="32"/>
 	</node>
 	<node xsi:type="value" id="subl">
-		<domain xsi:type="discrete" start="0" end="10000"/>
+		<domain defaultIndexOrValue="0" xsi:type="discrete" start="0" end="10000"/>
 	</node>
 	<node xsi:type="value" id="sweep">
-		<domain xsi:type="categorical" ints="0 1"/>
+		<domain defaultIndexOrValue="1" xsi:type="categorical" ints="0 1"/>
 	</node>
 	<node xsi:type="value" id="sweepboost">
-		<domain xsi:type="discrete" start="1" end="1000"/>
+		<domain defaultIndexOrValue="10" xsi:type="discrete" start="1" end="1000"/>
 	</node>
 	<node xsi:type="value" id="sweepboostdel">
-		<domain xsi:type="discrete" start="0" end="100"/>
+		<domain defaultIndexOrValue="4" xsi:type="discrete" start="0" end="100"/>
 	</node>
 	<node xsi:type="value" id="sweepboostint">
-		<domain xsi:type="discrete" log="true" start="1" end="247483647"/>
+		<domain defaultIndexOrValue="7" xsi:type="discrete" log="true" start="1" end="247483647"/>
 	</node>
 	<node xsi:type="value" id="sweepboostvlim">
-		<domain xsi:type="discrete" log="true" start="1" end="247483647"/>
+		<domain defaultIndexOrValue="1000000" xsi:type="discrete" log="true" start="1" end="247483647"/>
 	</node>
 	<node xsi:type="value" id="sweepfacdec">
-		<domain xsi:type="discrete" start="1" end="100"/>
+		<domain defaultIndexOrValue="10" xsi:type="discrete" start="1" end="100"/>
 	</node>
 	<node xsi:type="or" id="sweepforgiveActive">
-		<domain xsi:type="categorical" booleans="true false"/>
+		<domain defaultIndexOrValue="0" xsi:type="categorical" booleans="true false"/>
 		<choice>
 			<boolean>true</boolean>
 			<child xsi:type="value" id="sweepforgive">
-				<domain xsi:type="discrete" log="true" start="1" end="247483647"/>
+		<domain defaultIndexOrValue="2" xsi:type="discrete" log="true" start="1" end="247483647"/>
 			</child>
 		</choice>
 	</node>
 	<node xsi:type="value" id="sweepirr">
-		<domain xsi:type="categorical" ints="0 1 2 3"/>
+		<domain defaultIndexOrValue="3" xsi:type="categorical" ints="0 1 2 3"/>
 	</node>
 	<node xsi:type="or" id="sweepmaxdecActive">
-		<domain xsi:type="categorical" booleans="true false"/>
+		<domain defaultIndexOrValue="0" xsi:type="categorical" booleans="true false"/>
 		<choice>
 			<boolean>true</boolean>
 			<child xsi:type="value" id="sweepmaxdec">
-				<domain xsi:type="discrete" log="true" start="1" end="247483647"/>
+		<domain defaultIndexOrValue="10000" xsi:type="discrete" log="true" start="1" end="247483647"/>
 			</child>
 		</choice>
 	</node>
 	<node xsi:type="or" id="sweepmaxeffActive">
-		<domain xsi:type="categorical" strings="unlimited disabled active" />
+		<domain defaultIndexOrValue="2" xsi:type="categorical" strings="unlimited disabled active" />
 		<choice>
 			<string>active</string>
 			<child xsi:type="value" id="sweepmaxeff">
-				<domain xsi:type="discrete" log="true" start="1" end="2147483647" />
+		<domain defaultIndexOrValue="200000000" xsi:type="discrete" log="true" start="1" end="2147483647" />
 			</child>
 		</choice>
 	</node>
 	<node xsi:type="or" id="sweepmaxroundActive">
-		<domain xsi:type="categorical" strings="unlimited disabled active" />
+		<domain defaultIndexOrValue="2" xsi:type="categorical" strings="unlimited disabled active" />
 		<choice>
 			<string>active</string>
 			<child xsi:type="value" id="sweepmaxround">
-				<domain xsi:type="discrete" log="true" start="1" end="2147483647" />
+		<domain defaultIndexOrValue="3" xsi:type="discrete" log="true" start="1" end="2147483647" />
 			</child>
 		</choice>
 	</node>
 	<node xsi:type="or" id="sweepmindecActive">
-		<domain xsi:type="categorical" booleans="true false"/>
+		<domain defaultIndexOrValue="0" xsi:type="categorical" booleans="true false"/>
 		<choice>
 			<boolean>true</boolean>
 			<child xsi:type="value" id="sweepmindec">
-				<domain xsi:type="discrete" log="true" start="1" end="247483647"/>
+		<domain defaultIndexOrValue="100" xsi:type="discrete" log="true" start="1" end="247483647"/>
 			</child>
 		</choice>
 	</node>
 	<node xsi:type="or" id="sweepmineffActive">
-		<domain xsi:type="categorical" booleans="true false"/>
+		<domain defaultIndexOrValue="0" xsi:type="categorical" booleans="true false"/>
 		<choice>
 			<boolean>true</boolean>
 			<child xsi:type="value" id="sweepmineff">
-				<domain xsi:type="discrete" log="true" start="1" end="247483647"/>
+		<domain defaultIndexOrValue="1000000" xsi:type="discrete" log="true" start="1" end="247483647"/>
 			</child>
 		</choice>
 	</node>
 	<node xsi:type="value" id="sweepred">
-		<domain xsi:type="categorical" ints="0 1 2 3"/>
+		<domain defaultIndexOrValue="3" xsi:type="categorical" ints="0 1 2 3"/>
 	</node>
 	<node xsi:type="value" id="sweepreleff">
-		<domain xsi:type="discrete" start="0" end="10000"/>
+		<domain defaultIndexOrValue="3" xsi:type="discrete" start="0" end="10000"/>
 	</node>
 	<node xsi:type="value" id="sweeprtc">
-		<domain xsi:type="categorical" ints="0 1"/>
+		<domain defaultIndexOrValue="0" xsi:type="categorical" ints="0 1"/>
 	</node>
 	<node xsi:type="value" id="sweeprtcint">
-		<domain xsi:type="discrete" log="true" start="1" end="247483647"/>
+		<domain defaultIndexOrValue="14" xsi:type="discrete" log="true" start="1" end="247483647"/>
 	</node>
 	<node xsi:type="value" id="sweeprtcintvlim">
-		<domain xsi:type="discrete" log="true" start="1" end="247483647"/>
+		<domain defaultIndexOrValue="100000" xsi:type="discrete" log="true" start="1" end="247483647"/>
 	</node>
 	<node xsi:type="value" id="sweepsuccessmaxwortc">
-		<domain xsi:type="discrete" log="true" start="1" end="247483647"/>
+		<domain defaultIndexOrValue="6" xsi:type="discrete" log="true" start="1" end="247483647"/>
 	</node>
 	<node xsi:type="value" id="sweepsuccessrat">
-		<domain xsi:type="discrete" log="true" start="1" end="247483647"/>
+		<domain defaultIndexOrValue="1000" xsi:type="discrete" log="true" start="1" end="247483647"/>
 	</node>
 	<node xsi:type="value" id="sweepwait">
-		<domain xsi:type="categorical" ints="0 1 2"/>
+		<domain defaultIndexOrValue="2" xsi:type="categorical" ints="0 1 2"/>
 	</node>
 	<node xsi:type="value" id="synclsall">
-		<domain xsi:type="categorical" ints="0 1"/>
+		<domain defaultIndexOrValue="1" xsi:type="categorical" ints="0 1"/>
 	</node>
 	<node xsi:type="or" id="synclsglueActive">
-		<domain xsi:type="categorical" booleans="true false"/>
+		<domain defaultIndexOrValue="0" xsi:type="categorical" booleans="true false"/>
 		<choice>
 			<boolean>true</boolean>
 			<child xsi:type="value" id="synclsglue">
-				<domain xsi:type="discrete" log="true" start="1" end="247483647"/>
+		<domain defaultIndexOrValue="8" xsi:type="discrete" log="true" start="1" end="247483647"/>
 			</child>
 		</choice>
 	</node>
 	<node xsi:type="value" id="synclsint">
-		<domain xsi:type="discrete" start="0" end="1000"/>
+		<domain defaultIndexOrValue="100" xsi:type="discrete" start="0" end="1000"/>
 	</node>
 	<node xsi:type="or" id="synclslenActive">
-		<domain xsi:type="categorical" booleans="true false"/>
+		<domain defaultIndexOrValue="0" xsi:type="categorical" booleans="true false"/>
 		<choice>
 			<boolean>true</boolean>
 			<child xsi:type="value" id="synclslen">
-				<domain xsi:type="discrete" log="true" start="1" end="247483647"/>
+		<domain defaultIndexOrValue="40" xsi:type="discrete" log="true" start="1" end="247483647"/>
 			</child>
 		</choice>
 	</node>
 	<node xsi:type="value" id="syncunint">
-		<domain xsi:type="discrete" start="0" end="1000000"/>
+		<domain defaultIndexOrValue="111111" xsi:type="discrete" start="0" end="1000000"/>
 	</node>
 	<node xsi:type="value" id="termint">
-		<domain xsi:type="discrete" start="0" end="1000000"/>
+		<domain defaultIndexOrValue="122222" xsi:type="discrete" start="0" end="1000000"/>
 	</node>
 	<node xsi:type="value" id="ternres">
-		<domain xsi:type="categorical" ints="0 1"/>
+		<domain defaultIndexOrValue="1" xsi:type="categorical" ints="0 1"/>
 	</node>
 	<node xsi:type="value" id="ternresboost">
-		<domain xsi:type="discrete" start="1" end="100"/>
+		<domain defaultIndexOrValue="5" xsi:type="discrete" start="1" end="100"/>
 	</node>
 	<node xsi:type="value" id="ternresrtc">
-		<domain xsi:type="categorical" ints="0 1"/>
+		<domain defaultIndexOrValue="0" xsi:type="categorical" ints="0 1"/>
 	</node>
 	<node xsi:type="value" id="ternreswait">
-		<domain xsi:type="categorical" ints="0 1 2"/>
+		<domain defaultIndexOrValue="2" xsi:type="categorical" ints="0 1 2"/>
 	</node>
 	<node xsi:type="value" id="tlevelema">
-		<domain xsi:type="discrete" start="0" end="32"/>
+		<domain defaultIndexOrValue="12" xsi:type="discrete" start="0" end="32"/>
 	</node>
 	<node xsi:type="value" id="transred">
-		<domain xsi:type="categorical" ints="0 1"/>
+		<domain defaultIndexOrValue="1" xsi:type="categorical" ints="0 1"/>
 	</node>
 	<node xsi:type="value" id="transredwait">
-		<domain xsi:type="categorical" ints="0 1 2"/>
+		<domain defaultIndexOrValue="2" xsi:type="categorical" ints="0 1 2"/>
 	</node>
 	<node xsi:type="value" id="trapiflush">
-		<domain xsi:type="categorical" ints="0 1"/>
+		<domain defaultIndexOrValue="0" xsi:type="categorical" ints="0 1"/>
 	</node>
 	<node xsi:type="or" id="trdmaxeffActive">
-		<domain xsi:type="categorical" strings="unlimited disabled active" />
+		<domain defaultIndexOrValue="2" xsi:type="categorical" strings="unlimited disabled active" />
 		<choice>
 			<string>active</string>
 			<child xsi:type="value" id="trdmaxeff">
-				<domain xsi:type="discrete" log="true" start="1" end="2147483647" />
+		<domain defaultIndexOrValue="2000000" xsi:type="discrete" log="true" start="1" end="2147483647" />
 			</child>
 		</choice>
 	</node>
 	<node xsi:type="or" id="trdmineffActive">
-		<domain xsi:type="categorical" booleans="true false"/>
+		<domain defaultIndexOrValue="0" xsi:type="categorical" booleans="true false"/>
 		<choice>
 			<boolean>true</boolean>
 			<child xsi:type="value" id="trdmineff">
-				<domain xsi:type="discrete" log="true" start="1" end="247483647"/>
+		<domain defaultIndexOrValue="100000" xsi:type="discrete" log="true" start="1" end="247483647"/>
 			</child>
 		</choice>
 	</node>
 	<node xsi:type="value" id="trdreleff">
-		<domain xsi:type="discrete" start="0" end="10000"/>
+		<domain defaultIndexOrValue="10" xsi:type="discrete" start="0" end="10000"/>
 	</node>
 	<node xsi:type="value" id="treelook">
-		<domain xsi:type="categorical" ints="0 1 2"/>
+		<domain defaultIndexOrValue="1" xsi:type="categorical" ints="0 1 2"/>
 	</node>
 	<node xsi:type="value" id="treelookboost">
-		<domain xsi:type="discrete" start="1" end="100000"/>
+		<domain defaultIndexOrValue="10" xsi:type="discrete" start="1" end="100000"/>
 	</node>
 	<node xsi:type="value" id="treelookfull">
-		<domain xsi:type="categorical" ints="0 1"/>
+		<domain defaultIndexOrValue="0" xsi:type="categorical" ints="0 1"/>
 	</node>
 	<node xsi:type="or" id="treelookmaxeffActive">
-		<domain xsi:type="categorical" strings="unlimited disabled active" />
+		<domain defaultIndexOrValue="2" xsi:type="categorical" strings="unlimited disabled active" />
 		<choice>
 			<string>active</string>
 			<child xsi:type="value" id="treelookmaxeff">
-				<domain xsi:type="discrete" log="true" start="1" end="2147483647" />
+		<domain defaultIndexOrValue="50000000" xsi:type="discrete" log="true" start="1" end="2147483647" />
 			</child>
 		</choice>
 	</node>
 	<node xsi:type="or" id="treelookmineffActive">
-		<domain xsi:type="categorical" booleans="true false"/>
+		<domain defaultIndexOrValue="0" xsi:type="categorical" booleans="true false"/>
 		<choice>
 			<boolean>true</boolean>
 			<child xsi:type="value" id="treelookmineff">
-				<domain xsi:type="discrete" log="true" start="1" end="247483647"/>
+		<domain defaultIndexOrValue="300000" xsi:type="discrete" log="true" start="1" end="247483647"/>
 			</child>
 		</choice>
 	</node>
 	<node xsi:type="value" id="treelookreleff">
-		<domain xsi:type="discrete" start="0" end="10000"/>
+		<domain defaultIndexOrValue="2" xsi:type="discrete" start="0" end="10000"/>
 	</node>
 	<node xsi:type="value" id="treelookrtc">
-		<domain xsi:type="categorical" ints="0 1"/>
+		<domain defaultIndexOrValue="0" xsi:type="categorical" ints="0 1"/>
 	</node>
 	<node xsi:type="value" id="trnreleff">
-		<domain xsi:type="discrete" start="0" end="1000"/>
+		<domain defaultIndexOrValue="10" xsi:type="discrete" start="0" end="1000"/>
 	</node>
 	<node xsi:type="or" id="trnrmaxeffActive">
-		<domain xsi:type="categorical" strings="unlimited disabled active" />
+		<domain defaultIndexOrValue="2" xsi:type="categorical" strings="unlimited disabled active" />
 		<choice>
 			<string>active</string>
 			<child xsi:type="value" id="trnrmaxeff">
-				<domain xsi:type="discrete" log="true" start="1" end="2147483647" />
+		<domain defaultIndexOrValue="200000000" xsi:type="discrete" log="true" start="1" end="2147483647" />
 			</child>
 		</choice>
 	</node>
 	<node xsi:type="or" id="trnrmineffActive">
-		<domain xsi:type="categorical" booleans="true false"/>
+		<domain defaultIndexOrValue="0" xsi:type="categorical" booleans="true false"/>
 		<choice>
 			<boolean>true</boolean>
 			<child xsi:type="value" id="trnrmineff">
-				<domain xsi:type="discrete" log="true" start="1" end="247483647"/>
+		<domain defaultIndexOrValue="4000000" xsi:type="discrete" log="true" start="1" end="247483647"/>
 			</child>
 		</choice>
 	</node>
 	<node xsi:type="value" id="unhdatrn">
-		<domain xsi:type="categorical" ints="0 1 2"/>
+		<domain defaultIndexOrValue="2" xsi:type="categorical" ints="0 1 2"/>
 	</node>
 	<node xsi:type="value" id="unhdextstamp">
-		<domain xsi:type="categorical" ints="0 1"/>
+		<domain defaultIndexOrValue="1" xsi:type="categorical" ints="0 1"/>
 	</node>
 	<node xsi:type="value" id="unhdhbr">
-		<domain xsi:type="categorical" ints="0 1"/>
+		<domain defaultIndexOrValue="0" xsi:type="categorical" ints="0 1"/>
 	</node>
 	<node xsi:type="or" id="unhdlnprActive">
-		<domain xsi:type="categorical" booleans="true false"/>
+		<domain defaultIndexOrValue="0" xsi:type="categorical" booleans="true false"/>
 		<choice>
 			<boolean>true</boolean>
 			<child xsi:type="value" id="unhdlnpr">
-				<domain xsi:type="discrete" log="true" start="1" end="247483647"/>
+		<domain defaultIndexOrValue="3" xsi:type="discrete" log="true" start="1" end="247483647"/>
 			</child>
 		</choice>
 	</node>
 	<node xsi:type="or" id="unhdmaxeffActive">
-		<domain xsi:type="categorical" strings="unlimited disabled active" />
+		<domain defaultIndexOrValue="2" xsi:type="categorical" strings="unlimited disabled active" />
 		<choice>
 			<string>active</string>
 			<child xsi:type="value" id="unhdmaxeff">
-				<domain xsi:type="discrete" log="true" start="1" end="2147483647" />
+		<domain defaultIndexOrValue="20000000" xsi:type="discrete" log="true" start="1" end="2147483647" />
 			</child>
 		</choice>
 	</node>
 	<node xsi:type="or" id="unhdmineffActive">
-		<domain xsi:type="categorical" booleans="true false"/>
+		<domain defaultIndexOrValue="0" xsi:type="categorical" booleans="true false"/>
 		<choice>
 			<boolean>true</boolean>
 			<child xsi:type="value" id="unhdmineff">
-				<domain xsi:type="discrete" log="true" start="1" end="247483647"/>
+		<domain defaultIndexOrValue="100000" xsi:type="discrete" log="true" start="1" end="247483647"/>
 			</child>
 		</choice>
 	</node>
 	<node xsi:type="value" id="unhdreleff">
-		<domain xsi:type="discrete" start="0" end="10000"/>
+		<domain defaultIndexOrValue="2" xsi:type="discrete" start="0" end="10000"/>
 	</node>
 	<node xsi:type="value" id="unhdroundlim">
-		<domain xsi:type="discrete" start="0" end="100"/>
+		<domain defaultIndexOrValue="20" xsi:type="discrete" start="0" end="100"/>
 	</node>
 	<node xsi:type="value" id="unhide">
-		<domain xsi:type="categorical" ints="0 1"/>
+		<domain defaultIndexOrValue="1" xsi:type="categorical" ints="0 1"/>
 	</node>
 	<node xsi:type="value" id="unhidewait">
-		<domain xsi:type="categorical" ints="0 1 2"/>
+		<domain defaultIndexOrValue="0" xsi:type="categorical" ints="0 1 2"/>
 	</node>
 	<node xsi:type="value" id="usedtwice">
-		<domain xsi:type="categorical" ints="0 1"/>
+		<domain defaultIndexOrValue="1" xsi:type="categorical" ints="0 1"/>
 	</node>
 	<node xsi:type="value" id="wait">
-		<domain xsi:type="categorical" ints="0 1"/>
+		<domain defaultIndexOrValue="1" xsi:type="categorical" ints="0 1"/>
 	</node>
 	<node xsi:type="or" id="waitmaxActive">
-		<domain xsi:type="categorical" strings="unlimited disabled active" />
+		<domain defaultIndexOrValue="2" xsi:type="categorical" strings="unlimited disabled active" />
 		<choice>
 			<string>active</string>
 			<child xsi:type="value" id="waitmax">
-				<domain xsi:type="discrete" log="true" start="1" end="2147483647" />
+		<domain defaultIndexOrValue="4" xsi:type="discrete" log="true" start="1" end="2147483647" />
 			</child>
 		</choice>
 	</node>

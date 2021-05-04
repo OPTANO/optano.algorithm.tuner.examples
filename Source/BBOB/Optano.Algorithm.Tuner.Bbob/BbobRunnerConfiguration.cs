@@ -57,14 +57,6 @@ namespace Optano.Algorithm.Tuner.Bbob
         #region Public properties
 
         /// <summary>
-        /// Gets a value indicating whether this instance is master.
-        /// </summary>
-        /// <value>
-        ///   <c>true</c> if this instance is master; otherwise, <c>false</c>.
-        /// </value>
-        public bool IsMaster { get; private set; }
-
-        /// <summary>
         /// Gets the random seed for the instance generator seed.
         /// </summary>
         /// <value>
@@ -132,8 +124,7 @@ namespace Optano.Algorithm.Tuner.Bbob
         public override string ToString()
         {
             var builder = new StringBuilder("BbobRunnerConfiguration:\r\n");
-            builder.AppendLine($"{nameof(BbobRunnerConfiguration.IsMaster)}: {this.IsMaster}")
-                .AppendLine($"{nameof(BbobRunnerConfiguration.InstanceSeed)}: {this.InstanceSeed}")
+            builder.AppendLine($"{nameof(BbobRunnerConfiguration.InstanceSeed)}: {this.InstanceSeed}")
                 .AppendLine($@"{nameof(BbobRunnerConfiguration.PythonBin)}: {this.PythonBin}")
                 .AppendLine($@"{nameof(BbobRunnerConfiguration.PathToExecutable)}: {this.PathToExecutable}")
                 .AppendLine($"{nameof(BbobRunnerConfiguration.FunctionId)}: {this.FunctionId}")
@@ -154,11 +145,6 @@ namespace Optano.Algorithm.Tuner.Bbob
         public class BbobRunnerConfigurationBuilder : IConfigBuilder<BbobRunnerConfiguration>
         {
             #region Static Fields
-
-            /// <summary>
-            /// The default value of <see cref="BbobRunnerConfiguration.IsMaster"/>.
-            /// </summary>
-            public static readonly bool IsMasterDefault = false;
 
             /// <summary>
             /// The default value of <see cref="BbobRunnerConfiguration.InstanceSeed"/>.
@@ -184,11 +170,6 @@ namespace Optano.Algorithm.Tuner.Bbob
             #endregion
 
             #region Fields
-
-            /// <summary>
-            /// The value to set for <see cref="BbobRunnerConfiguration.IsMaster"/>.
-            /// </summary>
-            private bool? _isMaster;
 
             /// <summary>
             /// The value to set for <see cref="BbobRunnerConfiguration.InstanceSeed"/>.
@@ -225,14 +206,6 @@ namespace Optano.Algorithm.Tuner.Bbob
             #region Public properties
 
             /// <summary>
-            /// Gets a value indicating whether this instance is master.
-            /// </summary>
-            /// <value>
-            ///   <c>true</c> if this instance is master; otherwise, <c>false</c>.
-            /// </value>
-            public bool IsMaster => this._isMaster ?? BbobRunnerConfigurationBuilder.IsMasterDefault;
-
-            /// <summary>
             /// Gets a value indicating whether this instance has python bin.
             /// </summary>
             /// <value>
@@ -251,17 +224,6 @@ namespace Optano.Algorithm.Tuner.Bbob
             #endregion
 
             #region Public Methods and Operators
-
-            /// <summary>
-            /// Sets the boolean <see cref="IsMaster"/>.
-            /// </summary>
-            /// <param name="isMaster">if set to <c>true</c> [is master].</param>
-            /// <returns><see cref="BbobRunnerConfigurationBuilder"/>.</returns>
-            public BbobRunnerConfigurationBuilder SetIsMaster(bool isMaster)
-            {
-                this._isMaster = isMaster;
-                return this;
-            }
 
             /// <summary>
             /// Sets the random seed for the instance generator seed.
@@ -407,25 +369,19 @@ namespace Optano.Algorithm.Tuner.Bbob
             {
                 var config = new BbobRunnerConfiguration
                                  {
-                                     IsMaster = this._isMaster ?? fallback?.IsMaster ?? BbobRunnerConfigurationBuilder.IsMasterDefault,
                                      InstanceSeed =
                                          this._instanceSeed ?? fallback?.InstanceSeed ?? BbobRunnerConfigurationBuilder.InstanceSeedDefault,
+                                     PythonBin = this._pythonBin ?? fallback?.PythonBin ?? throw new InvalidOperationException(
+                                                     $"You must set the {BbobRunnerConfigurationParser.PythonBinName}."),
+                                     PathToExecutable = this._pathToExecutable
+                                                        ?? fallback?.PathToExecutable ?? BbobRunnerConfigurationBuilder.PathToExecutableDefault,
+                                     FunctionId = this._functionId ?? fallback?.FunctionId ?? throw new InvalidOperationException(
+                                                      $"You must set the {BbobRunnerConfigurationParser.FunctionIdName}."),
+                                     Dimensions = this._dimensions ?? fallback?.Dimensions ?? BbobRunnerConfigurationBuilder.DimensionsDefault,
+                                     GenericParameterization = this._genericParameterization ??
+                                                               fallback?.GenericParameterization
+                                                               ?? BbobRunnerConfigurationBuilder.GenericParameterizationDefault,
                                  };
-                config.PythonBin = this._pythonBin ?? fallback?.PythonBin ??
-                                   (config.IsMaster
-                                        ? throw new InvalidOperationException(
-                                              $"You must set the {BbobRunnerConfigurationParser.PythonBinName}.")
-                                        : string.Empty);
-                config.PathToExecutable =
-                    this._pathToExecutable ?? fallback?.PathToExecutable ?? BbobRunnerConfigurationBuilder.PathToExecutableDefault;
-                config.FunctionId = this._functionId ?? fallback?.FunctionId ??
-                                    (config.IsMaster
-                                         ? throw new InvalidOperationException(
-                                               $"You must set the {BbobRunnerConfigurationParser.FunctionIdName}.")
-                                         : int.MaxValue);
-                config.Dimensions = this._dimensions ?? fallback?.Dimensions ?? BbobRunnerConfigurationBuilder.DimensionsDefault;
-                config.GenericParameterization = this._genericParameterization ??
-                                                 fallback?.GenericParameterization ?? BbobRunnerConfigurationBuilder.GenericParameterizationDefault;
                 return config;
             }
 

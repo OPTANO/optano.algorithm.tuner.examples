@@ -60,12 +60,10 @@ namespace Optano.Algorithm.Tuner.Saps
         public static void Main(string[] args)
         {
             ProcessUtils.SetDefaultCultureInfo(CultureInfo.InvariantCulture);
-
-            LoggingHelper.Configure($"sapsParserLog.txt");
+            LoggingHelper.Configure($"parserLog_{ProcessUtils.GetCurrentProcessId()}.log");
 
             // Parse arguments.
             var argsParser = new SapsRunnerConfigurationParser();
-
             if (!ArgumentParserUtils.ParseArguments(argsParser, args))
             {
                 return;
@@ -74,7 +72,7 @@ namespace Optano.Algorithm.Tuner.Saps
             var config = argsParser.ConfigurationBuilder.Build();
 
             // Start master or worker depending on arguments.
-            if (config.IsMaster)
+            if (argsParser.IsMaster)
             {
                 Dictionary<string, IAllele> bestParameters;
                 switch (config.GenericParameterization)
@@ -83,13 +81,13 @@ namespace Optano.Algorithm.Tuner.Saps
                         bestParameters = GenericSapsEntryPoint<
                             GenomePredictionRandomForest<AverageRankStrategy>,
                             GenomePredictionForestModel<GenomePredictionTree>,
-                            AverageRankStrategy>.Run(argsParser.RemainingArguments, config);
+                            AverageRankStrategy>.Run(argsParser.AdditionalArguments, config);
                         break;
                     case GenericParameterization.RandomForestReuseOldTrees:
                         bestParameters = GenericSapsEntryPoint<
                             GenomePredictionRandomForest<ReuseOldTreesStrategy>,
                             GenomePredictionForestModel<GenomePredictionTree>,
-                            ReuseOldTreesStrategy>.Run(argsParser.RemainingArguments, config);
+                            ReuseOldTreesStrategy>.Run(argsParser.AdditionalArguments, config);
                         break;
                     case GenericParameterization.StandardRandomForest:
                     case GenericParameterization.Default:
@@ -97,7 +95,7 @@ namespace Optano.Algorithm.Tuner.Saps
                         bestParameters = GenericSapsEntryPoint<
                             StandardRandomForestLearner<ReuseOldTreesStrategy>,
                             GenomePredictionForestModel<GenomePredictionTree>,
-                            ReuseOldTreesStrategy>.Run(argsParser.RemainingArguments, config);
+                            ReuseOldTreesStrategy>.Run(argsParser.AdditionalArguments, config);
                         break;
                 }
 

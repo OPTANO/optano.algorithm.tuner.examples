@@ -32,8 +32,6 @@
 namespace Optano.Algorithm.Tuner.Saps.Tests
 {
     using System;
-    using System.IO;
-    using System.Linq;
 
     using NDesk.Options;
 
@@ -78,26 +76,10 @@ namespace Optano.Algorithm.Tuner.Saps.Tests
         }
 
         /// <summary>
-        /// Checks that trying to use the builder throws an
-        /// <see cref="InvalidOperationException"/> if <see cref="SapsRunnerConfigurationParser.ParseArguments"/>
-        /// was not called beforehand.
+        /// Checks that all options are parsed correctly.
         /// </summary>
         [Fact]
-        public void ConfigurationParserThrowsIfNoPreprocessingWasDone()
-        {
-            Exception exception =
-                Assert.Throws<InvalidOperationException>(
-                    () =>
-                        {
-                            var builder = this._parser.ConfigurationBuilder;
-                        });
-        }
-
-        /// <summary>
-        /// Checks that all possible arguments to an instance acting as master get parsed correctly.
-        /// </summary>
-        [Fact]
-        public void MasterArgumentsAreParsedCorrectly()
+        public void OptionsAreParsedCorrectly()
         {
             const string Executable = "dummy exe";
             const GenericParameterization GenericParameterization = GenericParameterization.RandomForestAverageRank;
@@ -110,31 +92,13 @@ namespace Optano.Algorithm.Tuner.Saps.Tests
                            };
 
             this._parser.ParseArguments(args);
-
             var config = this._parser.ConfigurationBuilder.Build();
 
-            config.IsMaster.ShouldBeTrue("Expected master to be requested.");
+            this._parser.IsMaster.ShouldBeTrue("Expected master to be requested.");
             config.PathToExecutable.ShouldBe(Executable, "Expected different path to executable.");
             config.GenericParameterization.ShouldBe(GenericParameterization, "Expected different generic parameterization.");
             config.PathToExecutable.ShouldBe(Executable, "Expected different SAPS seed.");
             config.PathToExecutable.ShouldBe(Executable, "Expected different factor.");
-        }
-
-        /// <summary>
-        /// Checks that all possible arguments to an instance acting as worker get parsed correctly.
-        /// </summary>
-        [Fact]
-        public void NonMasterArgumentsAreParsedCorrectly()
-        {
-            const string RemainingArg = "test";
-            var args = new[] { RemainingArg };
-            this._parser.ParseArguments(args);
-
-            var config = this._parser.ConfigurationBuilder.Build();
-
-            config.IsMaster.ShouldBeFalse("Did not expect master to be requested.");
-            this._parser.RemainingArguments.Count().ShouldBe(1, "Expected one remaining argument.");
-            this._parser.RemainingArguments.First().ShouldBe(RemainingArg, "Expected different remaining argument.");
         }
 
         /// <summary>
@@ -160,10 +124,9 @@ namespace Optano.Algorithm.Tuner.Saps.Tests
             var args = new[] { "--master", $"--executable={Executable}", $"--genericParameterization={genericParameterizationString}" };
 
             this._parser.ParseArguments(args);
-
             var config = this._parser.ConfigurationBuilder.Build();
 
-            config.IsMaster.ShouldBeTrue("Expected master to be requested.");
+            this._parser.IsMaster.ShouldBeTrue("Expected master to be requested.");
             config.PathToExecutable.ShouldBe(Executable, "Expected different path to executable.");
             config.GenericParameterization.ShouldBe(genericParameterization, "Expected different generic parameterization");
         }
@@ -182,39 +145,32 @@ namespace Optano.Algorithm.Tuner.Saps.Tests
 
             var args = new[] { "--master", $"--executable={Executable}", $"--genericParameterization={genericParameterizationString}" };
 
-            Exception exception =
-                Assert.Throws<OptionException>(
-                    () => this._parser.ParseArguments(args));
+            Assert.Throws<OptionException>(
+                () => this._parser.ParseArguments(args));
         }
 
         /// <summary>
         /// Checks that providing the --master argument, but no argument defining the path to the ubcsat executable
-        /// results in an <see cref="OptionException"/> when calling
-        /// <see cref="SapsRunnerConfigurationParser.ParseArguments"/>.
+        /// results in an <see cref="OptionException"/> when parsing.
         /// </summary>
         [Fact]
         public void MissingPathToExecutableThrowsException()
         {
             var args = new[] { "--master" };
-            Exception exception =
-                Assert.Throws<OptionException>(
-                    () => this._parser.ParseArguments(args));
+            Assert.Throws<OptionException>(
+                () => this._parser.ParseArguments(args));
         }
 
         /// <summary>
-        /// Checks that the parser throws an <see cref="ArgumentOutOfRangeException" />, if the factorParK is negative or zero.
+        /// Checks that the parser throws an <see cref="ArgumentOutOfRangeException" />, if the factorParK is negative.
         /// </summary>
-        /// <param name="factor">The factor.</param>
-        [Theory]
-        [InlineData(0)]
-        [InlineData(-1)]
-        public void ParserThrowsIfFactorParKIsNegativeOrZero(int factor)
+        [Fact]
+        public void ParserThrowsIfFactorParKIsNegative()
         {
             const string Executable = "dummy exe";
-            var args = new[] { "--master", $"--executable={Executable}", $"--factorParK={factor}" };
-            Exception exception =
-                Assert.Throws<ArgumentOutOfRangeException>(
-                    () => this._parser.ParseArguments(args));
+            var args = new[] { "--master", $"--executable={Executable}", $"--factorParK=-1" };
+            Assert.Throws<ArgumentOutOfRangeException>(
+                () => this._parser.ParseArguments(args));
         }
 
         /// <summary>
@@ -228,9 +184,8 @@ namespace Optano.Algorithm.Tuner.Saps.Tests
         {
             const string Executable = "dummy exe";
             var args = new[] { "--master", $"--executable={Executable}", $"--numberOfSeeds={numberOfSeeds}" };
-            Exception exception =
-                Assert.Throws<ArgumentOutOfRangeException>(
-                    () => this._parser.ParseArguments(args));
+            Assert.Throws<ArgumentOutOfRangeException>(
+                () => this._parser.ParseArguments(args));
         }
 
         /// <summary>
@@ -239,10 +194,12 @@ namespace Optano.Algorithm.Tuner.Saps.Tests
         [Fact]
         public void BuildWithFallBackPrioritizesFallbackArgumentsCorrectly()
         {
+            const string PathToExecutableFallback = "dummy";
             const int NumberOfSeedsFallback = 10;
             const int RngSeedFallback = 12;
 
             var fallback = new SapsRunnerConfiguration.SapsConfigBuilder()
+                .SetPathToExecutable(PathToExecutableFallback)
                 .SetNumberOfSeeds(NumberOfSeedsFallback)
                 .SetRngSeed(RngSeedFallback)
                 .Build();
@@ -251,30 +208,9 @@ namespace Optano.Algorithm.Tuner.Saps.Tests
                 .SetRngSeed(SapsRunnerConfiguration.SapsConfigBuilder.RngSeedDefault)
                 .BuildWithFallback(fallback);
 
+            config.PathToExecutable.ShouldBe(PathToExecutableFallback);
             config.RngSeed.ShouldBe(SapsRunnerConfiguration.SapsConfigBuilder.RngSeedDefault);
             config.NumberOfSeeds.ShouldBe(NumberOfSeedsFallback);
-        }
-
-        /// <summary>
-        /// Checks that <see cref="SapsRunnerConfigurationParser.PrintHelp"/> prints help about general worker arguments, general
-        /// master arguments, and custom SAPS arguments.
-        /// </summary>
-        [Fact]
-        public void PrintHelpPrintsAllArguments()
-        {
-            TestUtils.CheckOutput(
-                action: () => this._parser.PrintHelp(),
-                check: consoleOutput =>
-                    {
-                        var reader = new StringReader(consoleOutput.ToString());
-                        var text = reader.ReadToEnd();
-                        text.ShouldContain("Arguments for the application:", "Application arguments are missing.");
-                        text.ShouldContain(
-                            "Additional required arguments if this instance acts as master",
-                            "Application master arguments are missing.");
-                        text.ShouldContain("Arguments for master:", "General master arguments are missing.");
-                        text.ShouldContain("Arguments for worker:", "General worker arguments are missing.");
-                    });
         }
 
         #endregion

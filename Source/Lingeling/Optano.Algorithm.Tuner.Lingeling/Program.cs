@@ -60,12 +60,10 @@ namespace Optano.Algorithm.Tuner.Lingeling
         public static void Main(string[] args)
         {
             ProcessUtils.SetDefaultCultureInfo(CultureInfo.InvariantCulture);
-
-            LoggingHelper.Configure($"lingelingParserLog.txt");
+            LoggingHelper.Configure($"parserLog_{ProcessUtils.GetCurrentProcessId()}.log");
 
             // Parse arguments.
             var argsParser = new LingelingRunnerConfigurationParser();
-
             if (!ArgumentParserUtils.ParseArguments(argsParser, args))
             {
                 return;
@@ -74,25 +72,25 @@ namespace Optano.Algorithm.Tuner.Lingeling
             var config = argsParser.ConfigurationBuilder.Build();
 
             // Start master or worker depending on arguments.
-            if (config.IsMaster)
+            if (argsParser.IsMaster)
             {
                 var bestParameters = config.GenericParameterization switch
                     {
                         GenericParameterization.RandomForestAverageRank => GenericLingelingEntryPoint<
                                 GenomePredictionRandomForest<AverageRankStrategy>, GenomePredictionForestModel<GenomePredictionTree>,
                                 AverageRankStrategy>
-                            .Run(argsParser.RemainingArguments, config),
+                            .Run(argsParser.AdditionalArguments, config),
                         GenericParameterization.RandomForestReuseOldTrees => GenericLingelingEntryPoint<
                             GenomePredictionRandomForest<ReuseOldTreesStrategy>, GenomePredictionForestModel<GenomePredictionTree>,
-                            ReuseOldTreesStrategy>.Run(argsParser.RemainingArguments, config),
+                            ReuseOldTreesStrategy>.Run(argsParser.AdditionalArguments, config),
                         GenericParameterization.StandardRandomForest => GenericLingelingEntryPoint<
                             StandardRandomForestLearner<ReuseOldTreesStrategy>, GenomePredictionForestModel<GenomePredictionTree>,
-                            ReuseOldTreesStrategy>.Run(argsParser.RemainingArguments, config),
+                            ReuseOldTreesStrategy>.Run(argsParser.AdditionalArguments, config),
                         GenericParameterization.Default => GenericLingelingEntryPoint<
                             StandardRandomForestLearner<ReuseOldTreesStrategy>, GenomePredictionForestModel<GenomePredictionTree>,
-                            ReuseOldTreesStrategy>.Run(argsParser.RemainingArguments, config),
+                            ReuseOldTreesStrategy>.Run(argsParser.AdditionalArguments, config),
                         _ => GenericLingelingEntryPoint<StandardRandomForestLearner<ReuseOldTreesStrategy>,
-                            GenomePredictionForestModel<GenomePredictionTree>, ReuseOldTreesStrategy>.Run(argsParser.RemainingArguments, config)
+                            GenomePredictionForestModel<GenomePredictionTree>, ReuseOldTreesStrategy>.Run(argsParser.AdditionalArguments, config)
                     };
 
                 Program.LogBestParameters(bestParameters, config);

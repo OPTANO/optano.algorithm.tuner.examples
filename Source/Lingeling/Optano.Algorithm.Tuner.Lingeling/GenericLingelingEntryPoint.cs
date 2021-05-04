@@ -99,11 +99,21 @@ namespace Optano.Algorithm.Tuner.Lingeling
                 string testInstanceFolder,
                 LingelingRunnerConfiguration runnerConfig)
         {
+            IRunEvaluator<InstanceSeedFile, RuntimeResult> runEvaluator;
+            if (runnerConfig.FactorParK == 0)
+            {
+                runEvaluator = new SortByUnpenalizedRuntime<InstanceSeedFile>(tunerConfig.CpuTimeout);
+            }
+            else
+            {
+                runEvaluator = new SortByPenalizedRuntime<InstanceSeedFile>(runnerConfig.FactorParK, tunerConfig.CpuTimeout);
+            }
+
             var tuner = new AlgorithmTuner<LingelingRunner, InstanceSeedFile, RuntimeResult, TLearnerModel,
                 TPredictorModel,
                 TSamplingStrategy>(
                 targetAlgorithmFactory: new LingelingRunnerFactory(runnerConfig.PathToExecutable, tunerConfig, runnerConfig.MemoryLimitMegabyte),
-                runEvaluator: new SortByRuntime<InstanceSeedFile>(runnerConfig.FactorParK),
+                runEvaluator: runEvaluator,
                 trainingInstances: InstanceSeedFile.CreateInstanceSeedFilesFromDirectory(
                     trainingInstanceFolder,
                     LingelingUtils.ListOfValidFileExtensions,

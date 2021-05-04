@@ -34,6 +34,8 @@ namespace Optano.Algorithm.Tuner.Gurobi.Tests
     using System;
     using System.IO;
 
+    using global::Gurobi;
+
     using Optano.Algorithm.Tuner.Configuration;
     using Optano.Algorithm.Tuner.Genomes;
 
@@ -132,6 +134,25 @@ namespace Optano.Algorithm.Tuner.Gurobi.Tests
             {
                 filteredGenesKey.ShouldNotContain("Indicator");
             }
+        }
+
+        /// <summary>
+        /// Checks, that <see cref="GurobiUtils.GetMipGap"/> returns the correct result.
+        /// </summary>
+        /// <param name="bestObjective">The best objective.</param>
+        /// <param name="bestObjectiveBound">The best objective bound.</param>
+        /// <param name="expectedResult">The expected result.</param>
+        [Theory]
+        [InlineData(0, 100, GRB.INFINITY)]
+        [InlineData(double.NaN, 100, GRB.INFINITY)]
+        [InlineData(100, double.NaN, GRB.INFINITY)]
+        [InlineData(100, 100, 0)]
+        [InlineData(100, 50, 0.5)]
+        [InlineData(100, 0, 1)]
+        public void GetMipGapReturnsCorrectResult(double bestObjective, double bestObjectiveBound, double expectedResult)
+        {
+            var actualResult = GurobiUtils.GetMipGap(bestObjective, bestObjectiveBound);
+            actualResult.ShouldBe(expectedResult);
         }
 
         #endregion

@@ -3,7 +3,7 @@
 // ////////////////////////////////////////////////////////////////////////////////
 // 
 //        OPTANO GmbH Source Code
-//        Copyright (c) 2010-2020 OPTANO GmbH
+//        Copyright (c) 2010-2021 OPTANO GmbH
 //        ALL RIGHTS RESERVED.
 // 
 //    The entire contents of this file is protected by German and
@@ -33,10 +33,12 @@ namespace Optano.Algorithm.Tuner.Gurobi.Tests
 {
     using System;
     using System.Diagnostics;
+    using System.IO;
     using System.Threading;
 
     using global::Gurobi;
 
+    using Optano.Algorithm.Tuner.Configuration;
     using Optano.Algorithm.Tuner.TargetAlgorithm.Instances;
 
     using Shouldly;
@@ -61,6 +63,20 @@ namespace Optano.Algorithm.Tuner.Gurobi.Tests
         /// </summary>
         private const int TestInstanceSeed = 42;
 
+        /// <summary>
+        /// The path to the post tuning file we run Gurobi on for testing.
+        /// </summary>
+        private const string PathToPostTuningFile = @"Tools/gurobiPostTuningRuns.csv";
+
+        #endregion
+
+        #region Fields
+
+        /// <summary>
+        /// The data record folder used in tests.
+        /// </summary>
+        private readonly string _dataRecordDirectory = PathUtils.GetAbsolutePathFromCurrentDirectory("TestDirectory");
+
         #endregion
 
         #region Constructors and Destructors
@@ -80,6 +96,10 @@ namespace Optano.Algorithm.Tuner.Gurobi.Tests
         /// <inheritdoc/>
         public void Dispose()
         {
+            if (Directory.Exists(this._dataRecordDirectory))
+            {
+                Directory.Delete(this._dataRecordDirectory, recursive: true);
+            }
         }
 
         /// <summary>
@@ -91,12 +111,43 @@ namespace Optano.Algorithm.Tuner.Gurobi.Tests
             var timer = Stopwatch.StartNew();
             var args = new[]
                            {
-                               "--master", "--maxParallelEvaluations=2", "--trainingInstanceFolder=Tools", "--numGens=2", "--goalGen=0",
+                               "--master", "--maxParallelEvaluations=1", "--trainingInstanceFolder=Tools", "--numGens=2", "--goalGen=0",
                                "--popSize=8", "--miniTournamentSize=4", "--cpuTimeout=1", "--instanceNumbers=1:1", "--enableRacing=True",
                            };
             Program.Main(args);
             timer.Stop();
             timer.Elapsed.TotalMilliseconds.ShouldBeGreaterThan(2000);
+        }
+
+        /// <summary>
+        /// Smoke test for the post tuning runner of the Gurobi adapter.
+        /// </summary>
+        [Fact]
+        public void PostTuningSmokeTest()
+        {
+            Directory.Exists(this._dataRecordDirectory).ShouldBeFalse();
+
+            var timer = Stopwatch.StartNew();
+            var args = new[]
+                           {
+                               "--postTuning", "--maxParallelEvaluations=1", "--cpuTimeout=1", "--enableDataRecording=True",
+                               $"--dataRecordDirectory={this._dataRecordDirectory}",
+                               $"--pathToPostTuningFile={GurobiRunnerTests.PathToPostTuningFile}",
+                               "--indexOfFirstPostTuningRun=0", "--numberOfPostTuningRuns=2",
+                           };
+            Program.Main(args);
+            timer.Stop();
+            timer.Elapsed.ShouldBeGreaterThan(TimeSpan.FromMilliseconds(2000));
+
+            Directory.Exists(this._dataRecordDirectory).ShouldBeTrue();
+            File.Exists(
+                Path.Combine(
+                    this._dataRecordDirectory,
+                    $"dataLog_generation_-1_process_{(object)ProcessUtils.GetCurrentProcessId()}_id_0_CancelledByTimeout.csv")).ShouldBeTrue();
+            File.Exists(
+                Path.Combine(
+                    this._dataRecordDirectory,
+                    $"dataLog_generation_-1_process_{(object)ProcessUtils.GetCurrentProcessId()}_id_1_CancelledByTimeout.csv")).ShouldBeTrue();
         }
 
         /// <summary>
@@ -108,6 +159,7 @@ namespace Optano.Algorithm.Tuner.Gurobi.Tests
             var gurobiEnvironment = new GRBEnv();
             var runnerConfiguration =
                 new GurobiRunnerConfiguration.GurobiRunnerConfigBuilder().Build(TimeSpan.FromSeconds(1));
+            var tunerConfiguration = new AlgorithmTunerConfiguration();
 
             // Note, that this cancellation token source is never used in GurobiRunner.Run().
             var cancellationTokenSource = new CancellationTokenSource(500);
@@ -115,7 +167,7 @@ namespace Optano.Algorithm.Tuner.Gurobi.Tests
             var timer = new Stopwatch();
             timer.Start();
 
-            var gurobiRunner = new GurobiRunner(gurobiEnvironment, runnerConfiguration);
+            var gurobiRunner = new GurobiRunner(gurobiEnvironment, runnerConfiguration, tunerConfiguration);
             var runner = gurobiRunner.Run(
                 new InstanceSeedFile(GurobiRunnerTests.PathToTestInstance, GurobiRunnerTests.TestInstanceSeed),
                 cancellationTokenSource.Token);

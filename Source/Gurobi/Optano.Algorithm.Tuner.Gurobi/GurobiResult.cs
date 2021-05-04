@@ -32,25 +32,27 @@
 namespace Optano.Algorithm.Tuner.Gurobi
 {
     using System;
+    using System.Linq;
 
+    using Optano.Algorithm.Tuner.TargetAlgorithm;
     using Optano.Algorithm.Tuner.TargetAlgorithm.Results;
 
     /// <summary>
-    ///     Result of a (possibly cancelled) Gurobi run.
+    /// Result of a (possibly cancelled) Gurobi run.
     /// </summary>
     public class GurobiResult : ResultBase<GurobiResult>
     {
         #region Constructors and Destructors
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="GurobiResult" /> class.
+        /// Initializes a new instance of the <see cref="GurobiResult" /> class.
         /// </summary>
         /// <param name="gap">The MIP gap at the end of the run.</param>
-        /// <param name="runtime">Runtime in milliseconds.</param>
-        /// <param name="isCancelled">Whether or not the run has been cancelled.</param>
+        /// <param name="runtime">The runtime in milliseconds.</param>
+        /// <param name="targetAlgorithmStatus">The target algorithm status.</param>
         /// <param name="hasValidSolution">Whether a valid solution was found.</param>
-        public GurobiResult(double gap, TimeSpan runtime, bool isCancelled, bool hasValidSolution)
-            : base(runtime)
+        public GurobiResult(double gap, TimeSpan runtime, TargetAlgorithmStatus targetAlgorithmStatus, bool hasValidSolution)
+            : base(runtime, targetAlgorithmStatus)
         {
             // Check some parameters.
             if (gap < 0)
@@ -61,15 +63,16 @@ namespace Optano.Algorithm.Tuner.Gurobi
             // Set them.
             this.Gap = gap;
             this.Runtime = runtime;
-            this.IsCancelled = isCancelled;
             this.HasValidSolution = hasValidSolution;
         }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="GurobiResult" /> class.
+        /// Initializes a new instance of the <see cref="GurobiResult" /> class.
+        /// Empty ctor required for <see cref="ResultBase{TResultType}.CreateCancelledResult"/>.
+        /// This ctor is never used, since this adapter handles its cancelled results on its own.
         /// </summary>
         public GurobiResult()
-            : base(TimeSpan.MaxValue)
+            : this(double.NaN, TimeSpan.MaxValue, TargetAlgorithmStatus.CancelledByTimeout, false)
         {
             throw new InvalidOperationException();
         }
@@ -79,12 +82,12 @@ namespace Optano.Algorithm.Tuner.Gurobi
         #region Public properties
 
         /// <summary>
-        ///     Gets the MIP gap at the end of the run.
+        /// Gets the MIP gap at the end of the run.
         /// </summary>
         public double Gap { get; }
 
         /// <summary>
-        ///     Gets a value indicating whether the run completed with a feasible solution.
+        /// Gets a value indicating whether the run completed with a feasible solution.
         /// </summary>
         public bool HasValidSolution { get; }
 
@@ -100,6 +103,18 @@ namespace Optano.Algorithm.Tuner.Gurobi
         {
             return
                 $"Cancelled: {this.IsCancelled}; Runtime: {this.Runtime} ms; Found feasible solution: {this.HasValidSolution}; MIP gap: {this.Gap}";
+        }
+
+        /// <inheritdoc />
+        public override string[] GetHeader()
+        {
+            return base.GetHeader().Concat(new[] { "MipGap", "HasValidSolution" }).ToArray();
+        }
+
+        /// <inheritdoc />
+        public override string[] ToStringArray()
+        {
+            return base.ToStringArray().Concat(new[] { $"{this.Gap:0.######}", $"{this.HasValidSolution}" }).ToArray();
         }
 
         #endregion

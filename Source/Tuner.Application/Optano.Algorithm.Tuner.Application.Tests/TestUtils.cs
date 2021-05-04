@@ -32,11 +32,6 @@
 namespace Optano.Algorithm.Tuner.Application.Tests
 {
     using System;
-    using System.IO;
-
-    using NLog;
-    using NLog.Config;
-    using NLog.Targets;
 
     using Xunit;
 
@@ -79,52 +74,6 @@ namespace Optano.Algorithm.Tuner.Application.Tests
         #endregion
 
         #region Public Methods and Operators
-
-        /// <summary>
-        /// Checks output on invoking a certain action.
-        /// </summary>
-        /// <param name="action">The action to invoke.</param>
-        /// <param name="check">Checks to do on the output.</param>
-        public static void CheckOutput(Action action, Action<string> check)
-        {
-            // grab output to console.
-            var originalOut = Console.Out;
-            var writer = new StringWriter();
-
-            try
-            {
-                Console.SetOut(writer);
-                action.Invoke();
-                check.Invoke(writer.ToString());
-            }
-            finally
-            {
-                Console.SetOut(originalOut);
-            }
-        }
-
-        /// <summary>
-        /// Initializes the <see cref="NLog"/> logger with a config that is suitable for tests.
-        /// </summary>
-        public static void InitializeLogger()
-        {
-            // Step 1. Create configuration object 
-            var config = new LoggingConfiguration();
-
-            // Step 2. Create targets and add them to the configuration 
-            var consoleTarget = new ColoredConsoleTarget();
-            config.AddTarget("console", consoleTarget);
-
-            // Step 3. Set target properties 
-            consoleTarget.Layout = @"${message}";
-
-            // Step 4. Define rules
-            var rule1 = new LoggingRule("*", LogLevel.Trace, consoleTarget);
-            config.LoggingRules.Add(rule1);
-
-            // Step 5. Activate the configuration
-            LogManager.Configuration = config;
-        }
 
         /// <summary>
         /// Checks that <paramref name="value"/> equals <paramref name="expected"/> within a certain tolerance.

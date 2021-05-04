@@ -3,7 +3,7 @@
 // ////////////////////////////////////////////////////////////////////////////////
 // 
 //        OPTANO GmbH Source Code
-//        Copyright (c) 2010-2020 OPTANO GmbH
+//        Copyright (c) 2010-2021 OPTANO GmbH
 //        ALL RIGHTS RESERVED.
 // 
 //    The entire contents of this file is protected by German and
@@ -121,6 +121,8 @@ namespace Optano.Algorithm.Tuner.Lingeling
             parameterTree.AddParameterReplacementDefinition("minrecgluelimActive", false, "minrecgluelim", 0, true);
             parameterTree.AddParameterReplacementDefinition("minrecsizelimActive", false, "minrecsizelim", 0, true);
             parameterTree.AddParameterReplacementDefinition("phaseluckmaxroundActive", false, "phaseluckmaxround", 0, true);
+            parameterTree.AddParameterReplacementDefinition("plimActive", "unlimited", "plim", -1, true);
+            parameterTree.AddParameterReplacementDefinition("plimActive", "disabled", "plim", 0, true);
             parameterTree.AddParameterReplacementDefinition("prbasicmaxeffActive", "unlimited", "prbasicmaxeff", -1, true);
             parameterTree.AddParameterReplacementDefinition("prbasicmaxeffActive", "disabled", "prbasicmaxeff", 0, true);
             parameterTree.AddParameterReplacementDefinition("prbasicmineffActive", false, "prbasicmineff", 0, true);

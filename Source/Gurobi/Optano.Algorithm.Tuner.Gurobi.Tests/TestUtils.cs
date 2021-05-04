@@ -61,6 +61,7 @@ namespace Optano.Algorithm.Tuner.Gurobi.Tests
         public static void CheckOutput(Action action, Action<StringWriter> check)
         {
             using StringWriter consoleOutput = new StringWriter();
+
             // Redirect console output.
             var originalOut = Console.Out;
             Console.SetOut(consoleOutput);

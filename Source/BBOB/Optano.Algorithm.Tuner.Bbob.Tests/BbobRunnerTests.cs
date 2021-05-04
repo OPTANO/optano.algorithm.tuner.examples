@@ -89,15 +89,18 @@ namespace Optano.Algorithm.Tuner.Bbob.Tests
         /// <summary>
         /// Smoke test for the BBOB adapter.
         /// </summary>
-        [Fact]
+        [SkippableFact]
         public void SmokeTest()
         {
+            // Skip, if no python 2.7 binary was resolved.
+            Skip.IfNot(TestUtils.TryToResolvePython27BinaryFromPath(out var pythonBinary));
+
             var timer = Stopwatch.StartNew();
             var args = new[]
                            {
                                "--master", "--maxParallelEvaluations=2", "--trainingInstanceFolder=Tools",
                                "--popSize=8", "--miniTournamentSize=4", "--cpuTimeout=5", "--instanceNumbers=1:1",
-                               "--numGens=2", "--goalGen=0", "--pythonBin=python", "--functionId=17",
+                               "--numGens=2", "--goalGen=0", $"--pythonBinary={pythonBinary.FullName}", "--functionId=17",
                            };
             Program.Main(args);
             timer.Stop();
@@ -113,13 +116,14 @@ namespace Optano.Algorithm.Tuner.Bbob.Tests
         /// <param name="x1">The x1.</param>
         /// <param name="x2">The x2.</param>
         /// <param name="expectedResult">The expected result.</param>
-        [Theory]
+        [SkippableTheory]
         [InlineData(5, 10, 5, 10, 50, 550)]
         [InlineData(20, 20, 10, 17, 3, 789448.639488)]
         [InlineData(13, 16, 4, 19, 7, 3502.952977)]
         public void BbobRunnerReturnsCorrectResult(int functionId, int instanceSeed, double x0, double x1, double x2, double expectedResult)
         {
-            var pythonBinary = TestUtils.ResolvePython27Binary();
+            // Skip, if no python 2.7 binary was resolved.
+            Skip.IfNot(TestUtils.TryToResolvePython27BinaryFromPath(out var pythonBinary));
 
             var parameters = new Dictionary<string, IAllele>
                                  {

@@ -3,7 +3,7 @@
 // ////////////////////////////////////////////////////////////////////////////////
 // 
 //        OPTANO GmbH Source Code
-//        Copyright (c) 2010-2020 OPTANO GmbH
+//        Copyright (c) 2010-2021 OPTANO GmbH
 //        ALL RIGHTS RESERVED.
 // 
 //    The entire contents of this file is protected by German and
@@ -36,20 +36,19 @@ namespace Optano.Algorithm.Tuner.Bbob
     using NDesk.Options;
 
     using Optano.Algorithm.Tuner.Configuration.ArgumentParsers;
-    using Optano.Algorithm.Tuner.DistributedExecution;
 
     /// <summary>
     /// A parser for all BBOB-specific arguments.
     /// </summary>
     /// <seealso cref="BbobRunnerConfiguration.BbobRunnerConfigurationBuilder" />
-    public class BbobRunnerConfigurationParser : HelpSupportingArgumentParser<BbobRunnerConfiguration.BbobRunnerConfigurationBuilder>
+    public class BbobRunnerConfigurationParser : AdapterArgumentParser<BbobRunnerConfiguration.BbobRunnerConfigurationBuilder>
     {
         #region Static Fields
 
         /// <summary>
         /// The name of the option, which sets the python binary.
         /// </summary>
-        public static readonly string PythonBinName = "pythonBin";
+        public static readonly string PythonBinName = "pythonBinary";
 
         /// <summary>
         /// The name of the option, which sets the BBOB function id.
@@ -58,31 +57,12 @@ namespace Optano.Algorithm.Tuner.Bbob
 
         #endregion
 
-        #region Constructors and Destructors
+        #region Methods
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="BbobRunnerConfigurationParser"/> class.
-        /// </summary>
-        public BbobRunnerConfigurationParser()
-            : base(allowAdditionalArguments: true)
+        /// <inheritdoc />
+        protected override void CheckForRequiredArgumentsAndThrowException()
         {
-        }
-
-        #endregion
-
-        #region Public Methods and Operators
-
-        /// <summary>
-        /// Parses the provided arguments.
-        /// </summary>
-        /// <param name="args">Arguments to parse.</param>
-        /// <exception cref="OptionException">Throws an exception, if <see cref="BbobRunnerConfigurationParser.PythonBinName"/> or <see cref="BbobRunnerConfigurationParser.FunctionIdName"/> is not provided for master.
-        /// </exception>
-        public override void ParseArguments(string[] args)
-        {
-            base.ParseArguments(args);
-
-            if (this.InternalConfigurationBuilder.IsMaster)
+            if (this.IsMaster)
             {
                 if (!this.InternalConfigurationBuilder.HasPythonBin)
                 {
@@ -100,65 +80,52 @@ namespace Optano.Algorithm.Tuner.Bbob
             }
         }
 
-        /// <summary>
-        /// Prints a description on how to use the command line arguments.
-        /// </summary>
-        public override void PrintHelp()
+        /// <inheritdoc />
+        protected override OptionSet CreateAdapterMasterOptionSet()
         {
-            Console.Out.WriteLine("Arguments for the application:");
-            base.PrintHelp();
-            Console.Out.WriteLine();
+            var options = new OptionSet
+                              {
+                                  {
+                                      "instanceSeed=", () =>
+                                          $"The random seed for the instance seed generator. Default is {BbobRunnerConfiguration.BbobRunnerConfigurationBuilder.InstanceSeedDefault}.",
+                                      (int s) => this.InternalConfigurationBuilder.SetInstanceSeed(s)
+                                  },
+                                  {
+                                      BbobRunnerConfigurationParser.PythonBinName + "=", () => "The path to the python 2.7 binary.",
+                                      p => this.InternalConfigurationBuilder.SetPythonBin(p)
+                                  },
+                                  {
+                                      "bbobScript=", () =>
+                                          $"The path to the BBOB python 2.7 adapter script. Default is {BbobRunnerConfiguration.BbobRunnerConfigurationBuilder.PathToExecutableDefault}.",
+                                      b => this.InternalConfigurationBuilder.SetPathToExecutable(b)
+                                  },
+                                  {
+                                      BbobRunnerConfigurationParser.FunctionIdName + "=",
+                                      () => "The bbob function to use. Must be in the range [1,56].",
+                                      (int f) => this.InternalConfigurationBuilder.SetFunctionId(f)
+                                  },
+                                  {
+                                      "dimensions=", () =>
+                                          $"The number of dimensions for the BBOB function. Must be greater than 0. Default is {BbobRunnerConfiguration.BbobRunnerConfigurationBuilder.DimensionsDefault}.",
+                                      (int d) => this.InternalConfigurationBuilder.SetDimensions(d)
+                                  },
+                                  {
+                                      "genericParameterization=",
+                                      () =>
+                                          "Specifies the generic parameterization to use for the genetic engineering model. Must be a member of the GenericParameterization enum.",
+                                      (string genericParamString) =>
+                                          {
+                                              if (!Enum.TryParse(genericParamString, true, out GenericParameterization genericParam))
+                                              {
+                                                  throw new OptionException(
+                                                      "The given generic parameterization is not a member of the GenericParameterization enum.",
+                                                      "genericParameterization");
+                                              }
 
-            // Print arguments for master and worker.
-            Console.Out.WriteLine(
-                "Additional arguments depending on whether this instance of Optano.Algorithm.Tuner acts as a worker or the master:");
-            Console.Out.WriteLine();
-            new MasterArgumentParser().PrintHelp(false);
-            Console.Out.WriteLine();
-            new WorkerArgumentParser().PrintHelp(false);
-        }
-
-        #endregion
-
-        #region Methods
-
-        /// <summary>
-        /// Creates an <see cref="T:NDesk.Options.OptionSet" /> containing all options this parser can handle.
-        /// </summary>
-        /// <returns>
-        /// The created <see cref="T:NDesk.Options.OptionSet" />.
-        /// </returns>
-        protected override OptionSet CreateOptionSet()
-        {
-            var options = base.CreateOptionSet();
-            options.Add(
-                "master",
-                () => "Indicates that this instance of the application should act as master.",
-                (string m) => this.InternalConfigurationBuilder.SetIsMaster(true));
-            options.Add(
-                "instanceSeed=",
-                () => $"The random seed for the instance seed generator. Default is {BbobRunnerConfiguration.BbobRunnerConfigurationBuilder.InstanceSeedDefault}.",
-                (int s) => this.InternalConfigurationBuilder.SetInstanceSeed(s));
-            options.Add(
-                BbobRunnerConfigurationParser.PythonBinName + "=",
-                () => "The path to the python 2.7 binary.",
-                p => this.InternalConfigurationBuilder.SetPythonBin(p));
-            options.Add(
-                "bbobScript=",
-                () => $"The path to the BBOB python 2.7 script. Default is {BbobRunnerConfiguration.BbobRunnerConfigurationBuilder.PathToExecutableDefault}.",
-                b => this.InternalConfigurationBuilder.SetPathToExecutable(b));
-            options.Add(
-                BbobRunnerConfigurationParser.FunctionIdName + "=",
-                () => "The bbob function to use. Must be in the range [1,56].",
-                (int f) => this.InternalConfigurationBuilder.SetFunctionId(f));
-            options.Add(
-                "dimensions=",
-                () => $"The number of dimensions for the BBOB function. Must be greater than 0. Default is {BbobRunnerConfiguration.BbobRunnerConfigurationBuilder.DimensionsDefault}.",
-                (int d) => this.InternalConfigurationBuilder.SetDimensions(d));
-            options.Add(
-                "genericParameterization=",
-                () => $"Specifies the generic parameterization to use for the genetic enginering model. Must be a member of the GenericParameterization enum. Default is {BbobRunnerConfiguration.BbobRunnerConfigurationBuilder.GenericParameterizationDefault}.",
-                (GenericParameterization g) => this.InternalConfigurationBuilder.SetGenericParameterization(g));
+                                              this.InternalConfigurationBuilder.SetGenericParameterization(genericParam);
+                                          }
+                                  },
+                              };
             return options;
         }
 

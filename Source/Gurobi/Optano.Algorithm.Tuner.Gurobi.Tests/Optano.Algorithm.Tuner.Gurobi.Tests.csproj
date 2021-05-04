@@ -41,12 +41,14 @@
   	<None Include="..\..\..\Tools\glass4.mps" Link="Tools\glass4.mps">
 		<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	</None>
+	<None Include="..\..\..\Tools\gurobiPostTuningRuns.csv" Link="Tools\gurobiPostTuningRuns.csv">
+		<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	</None>
   </ItemGroup>
   
-    <ItemGroup>
+  <ItemGroup>
 	<AdditionalFiles Include="..\..\..\stylecop.json" />
   </ItemGroup>
-
 
 
 </Project>

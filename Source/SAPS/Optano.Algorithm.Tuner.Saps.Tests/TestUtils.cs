@@ -31,10 +31,6 @@
 
 namespace Optano.Algorithm.Tuner.Saps.Tests
 {
-    using System;
-    using System.Collections.Generic;
-    using System.IO;
-
     using Optano.Algorithm.Tuner.Parameters.Domains;
     using Optano.Algorithm.Tuner.Parameters.ParameterTreeNodes;
 
@@ -46,44 +42,6 @@ namespace Optano.Algorithm.Tuner.Saps.Tests
     public static class TestUtils
     {
         #region Public Methods and Operators
-
-        /// <summary>
-        /// Prints a list in the form { item1, item2, item3, item4 }.
-        /// </summary>
-        /// <typeparam name="T">The type of the list items.</typeparam>
-        /// <param name="list">The list to print.</param>
-        /// <returns>A <see cref="string"/> representing the given list.</returns>
-        public static string PrintList<T>(IEnumerable<T> list)
-        {
-            return $"{{{string.Join(", ", list)}}}";
-        }
-
-        /// <summary>
-        /// Checks console output on invoking a certain action.
-        /// </summary>
-        /// <param name="action">The action to invoke.</param>
-        /// <param name="check">Checks to do on the output.</param>
-        public static void CheckOutput(Action action, Action<StringWriter> check)
-        {
-            using StringWriter consoleOutput = new StringWriter();
-            // Redirect console output.
-            var originalOut = Console.Out;
-            Console.SetOut(consoleOutput);
-
-            // Execute action.
-            action.Invoke();
-
-            try
-            {
-                // Execute check.
-                check.Invoke(consoleOutput);
-            }
-            finally
-            {
-                // Don't forget to redo the output redirect.
-                Console.SetOut(originalOut);
-            }
-        }
 
         /// <summary>
         /// Returns whether the given <see cref="IParameterTreeNode"/> represents the parameter described by the given

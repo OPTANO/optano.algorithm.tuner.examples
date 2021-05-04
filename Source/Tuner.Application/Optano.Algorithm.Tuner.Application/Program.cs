@@ -63,6 +63,7 @@ namespace Optano.Algorithm.Tuner.Application
         public static void Main(string[] args)
         {
             ProcessUtils.SetDefaultCultureInfo(CultureInfo.InvariantCulture);
+            LoggingHelper.Configure($"parserLog_{ProcessUtils.GetCurrentProcessId()}.log");
 
             // Parse arguments.
             var argsParser = new ArgumentParser();
@@ -72,7 +73,7 @@ namespace Optano.Algorithm.Tuner.Application
             }
 
             // Start master or worker depending on arguments.
-            if (argsParser.MasterRequested)
+            if (argsParser.IsMaster)
             {
                 Program.RunMaster(argsParser);
             }
@@ -93,8 +94,10 @@ namespace Optano.Algorithm.Tuner.Application
         /// arguments.</param>
         private static void RunMaster(ArgumentParser argsParser)
         {
+            var applicationConfig = argsParser.ConfigurationBuilder.Build();
+
             // Check if the algorithm should be tuned by value or runtime and start the correct run.
-            if (argsParser.TuneByValue)
+            if (applicationConfig.TuneByValue)
             {
                 Master<ValueReadingExecutor, InstanceFile, ContinuousResult>.Run(
                     args: argsParser.AdditionalArguments.ToArray(),
@@ -103,9 +106,9 @@ namespace Optano.Algorithm.Tuner.Application
                             config,
                             trainingInstanceFolder,
                             testInstanceFolder,
-                            argsParser.BasicCommand,
-                            argsParser.PathToParameterTree,
-                            argsParser.SortValuesAscendingly));
+                            applicationConfig.BasicCommand,
+                            applicationConfig.PathToParameterTree,
+                            applicationConfig.SortValuesAscendingly));
             }
             else
             {
@@ -116,9 +119,9 @@ namespace Optano.Algorithm.Tuner.Application
                             config,
                             trainingInstanceFolder,
                             testInstanceFolder,
-                            argsParser.BasicCommand,
-                            argsParser.PathToParameterTree,
-                            argsParser.FactorPar));
+                            applicationConfig.BasicCommand,
+                            applicationConfig.PathToParameterTree,
+                            applicationConfig.FactorParK));
             }
         }
 
@@ -179,7 +182,7 @@ namespace Optano.Algorithm.Tuner.Application
         /// The path to a parameter tree defined via XML.
         /// </param>
         /// <param name="factorParK">
-        /// The PAR-k factor.
+        /// The factor for the penalization of the average runtime.
         /// </param>
         /// <returns>
         /// The built OPTANO Algorithm Tuner instance.
@@ -192,9 +195,19 @@ namespace Optano.Algorithm.Tuner.Application
             string pathToParameterTree,
             int factorParK)
         {
+            IRunEvaluator<InstanceFile, RuntimeResult> runEvaluator;
+            if (factorParK == 0)
+            {
+                runEvaluator = new SortByUnpenalizedRuntime<InstanceFile>(config.CpuTimeout);
+            }
+            else
+            {
+                runEvaluator = new SortByPenalizedRuntime<InstanceFile>(factorParK, config.CpuTimeout);
+            }
+
             var tuner = new AlgorithmTuner<TimeMeasuringExecutor, InstanceFile, RuntimeResult>(
                 targetAlgorithmFactory: new TimeMeasuringExecutorFactory(basicCommand, config.CpuTimeout),
-                runEvaluator: new SortByRuntime<InstanceFile>(factorParK),
+                runEvaluator: runEvaluator,
                 trainingInstances: ExtractInstances(trainingInstanceFolder),
                 parameterTree: ParameterTreeConverter.ConvertToParameterTree(pathToParameterTree),
                 configuration: config);

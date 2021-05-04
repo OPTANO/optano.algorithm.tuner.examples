@@ -1,4 +1,5 @@
-﻿#region Copyright (c) OPTANO GmbH 
+﻿#region Copyright (c) OPTANO GmbH
+
 // ////////////////////////////////////////////////////////////////////////////////
 // 
 //        OPTANO GmbH Source Code
@@ -25,14 +26,8 @@
 //    AND PERMISSION FROM OPTANO GMBH.
 // 
 // ////////////////////////////////////////////////////////////////////////////////
+
 #endregion
-
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Optano.Algorithm.Tuner.Application.Tests
 {
@@ -53,6 +48,8 @@ namespace Optano.Algorithm.Tuner.Application.Tests
         Justification = "This is a test class.")]
     public class ApplicationSmokeTest
     {
+        #region Public Methods and Operators
+
         /// <summary>
         /// Start adapter. Make sure that some time was spent during the tuning.
         /// </summary>
@@ -64,12 +61,15 @@ namespace Optano.Algorithm.Tuner.Application.Tests
                            {
                                "--master",
                                "--basicCommand=Tools/ubcsat.exe -alg saps -i {instance} {arguments} -timeout 1 -cutoff max -seed 42\"",
-                               "--parameterTree=Tools/sapsParameterTree.xml", "--numGens=2", "--goalGen=0", "--popSize=8", "--maxParallelEvaluations=1",
+                               "--parameterTree=Tools/sapsParameterTree.xml", "--numGens=2", "--goalGen=0", "--popSize=8",
+                               "--maxParallelEvaluations=1",
                                "--trainingInstanceFolder=Tools/Instances", "--miniTournamentSize=4", "--cpuTimeout=1", "--instanceNumbers=1:1",
                            };
             Program.Main(args);
             timer.Stop();
             timer.Elapsed.TotalMilliseconds.ShouldBeGreaterThan(2000);
         }
+
+        #endregion
     }
 }

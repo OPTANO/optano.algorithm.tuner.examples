@@ -1,0 +1,5 @@
+run_obj = quality
+cutoff_time = 300
+paramfile = Tools/params.pcs
+instance_file = Tools/training.txt
+algo = [PlaceholderForPathToPythonBinary] Tools/addTwoNumbers.py

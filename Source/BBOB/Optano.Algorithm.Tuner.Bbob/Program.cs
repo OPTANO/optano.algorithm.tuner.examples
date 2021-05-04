@@ -57,19 +57,18 @@ namespace Optano.Algorithm.Tuner.Bbob
         public static void Main(string[] args)
         {
             ProcessUtils.SetDefaultCultureInfo(CultureInfo.InvariantCulture);
+            LoggingHelper.Configure($"parserLog_{ProcessUtils.GetCurrentProcessId()}.log");
 
-            LoggingHelper.Configure("bbobParserLog.txt");
-
-            var configParser = new BbobRunnerConfigurationParser();
-
-            if (!ArgumentParserUtils.ParseArguments(configParser, args))
+            // Parse arguments.
+            var argsParser = new BbobRunnerConfigurationParser();
+            if (!ArgumentParserUtils.ParseArguments(argsParser, args))
             {
                 return;
             }
 
-            var bbobConfig = configParser.ConfigurationBuilder.Build();
+            var bbobConfig = argsParser.ConfigurationBuilder.Build();
 
-            if (bbobConfig.IsMaster)
+            if (argsParser.IsMaster)
             {
                 switch (bbobConfig.GenericParameterization)
                 {
@@ -77,13 +76,13 @@ namespace Optano.Algorithm.Tuner.Bbob
                         GenericBbobEntryPoint<
                             GenomePredictionRandomForest<AverageRankStrategy>,
                             GenomePredictionForestModel<GenomePredictionTree>,
-                            AverageRankStrategy>.Run(configParser.AdditionalArguments, bbobConfig);
+                            AverageRankStrategy>.Run(argsParser.AdditionalArguments, bbobConfig);
                         break;
                     case GenericParameterization.RandomForestReuseOldTrees:
                         GenericBbobEntryPoint<
                             GenomePredictionRandomForest<ReuseOldTreesStrategy>,
                             GenomePredictionForestModel<GenomePredictionTree>,
-                            ReuseOldTreesStrategy>.Run(configParser.AdditionalArguments, bbobConfig);
+                            ReuseOldTreesStrategy>.Run(argsParser.AdditionalArguments, bbobConfig);
                         break;
                     case GenericParameterization.StandardRandomForest:
                     case GenericParameterization.Default:
@@ -91,7 +90,7 @@ namespace Optano.Algorithm.Tuner.Bbob
                         GenericBbobEntryPoint<
                             StandardRandomForestLearner<ReuseOldTreesStrategy>,
                             GenomePredictionForestModel<GenomePredictionTree>,
-                            ReuseOldTreesStrategy>.Run(configParser.AdditionalArguments, bbobConfig);
+                            ReuseOldTreesStrategy>.Run(argsParser.AdditionalArguments, bbobConfig);
                         break;
                 }
             }

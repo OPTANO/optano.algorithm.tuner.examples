@@ -32,8 +32,6 @@
 namespace Optano.Algorithm.Tuner.Bbob.Tests
 {
     using System;
-    using System.IO;
-    using System.Linq;
 
     using NDesk.Options;
 
@@ -78,25 +76,10 @@ namespace Optano.Algorithm.Tuner.Bbob.Tests
         }
 
         /// <summary>
-        /// Checks that trying to use the builder throws an
-        /// <see cref="InvalidOperationException"/> if no preprocessing was done.
+        /// Checks that all options are parsed correctly.
         /// </summary>
         [Fact]
-        public void ConfigurationParserThrowsIfNoPreprocessingWasDone()
-        {
-            Exception exception =
-                Assert.Throws<InvalidOperationException>(
-                    () =>
-                        {
-                            var builder = this._parser.ConfigurationBuilder;
-                        });
-        }
-
-        /// <summary>
-        /// Checks that all possible arguments to an instance acting as master get parsed correctly.
-        /// </summary>
-        [Fact]
-        public void MasterArgumentsAreParsedCorrectly()
+        public void OptionsAreParsedCorrectly()
         {
             const int InstanceSeed = 42;
             const string PythonBin = "dummy binary";
@@ -107,38 +90,20 @@ namespace Optano.Algorithm.Tuner.Bbob.Tests
 
             var args = new[]
                            {
-                               "--master", $"--instanceSeed={InstanceSeed}", $"--pythonBin={PythonBin}", $"--bbobScript={BbobScript}",
+                               "--master", $"--instanceSeed={InstanceSeed}", $"--pythonBinary={PythonBin}", $"--bbobScript={BbobScript}",
                                $"--functionId={FunctionId}", $"--dimensions={Dimensions}", $"--genericParameterization={GenericParameterization}",
                            };
 
             this._parser.ParseArguments(args);
-
             var config = this._parser.ConfigurationBuilder.Build();
 
-            config.IsMaster.ShouldBeTrue("Expected master to be requested.");
+            this._parser.IsMaster.ShouldBeTrue("Expected master to be requested.");
             config.InstanceSeed.ShouldBe(InstanceSeed, "Expected different random seed.");
             config.PythonBin.ShouldBe(PythonBin, "Expected different path to python binary.");
             config.PathToExecutable.ShouldBe(BbobScript, "Expected different path to BBOB python script.");
             config.FunctionId.ShouldBe(FunctionId, "Expected different function id.");
             config.Dimensions.ShouldBe(Dimensions, "Expected different number of dimensions.");
             config.GenericParameterization.ShouldBe(GenericParameterization, "Expected different generic parameterization.");
-        }
-
-        /// <summary>
-        /// Checks that all possible arguments to an instance acting as worker get parsed correctly.
-        /// </summary>
-        [Fact]
-        public void NonMasterArgumentsAreParsedCorrectly()
-        {
-            const string AdditionalArgs = "test";
-            var args = new[] { AdditionalArgs };
-            this._parser.ParseArguments(args);
-
-            var config = this._parser.ConfigurationBuilder.Build();
-
-            config.IsMaster.ShouldBeFalse("Did not expect master to be requested.");
-            this._parser.AdditionalArguments.Count().ShouldBe(1, "Expected one additional argument.");
-            this._parser.AdditionalArguments.First().ShouldBe(AdditionalArgs, "Expected different additional argument.");
         }
 
         /// <summary>
@@ -164,15 +129,14 @@ namespace Optano.Algorithm.Tuner.Bbob.Tests
 
             var args = new[]
                            {
-                               "--master", $"--pythonBin={PythonBin}", $"--functionId={FunctionId}",
+                               "--master", $"--pythonBinary={PythonBin}", $"--functionId={FunctionId}",
                                $"--genericParameterization={genericParameterizationString}",
                            };
 
             this._parser.ParseArguments(args);
-
             var config = this._parser.ConfigurationBuilder.Build();
 
-            config.IsMaster.ShouldBeTrue("Expected master to be requested.");
+            this._parser.IsMaster.ShouldBeTrue("Expected master to be requested.");
             config.PythonBin.ShouldBe(PythonBin, "Expected different path to python binary.");
             config.FunctionId.ShouldBe(FunctionId, "Expected different function id.");
             config.GenericParameterization.ShouldBe(genericParameterization, "Expected different generic parameterization");
@@ -198,37 +162,32 @@ namespace Optano.Algorithm.Tuner.Bbob.Tests
                                $"--functionId={FunctionId}",
                                $"--genericParameterization={genericParameterizationString}",
                            };
-            Exception exception =
-                Assert.Throws<OptionException>(
-                    () => this._parser.ParseArguments(args));
+            Assert.Throws<OptionException>(
+                () => this._parser.ParseArguments(args));
         }
 
         /// <summary>
         /// Checks that providing the --master argument and a function id, but no argument defining the python binary
-        /// results in an <see cref="OptionException"/> when calling
-        /// <see cref="BbobRunnerConfigurationParser.ParseArguments"/>.
+        /// results in an <see cref="OptionException"/> when parsing.
         /// </summary>
         [Fact]
         public void MissingPythonBinThrowsException()
         {
             var args = new[] { "--master", "--functionId=6" };
-            Exception exception =
-                Assert.Throws<OptionException>(
-                    () => this._parser.ParseArguments(args));
+            Assert.Throws<OptionException>(
+                () => this._parser.ParseArguments(args));
         }
 
         /// <summary>
         /// Checks that providing the --master argument and a python binary, but no argument defining the function id
-        /// results in an <see cref="OptionException"/> when calling
-        /// <see cref="BbobRunnerConfigurationParser.ParseArguments"/>.
+        /// results in an <see cref="OptionException"/> when parsing.
         /// </summary>
         [Fact]
         public void MissingFunctionIdThrowsException()
         {
             var args = new[] { "--master", "--pythonBin=dummy binary" };
-            Exception exception =
-                Assert.Throws<OptionException>(
-                    () => this._parser.ParseArguments(args));
+            Assert.Throws<OptionException>(
+                () => this._parser.ParseArguments(args));
         }
 
         /// <summary>
@@ -242,9 +201,8 @@ namespace Optano.Algorithm.Tuner.Bbob.Tests
         {
             const string PythonBin = "dummy binary";
             var args = new[] { "--master", $"--pyhonBin={PythonBin}", $"--functionId={functionId}" };
-            Exception exception =
-                Assert.Throws<ArgumentOutOfRangeException>(
-                    () => this._parser.ParseArguments(args));
+            Assert.Throws<ArgumentOutOfRangeException>(
+                () => this._parser.ParseArguments(args));
         }
 
         /// <summary>
@@ -259,9 +217,8 @@ namespace Optano.Algorithm.Tuner.Bbob.Tests
             const string PythonBin = "dummy binary";
             const int FunctionId = 6;
             var args = new[] { "--master", $"--pyhonBin={PythonBin}", $"--functionId={FunctionId}", $"--dimensions={dimensions}" };
-            Exception exception =
-                Assert.Throws<ArgumentOutOfRangeException>(
-                    () => this._parser.ParseArguments(args));
+            Assert.Throws<ArgumentOutOfRangeException>(
+                () => this._parser.ParseArguments(args));
         }
 
         /// <summary>
@@ -272,8 +229,12 @@ namespace Optano.Algorithm.Tuner.Bbob.Tests
         {
             const int InstanceSeedFallback = 500;
             const int DimensionsFallback = 300;
+            const string PythonBinFallback = "dummy";
+            const int FunctionIdFallback = 5;
 
             var fallback = new BbobRunnerConfiguration.BbobRunnerConfigurationBuilder()
+                .SetPythonBin(PythonBinFallback)
+                .SetFunctionId(FunctionIdFallback)
                 .SetInstanceSeed(InstanceSeedFallback)
                 .SetDimensions(DimensionsFallback)
                 .Build();
@@ -282,27 +243,10 @@ namespace Optano.Algorithm.Tuner.Bbob.Tests
                 .SetDimensions(BbobRunnerConfiguration.BbobRunnerConfigurationBuilder.DimensionsDefault)
                 .BuildWithFallback(fallback);
 
+            config.PythonBin.ShouldBe(PythonBinFallback);
+            config.FunctionId.ShouldBe(FunctionIdFallback);
             config.Dimensions.ShouldBe(BbobRunnerConfiguration.BbobRunnerConfigurationBuilder.DimensionsDefault);
             config.InstanceSeed.ShouldBe(InstanceSeedFallback);
-        }
-
-        /// <summary>
-        /// Checks that <see cref="BbobRunnerConfigurationParser.PrintHelp"/> prints help about general worker arguments, general
-        /// master arguments, and custom BBOB arguments.
-        /// </summary>
-        [Fact]
-        public void PrintHelpPrintsAllArguments()
-        {
-            TestUtils.CheckOutput(
-                action: () => this._parser.PrintHelp(),
-                check: consoleOutput =>
-                    {
-                        var reader = new StringReader(consoleOutput.ToString());
-                        var text = reader.ReadToEnd();
-                        text.ShouldContain("Arguments for the application:", "Application arguments are missing.");
-                        text.ShouldContain("Arguments for master:", "General master arguments are missing.");
-                        text.ShouldContain("Arguments for worker:", "General worker arguments are missing.");
-                    });
         }
 
         #endregion

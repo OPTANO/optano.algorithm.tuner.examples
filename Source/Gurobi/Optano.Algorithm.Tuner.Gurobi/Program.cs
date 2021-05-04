@@ -31,10 +31,15 @@
 
 namespace Optano.Algorithm.Tuner.Gurobi
 {
+    using System;
     using System.Globalization;
+    using System.Linq;
 
     using Optano.Algorithm.Tuner.Configuration;
+    using Optano.Algorithm.Tuner.Configuration.ArgumentParsers;
     using Optano.Algorithm.Tuner.DistributedExecution;
+    using Optano.Algorithm.Tuner.GrayBox.PostTuningRunner;
+    using Optano.Algorithm.Tuner.Logging;
     using Optano.Algorithm.Tuner.MachineLearning.RandomForest;
     using Optano.Algorithm.Tuner.MachineLearning.RandomForest.RandomForestOutOfBox;
     using Optano.Algorithm.Tuner.MachineLearning.RandomForest.RandomForestTopPerformerFocus;
@@ -45,6 +50,7 @@ namespace Optano.Algorithm.Tuner.Gurobi
     /// <summary>
     /// Program to tune Gurobi via OPTANO Algorithm Tuner.
     /// </summary>
+    // ReSharper disable once InconsistentNaming
     public static class Program
     {
         #region Public Methods and Operators
@@ -58,33 +64,68 @@ namespace Optano.Algorithm.Tuner.Gurobi
         public static void Main(string[] args)
         {
             ProcessUtils.SetDefaultCultureInfo(CultureInfo.InvariantCulture);
+            LoggingHelper.Configure($"parserLog_{ProcessUtils.GetCurrentProcessId()}.log");
 
-            var parser = new GurobiRunnerConfigurationParser();
-            parser.ParseArguments(args);
-
-            if (parser.HelpTextRequested)
+            // Parse gurobi configuration.
+            var gurobiParser = new GurobiRunnerConfigurationParser();
+            if (!ArgumentParserUtils.ParseArguments(gurobiParser, args))
             {
                 return;
             }
 
-            if (parser.MasterRequested)
+            if (gurobiParser.IsPostTuningRunner)
+            {
+                LoggingHelper.Configure($"consoleOutput_PostTuningRun_{ProcessUtils.GetCurrentProcessId()}.log");
+
+                // Parse and build tuner configuration.
+                var masterArgumentParser = new MasterArgumentParser();
+                if (!ArgumentParserUtils.ParseArguments(masterArgumentParser, gurobiParser.AdditionalArguments.ToArray()))
+                {
+                    return;
+                }
+
+                var tunerConfig = masterArgumentParser.ConfigurationBuilder.Build();
+                LoggingHelper.ChangeConsoleLoggingLevel(tunerConfig.Verbosity);
+
+                // Build gurobi configuration.
+                var gurobiConfig = Program.BuildGurobiConfigAndCheckThreadCount(gurobiParser.ConfigurationBuilder, tunerConfig);
+                var gurobiRunnerFactory = new GurobiRunnerFactory(gurobiConfig, tunerConfig);
+                var parameterTree = GurobiUtils.CreateParameterTree();
+
+                // Start post tuning runner.
+                var parallelPostTuningRunner =
+                    new ParallelPostTuningRunner<GurobiRunner, InstanceSeedFile, GurobiResult>(
+                        tunerConfig,
+                        gurobiParser.PostTuningConfiguration,
+                        gurobiRunnerFactory,
+                        parameterTree);
+                parallelPostTuningRunner.ExecutePostTuningRunsInParallel();
+
+                return;
+            }
+
+            if (gurobiParser.IsMaster)
             {
                 Master<GurobiRunner, InstanceSeedFile, GurobiResult, StandardRandomForestLearner<ReuseOldTreesStrategy>,
                     GenomePredictionForestModel<GenomePredictionTree>, ReuseOldTreesStrategy>.Run(
-                    args: parser.RemainingArguments.ToArray(),
+                    args: gurobiParser.AdditionalArguments.ToArray(),
                     algorithmTunerBuilder: (algorithmTunerConfig, pathToInstanceFolder, pathToTestInstanceFolder) =>
-                        Program.BuildGurobiRunner(algorithmTunerConfig, pathToInstanceFolder, pathToTestInstanceFolder, parser.ConfigurationBuilder));
+                        Program.BuildGurobiRunner(
+                            algorithmTunerConfig,
+                            pathToInstanceFolder,
+                            pathToTestInstanceFolder,
+                            gurobiParser.ConfigurationBuilder));
             }
             else
             {
-                Worker.Run(parser.RemainingArguments.ToArray());
+                Worker.Run(gurobiParser.AdditionalArguments.ToArray());
             }
         }
 
         /// <summary>
         /// Builds an instance of the <see cref="AlgorithmTuner{TTargetAlorithm,TInstance,TResult}" /> class for tuning Gurobi.
         /// </summary>
-        /// <param name="configuration">The <see cref="AlgorithmTunerConfiguration" /> to use.</param>
+        /// <param name="tunerConfig">The <see cref="AlgorithmTunerConfiguration" /> to use.</param>
         /// <param name="pathToTrainingInstanceFolder">The path to the folder containing training instances.</param>
         /// <param name="pathToTestInstanceFolder">The path to test instance folder.</param>
         /// <param name="gurobiConfigBuilder">The gurobi configuration builder.</param>
@@ -92,23 +133,24 @@ namespace Optano.Algorithm.Tuner.Gurobi
         /// The built instance.
         /// </returns>
         public static AlgorithmTuner<GurobiRunner, InstanceSeedFile, GurobiResult> BuildGurobiRunner(
-            AlgorithmTunerConfiguration configuration,
+            AlgorithmTunerConfiguration tunerConfig,
             string pathToTrainingInstanceFolder,
             string pathToTestInstanceFolder,
             GurobiRunnerConfiguration.GurobiRunnerConfigBuilder gurobiConfigBuilder)
         {
-            var gurobiConfig = gurobiConfigBuilder.Build(configuration.CpuTimeout);
+            var gurobiConfig = Program.BuildGurobiConfigAndCheckThreadCount(gurobiConfigBuilder, tunerConfig);
 
             var tuner = new AlgorithmTuner<GurobiRunner, InstanceSeedFile, GurobiResult>(
-                targetAlgorithmFactory: new GurobiRunnerFactory(gurobiConfig),
-                runEvaluator: new GurobiRunEvaluator(),
+                targetAlgorithmFactory: new GurobiRunnerFactory(gurobiConfig, tunerConfig),
+                runEvaluator: new GurobiRunEvaluator(tunerConfig.CpuTimeout),
                 trainingInstances: InstanceSeedFile.CreateInstanceSeedFilesFromDirectory(
                     pathToTrainingInstanceFolder,
                     GurobiUtils.ListOfValidFileExtensions,
                     gurobiConfig.NumberOfSeeds,
                     gurobiConfig.RngSeed),
                 parameterTree: GurobiUtils.CreateParameterTree(),
-                configuration: configuration);
+                configuration: tunerConfig,
+                customGrayBoxMethods: new GurobiGrayBoxMethods());
 
             try
             {
@@ -127,6 +169,32 @@ namespace Optano.Algorithm.Tuner.Gurobi
             }
 
             return tuner;
+        }
+
+        #endregion
+
+        #region Methods
+
+        /// <summary>
+        /// Builds the <see cref="GurobiRunnerConfiguration"/> and checks the thread count.
+        /// </summary>
+        /// <param name="gurobiConfigBuilder">The <see cref="GurobiRunnerConfiguration.GurobiRunnerConfigBuilder"/>.</param>
+        /// <param name="tunerConfig">The <see cref="AlgorithmTunerConfiguration"/>.</param>
+        /// <returns>The <see cref="GurobiRunnerConfiguration"/>.</returns>
+        private static GurobiRunnerConfiguration BuildGurobiConfigAndCheckThreadCount(
+            GurobiRunnerConfiguration.GurobiRunnerConfigBuilder gurobiConfigBuilder,
+            AlgorithmTunerConfiguration tunerConfig)
+        {
+            var gurobiConfig = gurobiConfigBuilder.Build(tunerConfig.CpuTimeout);
+
+            if (gurobiConfig.ThreadCount * tunerConfig.MaximumNumberParallelEvaluations > Environment.ProcessorCount)
+            {
+                LoggingHelper.WriteLine(
+                    VerbosityLevel.Warn,
+                    $"Warning: You specified {tunerConfig.MaximumNumberParallelEvaluations} parallel evaluations with {gurobiConfig.ThreadCount} threads each, but only have {Environment.ProcessorCount} processors. Processes may fight for resources.");
+            }
+
+            return gurobiConfig;
         }
 
         #endregion

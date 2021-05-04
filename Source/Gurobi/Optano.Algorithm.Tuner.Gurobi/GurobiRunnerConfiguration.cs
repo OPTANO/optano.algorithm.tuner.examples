@@ -46,14 +46,6 @@ namespace Optano.Algorithm.Tuner.Gurobi
         #region Public properties
 
         /// <summary>
-        /// Gets a value indicating whether this instance is master.
-        /// </summary>
-        /// <value>
-        ///   <c>true</c> if this instance is master; otherwise, <c>false</c>.
-        /// </value>
-        public bool IsMaster { get; private set; }
-
-        /// <summary>
         /// Gets the maximum number of threads that Gurobi may run on.
         /// </summary>
         public int ThreadCount { get; private set; }
@@ -124,8 +116,7 @@ namespace Optano.Algorithm.Tuner.Gurobi
         public override string ToString()
         {
             var builder = new StringBuilder("GurobiRunnerConfiguration:\r\n");
-            builder.AppendLine($"{nameof(GurobiRunnerConfiguration.IsMaster)}: {this.IsMaster}")
-                .AppendLine($"{nameof(GurobiRunnerConfiguration.ThreadCount)}: {this.ThreadCount}")
+            builder.AppendLine($"{nameof(GurobiRunnerConfiguration.ThreadCount)}: {this.ThreadCount}")
                 .AppendLine($"{nameof(GurobiRunnerConfiguration.NumberOfSeeds)}: {this.NumberOfSeeds}")
                 .AppendLine($"{nameof(GurobiRunnerConfiguration.NodefileDirectory)}: {this.NodefileDirectory}")
                 .AppendLine($"{nameof(GurobiRunnerConfiguration.NodefileStartSizeGigabyte)}: {this.NodefileStartSizeGigabyte}")
@@ -148,37 +139,32 @@ namespace Optano.Algorithm.Tuner.Gurobi
             #region Static Fields
 
             /// <summary>
-            /// The default value of <see cref="GurobiRunnerConfiguration.IsMaster"/> is <c>false</c>.
-            /// </summary>
-            public static readonly bool IsMasterDefault = false;
-
-            /// <summary>
-            /// The default value of <see cref="GurobiRunnerConfiguration.ThreadCount"/> is 4.
+            /// The default value of <see cref="ThreadCount"/> is 4.
             /// </summary>
             public static readonly int ThreadCountDefault = 4;
 
             /// <summary>
-            /// The default value of <see cref="GurobiRunnerConfiguration.NumberOfSeeds"/> is 1.
+            /// The default value of <see cref="NumberOfSeeds"/> is 1.
             /// </summary>
             public static readonly int NumberOfSeedsDefault = 1;
 
             /// <summary>
-            /// The default value of <see cref="GurobiRunnerConfiguration.RngSeed"/> is 42.
+            /// The default value of <see cref="RngSeed"/> is 42.
             /// </summary>
             public static readonly int RngSeedDefault = 42;
 
             /// <summary>
-            /// The default value of <see cref="GurobiRunnerConfiguration.NodefileDirectory"/> is a subfolder "nodefiles" in the current working directory.
+            /// The default value of <see cref="NodefileDirectory"/> is a subfolder "nodefiles" in the current working directory.
             /// </summary>
             public static readonly string NodefileDirectoryDefault = "nodefiles";
 
             /// <summary>
-            /// The default value of <see cref="GurobiRunnerConfiguration.NodefileStartSizeGigabyte"/> is 0,5.
+            /// The default value of <see cref="NodefileStartSizeGigabyte"/> is 0,5.
             /// </summary>
             public static readonly double NodefileStartSizeGigabyteDefault = 0.5;
 
             /// <summary>
-            /// The default value of <see cref="GurobiRunnerConfiguration.TerminationMipGap"/> is 0,01.
+            /// The default value of <see cref="TerminationMipGap"/> is 0,01.
             /// </summary>
             public static readonly double TerminationMipGapDefault = 0.01;
 
@@ -187,74 +173,46 @@ namespace Optano.Algorithm.Tuner.Gurobi
             #region Fields
 
             /// <summary>
-            /// The value to set for <see cref="GurobiRunnerConfiguration.IsMaster"/>.
-            /// </summary>
-            private bool? _isMaster;
-
-            /// <summary>
-            /// The value to set for <see cref="GurobiRunnerConfiguration.ThreadCount"/>.
+            /// The value to set for <see cref="ThreadCount"/>.
             /// </summary>
             private int? _threadCount;
 
             /// <summary>
-            /// The value to set for <see cref="GurobiRunnerConfiguration.NumberOfSeeds"/>.
+            /// The value to set for <see cref="NumberOfSeeds"/>.
             /// </summary>
             private int? _numberOfSeeds;
 
             /// <summary>
-            /// The value to set for <see cref="GurobiRunnerConfiguration.RngSeed"/>.
+            /// The value to set for <see cref="RngSeed"/>.
             /// </summary>
             private int? _rngSeed;
 
             /// <summary>
-            /// The value to set for <see cref="GurobiRunnerConfiguration.NodefileDirectory"/>.
+            /// The value to set for <see cref="NodefileDirectory"/>.
             /// </summary>
             private DirectoryInfo _nodefileDirectory;
 
             /// <summary>
-            /// The value to set for <see cref="GurobiRunnerConfiguration.NodefileStartSizeGigabyte"/>.
+            /// The value to set for <see cref="NodefileStartSizeGigabyte"/>.
             /// </summary>
             private double? _nodefileStartSizeGigabyte;
 
             /// <summary>
-            /// The value to set for <see cref="GurobiRunnerConfiguration.TerminationMipGap"/>.
+            /// The value to set for <see cref="TerminationMipGap"/>.
             /// </summary>
             private double? _terminationMipGap;
 
             /// <summary>
-            /// The value to set for <see cref="GurobiRunnerConfiguration.CpuTimeout"/>.
+            /// The value to set for <see cref="CpuTimeout"/>.
             /// </summary>
             private TimeSpan _cpuTimeout;
-
-            #endregion
-
-            #region Public properties
-
-            /// <summary>
-            /// Gets a value indicating whether this instance is master.
-            /// </summary>
-            /// <value>
-            ///   <c>true</c> if this instance is master; otherwise, <c>false</c>.
-            /// </value>
-            public bool IsMaster => this._isMaster ?? GurobiRunnerConfigBuilder.IsMasterDefault;
 
             #endregion
 
             #region Public Methods and Operators
 
             /// <summary>
-            /// Sets <see cref="GurobiRunnerConfiguration.IsMaster"/>.
-            /// </summary>
-            /// <param name="isMaster">if set to <c>true</c> [is master].</param>
-            /// <returns><see cref="GurobiRunnerConfigBuilder"/>.</returns>
-            public GurobiRunnerConfigBuilder SetIsMaster(bool isMaster)
-            {
-                this._isMaster = isMaster;
-                return this;
-            }
-
-            /// <summary>
-            /// Sets <see cref="GurobiRunnerConfiguration.ThreadCount"/>.
+            /// Sets <see cref="ThreadCount"/>.
             /// </summary>
             /// <param name="threadCount">
             /// The maximal thread count.
@@ -272,7 +230,7 @@ namespace Optano.Algorithm.Tuner.Gurobi
             }
 
             /// <summary>
-            /// Sets <see cref="GurobiRunnerConfiguration.NumberOfSeeds"/>.
+            /// Sets <see cref="NumberOfSeeds"/>.
             /// </summary>
             /// <param name="numberOfSeeds">
             /// The number of seeds.
@@ -290,7 +248,7 @@ namespace Optano.Algorithm.Tuner.Gurobi
             }
 
             /// <summary>
-            /// Sets <see cref="GurobiRunnerConfiguration.RngSeed"/>.
+            /// Sets <see cref="RngSeed"/>.
             /// </summary>
             /// <param name="rngSeed">The random seed.</param>
             /// <returns><see cref="GurobiRunnerConfigBuilder"/>.</returns>
@@ -301,7 +259,7 @@ namespace Optano.Algorithm.Tuner.Gurobi
             }
 
             /// <summary>
-            /// Sets <see cref="GurobiRunnerConfiguration.NodefileDirectory"/>.
+            /// Sets <see cref="NodefileDirectory"/>.
             /// </summary>
             /// <param name="nodefileDirectory">The nodefile directory.</param>
             /// <returns><see cref="GurobiRunnerConfigBuilder"/>.</returns>
@@ -313,7 +271,7 @@ namespace Optano.Algorithm.Tuner.Gurobi
             }
 
             /// <summary>
-            /// Sets <see cref="GurobiRunnerConfiguration.NodefileStartSizeGigabyte"/>.
+            /// Sets <see cref="NodefileStartSizeGigabyte"/>.
             /// </summary>
             /// <param name="nodefileStartSizeGigabyte">The nodefile start size in gigabyte.</param>
             /// <returns><see cref="GurobiRunnerConfigBuilder"/>.</returns>
@@ -331,7 +289,7 @@ namespace Optano.Algorithm.Tuner.Gurobi
             }
 
             /// <summary>
-            /// Sets <see cref="GurobiRunnerConfiguration.TerminationMipGap"/>.
+            /// Sets <see cref="TerminationMipGap"/>.
             /// </summary>
             /// <param name="terminationMipGap">The mip gap.</param>
             /// <returns><see cref="GurobiRunnerConfigBuilder"/>.</returns>
@@ -387,7 +345,6 @@ namespace Optano.Algorithm.Tuner.Gurobi
             {
                 var config = new GurobiRunnerConfiguration
                                  {
-                                     IsMaster = this._isMaster ?? fallback?.IsMaster ?? GurobiRunnerConfigBuilder.IsMasterDefault,
                                      NumberOfSeeds = this._numberOfSeeds ?? fallback?.NumberOfSeeds ?? GurobiRunnerConfigBuilder.NumberOfSeedsDefault,
                                      ThreadCount = this._threadCount ?? fallback?.ThreadCount ?? GurobiRunnerConfigBuilder.ThreadCountDefault,
                                      RngSeed = this._rngSeed ?? fallback?.RngSeed ?? GurobiRunnerConfigBuilder.RngSeedDefault,

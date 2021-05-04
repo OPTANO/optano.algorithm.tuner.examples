@@ -57,14 +57,6 @@ namespace Optano.Algorithm.Tuner.Saps
         #region Public properties
 
         /// <summary>
-        /// Gets a value indicating whether this instance is master.
-        /// </summary>
-        /// <value>
-        ///   <c>true</c> if this instance is master; otherwise, <c>false</c>.
-        /// </value>
-        public bool IsMaster { get; private set; }
-
-        /// <summary>
         /// Gets the path to executable.
         /// </summary>
         /// <value>
@@ -124,8 +116,7 @@ namespace Optano.Algorithm.Tuner.Saps
         public override string ToString()
         {
             var builder = new StringBuilder("SapsRunnerConfiguration:\r\n");
-            builder.AppendLine($"{nameof(SapsRunnerConfiguration.IsMaster)}: {this.IsMaster}")
-                .AppendLine($@"{nameof(SapsRunnerConfiguration.PathToExecutable)}: {this.PathToExecutable}")
+            builder.AppendLine($@"{nameof(SapsRunnerConfiguration.PathToExecutable)}: {this.PathToExecutable}")
                 .AppendLine($"{nameof(SapsRunnerConfiguration.GenericParameterization)}: {this.GenericParameterization}")
                 .AppendLine($"{nameof(SapsRunnerConfiguration.FactorParK)}: {this.FactorParK}")
                 .AppendLine($"{nameof(SapsRunnerConfiguration.RngSeed)}: {this.RngSeed}")
@@ -147,24 +138,14 @@ namespace Optano.Algorithm.Tuner.Saps
             #region Static Fields
 
             /// <summary>
-            /// The default value of <see cref="SapsRunnerConfiguration.IsMaster"/> is <c>false</c>.
-            /// </summary>
-            public static readonly bool IsMasterDefault = false;
-
-            /// <summary>
-            /// The default value of <see cref="SapsRunnerConfiguration.PathToExecutable"/> is an empty string.
-            /// </summary>
-            public static readonly string PathToExecutableDefault = string.Empty;
-
-            /// <summary>
             /// The default value of <see cref="GenericParameterization"/> is the default GenericParameterziation.
             /// </summary>
             public static readonly GenericParameterization GenericParameterizationDefault = GenericParameterization.Default;
 
             /// <summary>
-            /// The default value of <see cref="SapsRunnerConfiguration.FactorParK"/> is 10.
+            /// The default value of <see cref="SapsRunnerConfiguration.FactorParK"/> is 0.
             /// </summary>
-            public static readonly int FactorParKDefault = 10;
+            public static readonly int FactorParKDefault = 0;
 
             /// <summary>
             /// The default value of <see cref="SapsRunnerConfiguration.RngSeed"/> is 42.
@@ -179,11 +160,6 @@ namespace Optano.Algorithm.Tuner.Saps
             #endregion
 
             #region Fields
-
-            /// <summary>
-            /// The value to set for <see cref="IsMaster"/>.
-            /// </summary>
-            private bool? _isMaster;
 
             /// <summary>
             /// The value to set for <see cref="SapsRunnerConfiguration.PathToExecutable"/>.
@@ -215,14 +191,6 @@ namespace Optano.Algorithm.Tuner.Saps
             #region Public properties
 
             /// <summary>
-            /// Gets a value indicating whether this instance is master.
-            /// </summary>
-            /// <value>
-            ///   <c>true</c> if this instance is master; otherwise, <c>false</c>.
-            /// </value>
-            public bool IsMaster => this._isMaster ?? SapsConfigBuilder.IsMasterDefault;
-
-            /// <summary>
             /// Gets a value indicating whether this instance has path to executable.
             /// </summary>
             /// <value>
@@ -233,17 +201,6 @@ namespace Optano.Algorithm.Tuner.Saps
             #endregion
 
             #region Public Methods and Operators
-
-            /// <summary>
-            /// Sets the boolean <see cref="SapsRunnerConfiguration.IsMaster"/>.
-            /// </summary>
-            /// <param name="isMaster">The value to set the boolean to.</param>
-            /// <returns><see cref="SapsConfigBuilder"/>.</returns>
-            public SapsConfigBuilder SetIsMaster(bool isMaster)
-            {
-                this._isMaster = isMaster;
-                return this;
-            }
 
             /// <summary>
             /// Sets <see cref="SapsRunnerConfiguration.PathToExecutable"/>.
@@ -276,9 +233,9 @@ namespace Optano.Algorithm.Tuner.Saps
             /// <exception cref="ArgumentOutOfRangeException">factorParK - factorParK.</exception>
             public SapsConfigBuilder SetFactorParK(int factorParK)
             {
-                if (factorParK < 1)
+                if (factorParK < 0)
                 {
-                    throw new ArgumentOutOfRangeException(nameof(factorParK), $"{nameof(factorParK)} needs to be greater than 0.");
+                    throw new ArgumentOutOfRangeException(nameof(factorParK), $"{nameof(factorParK)} needs to be greater or equal to 0.");
                 }
 
                 this._factorParK = factorParK;
@@ -362,10 +319,9 @@ namespace Optano.Algorithm.Tuner.Saps
             {
                 var config = new SapsRunnerConfiguration
                                  {
-                                     IsMaster = this._isMaster ?? fallback?.IsMaster ?? SapsConfigBuilder.IsMasterDefault,
                                      PathToExecutable =
                                          this._pathToExecutable ?? fallback?.PathToExecutable
-                                         ?? SapsConfigBuilder.PathToExecutableDefault,
+                                         ?? throw new InvalidOperationException("You must set the path to the executable."),
                                      GenericParameterization = this._genericParameterization ??
                                                                fallback?.GenericParameterization ?? SapsConfigBuilder.GenericParameterizationDefault,
                                      FactorParK = this._factorParK ?? fallback?.FactorParK ?? SapsConfigBuilder.FactorParKDefault,

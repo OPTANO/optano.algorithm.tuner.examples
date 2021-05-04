@@ -45,6 +45,28 @@ namespace Optano.Algorithm.Tuner.Gurobi
     /// </summary>
     public class GurobiRunEvaluator : IRunEvaluator<InstanceSeedFile, GurobiResult>
     {
+        #region Fields
+
+        /// <summary>
+        /// The cpu timeout.
+        /// </summary>
+        private readonly TimeSpan _cpuTimeout;
+
+        #endregion
+
+        #region Constructors and Destructors
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GurobiRunEvaluator"/> class.
+        /// </summary>
+        /// <param name="cpuTimeout">The cpu timeout.</param>
+        public GurobiRunEvaluator(TimeSpan cpuTimeout)
+        {
+            this._cpuTimeout = cpuTimeout;
+        }
+
+        #endregion
+
         #region Public Methods and Operators
 
         /// <inheritdoc />
@@ -83,34 +105,39 @@ namespace Optano.Algorithm.Tuner.Gurobi
         {
             var canBeCancelledByRacing = new List<ImmutableGenome>();
 
-            var racingCandidate = this.Sort(allGenomeStatsOfMiniTournament).Skip(numberOfTournamentWinners - 1).First();
-            var minimumNumberOfValidResultsOfRacingCandidate = racingCandidate.FinishedInstances.Values.Count(result => result.HasValidSolution);
-            var maximumNumberOfCancelledResultsOfRacingCandidate = racingCandidate.FinishedInstances.Values.Count(result => result.IsCancelled)
-                                                                   + racingCandidate.OpenInstances.Count + racingCandidate.RunningInstances.Count;
+            var racingIncumbent = this.Sort(allGenomeStatsOfMiniTournament).Skip(numberOfTournamentWinners - 1).First();
+            var minimumNumberOfValidResultsOfRacingIncumbent = racingIncumbent.FinishedInstances.Values.Count(result => result.HasValidSolution);
+            var maximumNumberOfCancelledResultsOfRacingIncumbent = racingIncumbent.FinishedInstances.Values.Count(result => result.IsCancelled)
+                                                                   + racingIncumbent.OpenInstances.Count + racingIncumbent.RunningInstances.Count;
+            var maximumTotalRuntimeOfRacingIncumbent = racingIncumbent.RuntimeOfFinishedInstances
+                                                       + ((racingIncumbent.OpenInstances.Count + racingIncumbent.RunningInstances.Count)
+                                                          * this._cpuTimeout);
 
             foreach (var genomeStats in allGenomeStatsOfMiniTournament.Where(g => !g.IsCancelledByRacing && g.HasOpenOrRunningInstances))
             {
                 var maximumNumberOfValidResults = genomeStats.FinishedInstances.Values.Count(result => result.HasValidSolution)
                                                   + genomeStats.OpenInstances.Count + genomeStats.RunningInstances.Count;
                 var minimumNumberOfCancelledResults = genomeStats.FinishedInstances.Values.Count(result => result.IsCancelled);
+                var minimumTotalRuntime = genomeStats.RuntimeOfFinishedInstances;
 
-                if (maximumNumberOfValidResults < minimumNumberOfValidResultsOfRacingCandidate)
+                if (maximumNumberOfValidResults < minimumNumberOfValidResultsOfRacingIncumbent)
                 {
-                    // Cancel by racing, because the current genome cannot have more valid results than the racing candidate.
+                    // Cancel by racing, because the current genome cannot have more valid results than the racing incumbent.
                     canBeCancelledByRacing.Add(genomeStats.Genome);
                 }
 
-                if (maximumNumberOfValidResults == minimumNumberOfValidResultsOfRacingCandidate
-                    && minimumNumberOfCancelledResults > maximumNumberOfCancelledResultsOfRacingCandidate)
+                if (maximumNumberOfValidResults == minimumNumberOfValidResultsOfRacingIncumbent
+                    && minimumNumberOfCancelledResults > maximumNumberOfCancelledResultsOfRacingIncumbent)
                 {
-                    // Cancel by racing, because the current genome cannot have less cancelled results than the racing candidate.
+                    // Cancel by racing, because the current genome cannot have less cancelled results than the racing incumbent.
                     canBeCancelledByRacing.Add(genomeStats.Genome);
                 }
 
-                if (racingCandidate.AllInstancesFinishedWithoutCancelledResult
-                    && genomeStats.RuntimeOfFinishedInstances > racingCandidate.RuntimeOfFinishedInstances)
+                if (maximumNumberOfValidResults == minimumNumberOfValidResultsOfRacingIncumbent
+                    && minimumNumberOfCancelledResults == maximumNumberOfCancelledResultsOfRacingIncumbent
+                    && minimumTotalRuntime > maximumTotalRuntimeOfRacingIncumbent)
                 {
-                    // Cancel by racing, because the current genome cannot finish all instances faster than the racing candidate did without getting any cancelled result.
+                    // Cancel by racing, because the current genome cannot have a lower total run time than the racing incumbent.
                     canBeCancelledByRacing.Add(genomeStats.Genome);
                 }
             }
