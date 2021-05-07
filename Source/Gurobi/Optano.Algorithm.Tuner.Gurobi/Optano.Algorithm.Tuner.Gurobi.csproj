@@ -19,7 +19,7 @@
 
   <ItemGroup>
     <PackageReference Include="OPTANO.Algorithm.Tuner" Version="2.0.0.232" />
-    <PackageReference Include="OPTANO.Modeling.Gurobi" Version="9.0.1.23" />
+    <PackageReference Include="OPTANO.Modeling.Gurobi" Version="9.1.2.26" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

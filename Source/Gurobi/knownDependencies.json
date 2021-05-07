@@ -444,7 +444,7 @@
     },
     {
       "PackageId": "OPTANO.Modeling",
-      "VersionString": "3.3.0.473",
+      "VersionString": "3.7.0.522",
       "LicenceUrl": null,
       "ProjectUrl": null,
       "CopyrightOrOwner": null,
@@ -454,7 +454,7 @@
     },
     {
       "PackageId": "OPTANO.Modeling.Gurobi",
-      "VersionString": "9.0.1.23",
+      "VersionString": "9.1.2.26",
       "LicenceUrl": null,
       "ProjectUrl": null,
       "CopyrightOrOwner": null,
