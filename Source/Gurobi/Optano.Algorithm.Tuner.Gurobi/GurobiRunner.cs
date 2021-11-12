@@ -215,6 +215,8 @@ namespace Optano.Algorithm.Tuner.Gurobi
                                 model.Read(mstFileFullName);
                             }
 
+                            var optimizationSenseIsMinimize = this.GetOptimizationSense(model);
+
                             this._startTimeStamp = DateTime.Now;
                             this._targetAlgorithmStatus = TargetAlgorithmStatus.Running;
 
@@ -223,7 +225,8 @@ namespace Optano.Algorithm.Tuner.Gurobi
                             this._grbCallback = new GurobiCallback(
                                 this._innerCancellationTokenSource.Token,
                                 this._tunerConfiguration.EnableDataRecording,
-                                this._startTimeStamp);
+                                this._startTimeStamp,
+                                optimizationSenseIsMinimize);
                             model.SetCallback(this._grbCallback);
 
                             if (this._tunerConfiguration.EnableDataRecording)
@@ -261,7 +264,7 @@ namespace Optano.Algorithm.Tuner.Gurobi
                             }
 
                             var finalTimeStamp = DateTime.Now;
-                            var result = this.CreateGurobiResult(finalTimeStamp, model);
+                            var result = this.CreateGurobiResult(finalTimeStamp, model, optimizationSenseIsMinimize);
 
                             if (this._tunerConfiguration.EnableDataRecording)
                             {
@@ -297,15 +300,17 @@ namespace Optano.Algorithm.Tuner.Gurobi
         /// </summary>
         /// <param name="timeStamp">The time stamp.</param>
         /// <param name="model">The <see cref="GRBModel"/>.</param>
+        /// <param name="optimizationSenseIsMinimize">A value indicating whether the optimization sense is minimize.</param>
         /// <returns>The result.</returns>
-        public GurobiResult CreateGurobiResult(DateTime timeStamp, GRBModel model)
+        public GurobiResult CreateGurobiResult(DateTime timeStamp, GRBModel model, bool optimizationSenseIsMinimize)
         {
-            // Return result even if the task was cancelled as the MIP gap might still be small.
             var result = new GurobiResult(
-                this.GetValueWithTryCatch(() => model.MIPGap, GRB.INFINITY),
+                this.GetValueWithTryCatch(() => model.ObjVal, GurobiUtils.GetBestObjectiveFallback(optimizationSenseIsMinimize)),
+                this.GetValueWithTryCatch(() => model.ObjBound, GurobiUtils.GetBestObjectiveBoundFallback(optimizationSenseIsMinimize)),
                 this.GetFinalRuntime(timeStamp),
                 this._targetAlgorithmStatus,
-                this.HasFoundSolution(model));
+                this.HasFoundSolution(model),
+                optimizationSenseIsMinimize);
             return result;
         }
 
@@ -341,6 +346,16 @@ namespace Optano.Algorithm.Tuner.Gurobi
                 .FirstOrDefault(File.Exists);
 
             return mstFileFullName != null;
+        }
+
+        /// <summary>
+        /// Gets the current optimization sense.
+        /// </summary>
+        /// <param name="model">The current model.</param>
+        /// <returns>True, if minimize. False, if maximize.</returns>
+        private bool GetOptimizationSense(GRBModel model)
+        {
+            return this.GetValueWithTryCatch(() => model.ModelSense, 1) == 1;
         }
 
         /// <summary>
@@ -469,7 +484,7 @@ namespace Optano.Algorithm.Tuner.Gurobi
             this._lastRuntimeFeatures = currentRuntimeFeatures.Copy();
 
             return new AdapterDataRecord<GurobiResult>(
-                "Gurobi901",
+                "Gurobi",
                 TargetAlgorithmStatus.Running,
                 // The cpu time is not recordable, because all parallel Gurobi runs are started in the same process in this implementation.
                 TimeSpan.FromSeconds(0),
@@ -478,10 +493,12 @@ namespace Optano.Algorithm.Tuner.Gurobi
                 adapterFeaturesHeader,
                 adapterFeatures,
                 new GurobiResult(
-                    currentRuntimeFeatures.MipGap,
+                    currentRuntimeFeatures.BestObjective,
+                    currentRuntimeFeatures.BestObjectiveBound,
                     this._runnerConfiguration.CpuTimeout,
                     TargetAlgorithmStatus.CancelledByGrayBox,
-                    currentRuntimeFeatures.FeasibleSolutionsCount > 0));
+                    currentRuntimeFeatures.FeasibleSolutionsCount > 0,
+                    currentRuntimeFeatures.OptimizationSenseIsMinimize));
         }
 
         /// <summary>
@@ -505,7 +522,7 @@ namespace Optano.Algorithm.Tuner.Gurobi
             this._lastRuntimeFeatures = finalRuntimeFeatures.Copy();
 
             return new AdapterDataRecord<GurobiResult>(
-                "Gurobi901",
+                "Gurobi",
                 result.TargetAlgorithmStatus,
                 // The cpu time is not recordable, because all parallel Gurobi runs are started in the same process in this implementation.
                 TimeSpan.FromSeconds(0),
@@ -542,14 +559,13 @@ namespace Optano.Algorithm.Tuner.Gurobi
             var runtimeFeatures = this.GetCurrentGurobiRuntimeFeatures();
 
             // Update all feature values, provided by GurobiResult.
-            runtimeFeatures.MipGap = result.Gap;
+            runtimeFeatures.BestObjective = result.BestObjective;
+            runtimeFeatures.BestObjectiveBound = result.BestObjectiveBound;
 
             // Update all feature values, provided by GRBModel.
             runtimeFeatures.BarrierIterationsCount = this.GetValueWithTryCatch(
                 () => model.BarIterCount,
                 runtimeFeatures.BarrierIterationsCount);
-            runtimeFeatures.BestObjective = this.GetValueWithTryCatch(() => model.ObjVal, runtimeFeatures.BestObjective);
-            runtimeFeatures.BestObjectiveBound = this.GetValueWithTryCatch(() => model.ObjBound, runtimeFeatures.BestObjectiveBound);
             runtimeFeatures.ExploredNodeCount = this.GetValueWithTryCatch(() => model.NodeCount, runtimeFeatures.ExploredNodeCount);
             runtimeFeatures.SimplexIterationsCount = this.GetValueWithTryCatch(() => model.IterCount, runtimeFeatures.SimplexIterationsCount);
 

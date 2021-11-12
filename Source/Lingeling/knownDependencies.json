@@ -374,7 +374,7 @@
     },
     {
       "PackageId": "OPTANO.Algorithm.Tuner",
-      "VersionString": "2.0.0.232",
+      "VersionString": "2.0.0.236-pre",
       "LicenceUrl": null,
       "ProjectUrl": null,
       "CopyrightOrOwner": null,

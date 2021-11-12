@@ -51,7 +51,12 @@ namespace Optano.Algorithm.Tuner.Gurobi
         public int ThreadCount { get; private set; }
 
         /// <summary>
-        /// Gets the number of different seeds to use per intance file.
+        /// Gets the tertiary tune criterion.
+        /// </summary>
+        public GurobiTertiaryTuneCriterion TertiaryTuneCriterion { get; private set; }
+
+        /// <summary>
+        /// Gets the number of different seeds to use per instance file.
         /// For each .mps file that is found in the instance folder, <see cref="NumberOfSeeds"/> independent random seeds are drawn.
         /// </summary>
         public int NumberOfSeeds { get; private set; }
@@ -117,6 +122,7 @@ namespace Optano.Algorithm.Tuner.Gurobi
         {
             var builder = new StringBuilder("GurobiRunnerConfiguration:\r\n");
             builder.AppendLine($"{nameof(GurobiRunnerConfiguration.ThreadCount)}: {this.ThreadCount}")
+                .AppendLine($"{nameof(GurobiRunnerConfiguration.TertiaryTuneCriterion)}: {this.TertiaryTuneCriterion}")
                 .AppendLine($"{nameof(GurobiRunnerConfiguration.NumberOfSeeds)}: {this.NumberOfSeeds}")
                 .AppendLine($"{nameof(GurobiRunnerConfiguration.NodefileDirectory)}: {this.NodefileDirectory}")
                 .AppendLine($"{nameof(GurobiRunnerConfiguration.NodefileStartSizeGigabyte)}: {this.NodefileStartSizeGigabyte}")
@@ -142,6 +148,11 @@ namespace Optano.Algorithm.Tuner.Gurobi
             /// The default value of <see cref="ThreadCount"/> is 4.
             /// </summary>
             public static readonly int ThreadCountDefault = 4;
+
+            /// <summary>
+            /// The default value of <see cref="TertiaryTuneCriterion"/> is <see cref="GurobiTertiaryTuneCriterion.MipGap"/>.
+            /// </summary>
+            public static readonly GurobiTertiaryTuneCriterion TertiaryTuneCriterionDefault = GurobiTertiaryTuneCriterion.MipGap;
 
             /// <summary>
             /// The default value of <see cref="NumberOfSeeds"/> is 1.
@@ -176,6 +187,11 @@ namespace Optano.Algorithm.Tuner.Gurobi
             /// The value to set for <see cref="ThreadCount"/>.
             /// </summary>
             private int? _threadCount;
+
+            /// <summary>
+            /// The value to set for <see cref="TertiaryTuneCriterion"/>.
+            /// </summary>
+            private GurobiTertiaryTuneCriterion? _tertiaryTuneCriterion;
 
             /// <summary>
             /// The value to set for <see cref="NumberOfSeeds"/>.
@@ -226,6 +242,19 @@ namespace Optano.Algorithm.Tuner.Gurobi
                 }
 
                 this._threadCount = threadCount;
+                return this;
+            }
+
+            /// <summary>
+            /// Sets <see cref="TertiaryTuneCriterion"/>.
+            /// </summary>
+            /// <param name="tertiaryTuneCriterion">
+            /// The tertiary tune criterion.
+            /// </param>
+            /// <returns><see cref="GurobiRunnerConfigBuilder"/>.</returns>
+            public GurobiRunnerConfigBuilder SetTertiaryTuneCriterion(GurobiTertiaryTuneCriterion tertiaryTuneCriterion)
+            {
+                this._tertiaryTuneCriterion = tertiaryTuneCriterion;
                 return this;
             }
 
@@ -345,6 +374,8 @@ namespace Optano.Algorithm.Tuner.Gurobi
             {
                 var config = new GurobiRunnerConfiguration
                                  {
+                                     TertiaryTuneCriterion = this._tertiaryTuneCriterion ?? fallback?.TertiaryTuneCriterion
+                                                             ?? GurobiRunnerConfigBuilder.TertiaryTuneCriterionDefault,
                                      NumberOfSeeds = this._numberOfSeeds ?? fallback?.NumberOfSeeds ?? GurobiRunnerConfigBuilder.NumberOfSeedsDefault,
                                      ThreadCount = this._threadCount ?? fallback?.ThreadCount ?? GurobiRunnerConfigBuilder.ThreadCountDefault,
                                      RngSeed = this._rngSeed ?? fallback?.RngSeed ?? GurobiRunnerConfigBuilder.RngSeedDefault,

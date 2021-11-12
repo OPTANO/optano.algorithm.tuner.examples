@@ -55,19 +55,20 @@ namespace Optano.Algorithm.Tuner.Gurobi.GurobiAdapterFeatures
         /// Initializes a new instance of the <see cref="GurobiRuntimeFeatures" /> class.
         /// </summary>
         /// <param name="timeStamp">The time stamp.</param>
-        public GurobiRuntimeFeatures(DateTime timeStamp)
+        /// <param name="optimizationSenseIsMinimize">A value indicating whether the optimization sense is minimize.</param>
+        public GurobiRuntimeFeatures(DateTime timeStamp, bool optimizationSenseIsMinimize)
         {
             this._immutableTimeSinceLastCallback = null;
+            this.OptimizationSenseIsMinimize = optimizationSenseIsMinimize;
             this.TimeStampOfLastEditing = timeStamp;
-            this.BestObjective = double.NaN;
-            this.BestObjectiveBound = double.NaN;
+            this.BestObjective = GurobiUtils.GetBestObjectiveFallback(optimizationSenseIsMinimize);
+            this.BestObjectiveBound = GurobiUtils.GetBestObjectiveBoundFallback(optimizationSenseIsMinimize);
             this.FeasibleSolutionsCount = 0;
             this.ExploredNodeCount = 0;
             this.UnexploredNodeCount = 0;
             this.BarrierIterationsCount = 0;
             this.SimplexIterationsCount = 0;
             this.CuttingPlanesCount = 0;
-            this.MipGap = GurobiUtils.GetMipGap(double.NaN, double.NaN);
             this.PreSolveRemovedRows = 0;
             this.PreSolveRemovedColumns = 0;
             this.PreSolveConstraintChanges = 0;
@@ -78,6 +79,11 @@ namespace Optano.Algorithm.Tuner.Gurobi.GurobiAdapterFeatures
         #endregion
 
         #region Public properties
+
+        /// <summary>
+        /// Gets a value indicating whether the optimization sense is minimize.
+        /// </summary>
+        public bool OptimizationSenseIsMinimize { get; }
 
         /// <summary>
         /// Gets or sets the time stamp of last editing.
@@ -131,9 +137,9 @@ namespace Optano.Algorithm.Tuner.Gurobi.GurobiAdapterFeatures
         public double CuttingPlanesCount { get; set; }
 
         /// <summary>
-        /// Gets or sets the mip gap.
+        /// Gets the mip gap.
         /// </summary>
-        public double MipGap { get; set; }
+        public double MipGap => GurobiUtils.GetMipGap(this.BestObjective, this.BestObjectiveBound);
 
         /// <summary>
         /// Gets or sets the number of removed rows in pre solve.
@@ -170,7 +176,7 @@ namespace Optano.Algorithm.Tuner.Gurobi.GurobiAdapterFeatures
         /// <returns>The copy.</returns>
         public GurobiRuntimeFeatures Copy()
         {
-            var newGurobiRuntimeFeatures = new GurobiRuntimeFeatures(this.TimeStampOfLastEditing)
+            var newGurobiRuntimeFeatures = new GurobiRuntimeFeatures(this.TimeStampOfLastEditing, this.OptimizationSenseIsMinimize)
                                                {
                                                    _immutableTimeSinceLastCallback = this.TimeSinceLastCallback,
                                                    BestObjective = this.BestObjective,
@@ -181,7 +187,6 @@ namespace Optano.Algorithm.Tuner.Gurobi.GurobiAdapterFeatures
                                                    BarrierIterationsCount = this.BarrierIterationsCount,
                                                    SimplexIterationsCount = this.SimplexIterationsCount,
                                                    CuttingPlanesCount = this.CuttingPlanesCount,
-                                                   MipGap = this.MipGap,
                                                    PreSolveRemovedRows = this.PreSolveRemovedRows,
                                                    PreSolveRemovedColumns = this.PreSolveRemovedColumns,
                                                    PreSolveConstraintChanges = this.PreSolveConstraintChanges,

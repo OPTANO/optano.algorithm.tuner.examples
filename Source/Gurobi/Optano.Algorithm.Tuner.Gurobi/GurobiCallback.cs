@@ -65,17 +65,19 @@ namespace Optano.Algorithm.Tuner.Gurobi
         /// <param name="cancellationToken">The cancellation token issued by OPTANO Algorithm Tuner.</param>
         /// <param name="recordData"> Boolean indicating, if data should be recorded.</param>
         /// <param name="timeStamp">The time stamp.</param>
+        /// <param name="optimizationSenseIsMinimize">A value indicating whether the optimization sense is minimize.</param>
         public GurobiCallback(
             CancellationToken cancellationToken,
             bool recordData,
-            DateTime timeStamp)
+            DateTime timeStamp,
+            bool optimizationSenseIsMinimize)
         {
             this._cancellationToken = cancellationToken;
             this._recordData = recordData;
 
             if (this._recordData)
             {
-                this.CurrentRuntimeFeatures = new GurobiRuntimeFeatures(timeStamp);
+                this.CurrentRuntimeFeatures = new GurobiRuntimeFeatures(timeStamp, optimizationSenseIsMinimize);
             }
         }
 
@@ -196,9 +198,6 @@ namespace Optano.Algorithm.Tuner.Gurobi
             this.CurrentRuntimeFeatures.CuttingPlanesCount = this.GetCallbackInt(
                 GRB.Callback.MIP_CUTCNT,
                 this.CurrentRuntimeFeatures.CuttingPlanesCount);
-            this.CurrentRuntimeFeatures.MipGap = GurobiUtils.GetMipGap(
-                this.CurrentRuntimeFeatures.BestObjective,
-                this.CurrentRuntimeFeatures.BestObjectiveBound);
         }
 
         /// <summary>
@@ -216,9 +215,6 @@ namespace Optano.Algorithm.Tuner.Gurobi
             this.CurrentRuntimeFeatures.ExploredNodeCount = this.GetCallbackDouble(
                 GRB.Callback.MIPSOL_NODCNT,
                 this.CurrentRuntimeFeatures.ExploredNodeCount);
-            this.CurrentRuntimeFeatures.MipGap = GurobiUtils.GetMipGap(
-                this.CurrentRuntimeFeatures.BestObjective,
-                this.CurrentRuntimeFeatures.BestObjectiveBound);
         }
 
         /// <summary>
@@ -238,9 +234,6 @@ namespace Optano.Algorithm.Tuner.Gurobi
             this.CurrentRuntimeFeatures.ExploredNodeCount = this.GetCallbackDouble(
                 GRB.Callback.MIPNODE_NODCNT,
                 this.CurrentRuntimeFeatures.ExploredNodeCount);
-            this.CurrentRuntimeFeatures.MipGap = GurobiUtils.GetMipGap(
-                this.CurrentRuntimeFeatures.BestObjective,
-                this.CurrentRuntimeFeatures.BestObjectiveBound);
         }
 
         /// <summary>

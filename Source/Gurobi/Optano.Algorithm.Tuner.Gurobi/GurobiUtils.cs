@@ -160,6 +160,11 @@ namespace Optano.Algorithm.Tuner.Gurobi
         /// <returns>The mip gap.</returns>
         public static double GetMipGap(double bestObjective, double bestObjectiveBound)
         {
+            if (bestObjective.Equals(0) && bestObjectiveBound.Equals(0))
+            {
+                return 0;
+            }
+
             if (bestObjective.Equals(0) || double.IsNaN(bestObjective) || double.IsNaN(bestObjectiveBound)
                 || Math.Abs(bestObjective).Equals(GRB.INFINITY) || Math.Abs(bestObjectiveBound).Equals(GRB.INFINITY))
             {
@@ -167,6 +172,26 @@ namespace Optano.Algorithm.Tuner.Gurobi
             }
 
             return Math.Abs(bestObjectiveBound - bestObjective) / Math.Abs(bestObjective);
+        }
+
+        /// <summary>
+        /// Gets a fallback value for the best objective, dependent on <paramref name="optimizationSenseIsMinimize"/>.
+        /// </summary>
+        /// <param name="optimizationSenseIsMinimize">A value indicating whether the optimization sense is minimize.</param>
+        /// <returns>The best objective fallback.</returns>
+        public static double GetBestObjectiveFallback(bool optimizationSenseIsMinimize)
+        {
+            return optimizationSenseIsMinimize ? GRB.INFINITY : -GRB.INFINITY;
+        }
+
+        /// <summary>
+        /// Gets a fallback value for the best objective bound, dependent on <paramref name="optimizationSenseIsMinimize"/>.
+        /// </summary>
+        /// <param name="optimizationSenseIsMinimize">A value indicating whether the optimization sense is minimize.</param>
+        /// <returns>The best objective fallback.</returns>
+        public static double GetBestObjectiveBoundFallback(bool optimizationSenseIsMinimize)
+        {
+            return -GurobiUtils.GetBestObjectiveFallback(optimizationSenseIsMinimize);
         }
 
         #endregion

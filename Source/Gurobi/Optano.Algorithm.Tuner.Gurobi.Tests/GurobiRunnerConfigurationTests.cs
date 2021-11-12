@@ -34,6 +34,8 @@ namespace Optano.Algorithm.Tuner.Gurobi.Tests
     using System;
     using System.Linq;
 
+    using NDesk.Options;
+
     using Shouldly;
 
     using Xunit;
@@ -83,6 +85,7 @@ namespace Optano.Algorithm.Tuner.Gurobi.Tests
         [InlineData("postTuning")]
         public void ArgumentsGetParsedCorrectly(string runMode)
         {
+            const GurobiTertiaryTuneCriterion TertiaryTuneCriterion = GurobiTertiaryTuneCriterion.None;
             const int ThreadCount = 8;
             const string NodefileDir = "dummy_directory";
             const double NodefileSize = 2;
@@ -97,6 +100,7 @@ namespace Optano.Algorithm.Tuner.Gurobi.Tests
                                $"--grbNodefileDirectory={NodefileDir}",
                                $"--grbNodefileStartSizeGigabyte={NodefileSize}",
                                $"--grbTerminationMipGap={TerminationMipGap}",
+                               $"--tertiaryTuneCriterion={TertiaryTuneCriterion}",
                                $"--numberOfSeeds={NumberOfSeeds}",
                                $"--rngSeed={RngSeed}",
                            };
@@ -113,14 +117,16 @@ namespace Optano.Algorithm.Tuner.Gurobi.Tests
             {
                 case "master":
                     this._parser.IsMaster.ShouldBeTrue();
+                    config.TertiaryTuneCriterion.ShouldBe(TertiaryTuneCriterion);
                     config.NumberOfSeeds.ShouldBe(NumberOfSeeds);
                     config.RngSeed.ShouldBe(RngSeed);
                     break;
                 case "postTuning":
                     this._parser.IsPostTuningRunner.ShouldBeTrue();
-                    this._parser.AdditionalArguments.Count().ShouldBe(2);
-                    this._parser.AdditionalArguments.First().ShouldBe($"--numberOfSeeds={NumberOfSeeds}");
-                    this._parser.AdditionalArguments.Skip(1).First().ShouldBe($"--rngSeed={RngSeed}");
+                    this._parser.AdditionalArguments.Count().ShouldBe(3);
+                    this._parser.AdditionalArguments.First().ShouldBe($"--tertiaryTuneCriterion={TertiaryTuneCriterion}");
+                    this._parser.AdditionalArguments.Skip(1).First().ShouldBe($"--numberOfSeeds={NumberOfSeeds}");
+                    this._parser.AdditionalArguments.Skip(2).First().ShouldBe($"--rngSeed={RngSeed}");
                     break;
                 default:
                     Assert.True(false);
@@ -139,6 +145,17 @@ namespace Optano.Algorithm.Tuner.Gurobi.Tests
         {
             var args = new[] { "--master", $"--grbThreadCount={threadCount}" };
             Assert.Throws<ArgumentOutOfRangeException>(
+                () => this._parser.ParseArguments(args));
+        }
+
+        /// <summary>
+        /// Checks that the parser throws an <see cref="OptionException" />, if the tertiary tune criterion is not a member of the <see cref="GurobiTertiaryTuneCriterion"/> enum.
+        /// </summary>
+        [Fact]
+        public void ParserThrowsIfTertiaryTuneCriterionIsNotMemberOfEnum()
+        {
+            var args = new[] { "--master", "--tertiaryTuneCriterion=dummy" };
+            Assert.Throws<OptionException>(
                 () => this._parser.ParseArguments(args));
         }
 

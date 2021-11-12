@@ -35,22 +35,24 @@ namespace Optano.Algorithm.Tuner.Gurobi
     using System.Collections.Generic;
     using System.Linq;
 
+    using global::Gurobi;
+
     using Optano.Algorithm.Tuner.GenomeEvaluation.Evaluation;
-    using Optano.Algorithm.Tuner.Genomes;
+    using Optano.Algorithm.Tuner.TargetAlgorithm;
     using Optano.Algorithm.Tuner.TargetAlgorithm.Instances;
     using Optano.Algorithm.Tuner.TargetAlgorithm.RunEvaluators;
 
     /// <summary>
     /// An implementation of <see cref="IRunEvaluator{TInstance,TResult}" /> that sorts genomes according to their <see cref="GurobiResult"/>s.
     /// </summary>
-    public class GurobiRunEvaluator : IRunEvaluator<InstanceSeedFile, GurobiResult>
+    public class GurobiRunEvaluator : RacingRunEvaluatorBase<InstanceSeedFile, GurobiResult>
     {
         #region Fields
 
         /// <summary>
-        /// The cpu timeout.
+        /// The tertiary tune criterion.
         /// </summary>
-        private readonly TimeSpan _cpuTimeout;
+        private readonly GurobiTertiaryTuneCriterion _tertiaryTuneCriterion;
 
         #endregion
 
@@ -60,24 +62,51 @@ namespace Optano.Algorithm.Tuner.Gurobi
         /// Initializes a new instance of the <see cref="GurobiRunEvaluator"/> class.
         /// </summary>
         /// <param name="cpuTimeout">The cpu timeout.</param>
-        public GurobiRunEvaluator(TimeSpan cpuTimeout)
+        /// <param name="tertiaryTuneCriterion">The tertiary tune criterion.</param>
+        public GurobiRunEvaluator(TimeSpan cpuTimeout, GurobiTertiaryTuneCriterion tertiaryTuneCriterion)
+            : base(cpuTimeout, null)
         {
-            this._cpuTimeout = cpuTimeout;
+            this._tertiaryTuneCriterion = tertiaryTuneCriterion;
         }
+
+        #endregion
+
+        #region Properties
+
+        /// <inheritdoc />
+        /// <remarks>
+        /// Since the best gurobi result is a finished result, its best objective and best objective bound are not relevant.
+        /// </remarks>
+        protected override GurobiResult BestPossibleResult => new GurobiResult(
+            double.NaN,
+            double.NaN,
+            TimeSpan.Zero,
+            TargetAlgorithmStatus.Finished,
+            true,
+            true);
+
+        /// <inheritdoc />
+        protected override GurobiResult WorstPossibleResult => new GurobiResult(
+            GRB.INFINITY,
+            -GRB.INFINITY,
+            this.CpuTimeout,
+            TargetAlgorithmStatus.CancelledByTimeout,
+            false,
+            true);
 
         #endregion
 
         #region Public Methods and Operators
 
         /// <inheritdoc />
-        public IEnumerable<ImmutableGenomeStats<InstanceSeedFile, GurobiResult>> Sort(
+        public override IEnumerable<ImmutableGenomeStats<InstanceSeedFile, GurobiResult>> Sort(
             IEnumerable<ImmutableGenomeStats<InstanceSeedFile, GurobiResult>> allGenomeStatsOfMiniTournament)
         {
             /* This implementation uses the following sorting criteria:
 
-            1.) The higher the number of results that have a valid solution, the better.
+            1.) The higher the number of results with valid solution, the better.
             2.) The lower the number of cancelled results, the better.
-            3.) The lower the averaged mip gap of the cancelled results, the better.
+            3.) The lower the tertiary tune criterion, the better.
             4.) The lower the averaged runtime, the better.
 
             NOTE: No need to penalize the average runtime, since the number of cancelled results is a superior sorting criterion.*/
@@ -88,90 +117,40 @@ namespace Optano.Algorithm.Tuner.Gurobi
                 .ThenBy(
                     gs => gs.FinishedInstances.Values
                         .Where(result => result.IsCancelled)
-                        .Select(result => result.Gap)
-                        .DefaultIfEmpty(0)
+                        .Select(this.GetTertiaryTuneCriterionValueToMinimize)
+                        .DefaultIfEmpty(GRB.INFINITY)
                         .Average())
                 .ThenBy(
                     gs => gs.FinishedInstances.Values
                         .Select(result => result.Runtime.TotalSeconds)
-                        .DefaultIfEmpty(double.PositiveInfinity)
+                        .DefaultIfEmpty(TimeSpan.MaxValue.TotalSeconds)
                         .Average());
         }
 
-        /// <inheritdoc />
-        public IEnumerable<ImmutableGenome> GetGenomesThatCanBeCancelledByRacing(
-            IReadOnlyList<ImmutableGenomeStats<InstanceSeedFile, GurobiResult>> allGenomeStatsOfMiniTournament,
-            int numberOfTournamentWinners)
+        #endregion
+
+        #region Methods
+
+        /// <summary>
+        /// Gets the tertiary tune criterion value to minimize.
+        /// </summary>
+        /// <param name="gurobiResult">The gurobi result.</param>
+        /// <returns>The tertiary tune criterion.</returns>
+        private double GetTertiaryTuneCriterionValueToMinimize(GurobiResult gurobiResult)
         {
-            var canBeCancelledByRacing = new List<ImmutableGenome>();
-
-            var racingIncumbent = this.Sort(allGenomeStatsOfMiniTournament).Skip(numberOfTournamentWinners - 1).First();
-            var minimumNumberOfValidResultsOfRacingIncumbent = racingIncumbent.FinishedInstances.Values.Count(result => result.HasValidSolution);
-            var maximumNumberOfCancelledResultsOfRacingIncumbent = racingIncumbent.FinishedInstances.Values.Count(result => result.IsCancelled)
-                                                                   + racingIncumbent.OpenInstances.Count + racingIncumbent.RunningInstances.Count;
-            var maximumTotalRuntimeOfRacingIncumbent = racingIncumbent.RuntimeOfFinishedInstances
-                                                       + ((racingIncumbent.OpenInstances.Count + racingIncumbent.RunningInstances.Count)
-                                                          * this._cpuTimeout);
-
-            foreach (var genomeStats in allGenomeStatsOfMiniTournament.Where(g => !g.IsCancelledByRacing && g.HasOpenOrRunningInstances))
-            {
-                var maximumNumberOfValidResults = genomeStats.FinishedInstances.Values.Count(result => result.HasValidSolution)
-                                                  + genomeStats.OpenInstances.Count + genomeStats.RunningInstances.Count;
-                var minimumNumberOfCancelledResults = genomeStats.FinishedInstances.Values.Count(result => result.IsCancelled);
-                var minimumTotalRuntime = genomeStats.RuntimeOfFinishedInstances;
-
-                if (maximumNumberOfValidResults < minimumNumberOfValidResultsOfRacingIncumbent)
+            return this._tertiaryTuneCriterion switch
                 {
-                    // Cancel by racing, because the current genome cannot have more valid results than the racing incumbent.
-                    canBeCancelledByRacing.Add(genomeStats.Genome);
-                }
-
-                if (maximumNumberOfValidResults == minimumNumberOfValidResultsOfRacingIncumbent
-                    && minimumNumberOfCancelledResults > maximumNumberOfCancelledResultsOfRacingIncumbent)
-                {
-                    // Cancel by racing, because the current genome cannot have less cancelled results than the racing incumbent.
-                    canBeCancelledByRacing.Add(genomeStats.Genome);
-                }
-
-                if (maximumNumberOfValidResults == minimumNumberOfValidResultsOfRacingIncumbent
-                    && minimumNumberOfCancelledResults == maximumNumberOfCancelledResultsOfRacingIncumbent
-                    && minimumTotalRuntime > maximumTotalRuntimeOfRacingIncumbent)
-                {
-                    // Cancel by racing, because the current genome cannot have a lower total run time than the racing incumbent.
-                    canBeCancelledByRacing.Add(genomeStats.Genome);
-                }
-            }
-
-            return canBeCancelledByRacing;
-        }
-
-        /// <inheritdoc />
-        public double ComputeEvaluationPriorityOfGenome(ImmutableGenomeStats<InstanceSeedFile, GurobiResult> genomeStats, TimeSpan cpuTimeout)
-        {
-            if (genomeStats.IsCancelledByRacing)
-            {
-                return 1000;
-            }
-
-            // First decision criterion: The higher the cancelled instance rate, the later the genome will start.
-            var cancelledCount = genomeStats.FinishedInstances.Values.Count(r => r.IsCancelled);
-            var cancelledInstanceRate = (double)cancelledCount / genomeStats.TotalInstanceCount;
-
-            // Second decision criterion: The higher the running instance rate, the later the genome will start.
-            var runningInstanceRate = (double)genomeStats.RunningInstances.Count / genomeStats.TotalInstanceCount;
-
-            // Third decision criterion: The higher the total runtime rate, the later the genome will start.
-            var totalRuntimeRate = genomeStats.RuntimeOfFinishedInstances.TotalMilliseconds
-                                   / (genomeStats.TotalInstanceCount * cpuTimeout.TotalMilliseconds);
-
-            RunEvaluatorUtils.CheckIfRateIsOutOfBounds(cancelledInstanceRate, nameof(cancelledInstanceRate));
-            RunEvaluatorUtils.CheckIfRateIsOutOfBounds(runningInstanceRate, nameof(runningInstanceRate));
-            RunEvaluatorUtils.CheckIfRateIsOutOfBounds(totalRuntimeRate, nameof(totalRuntimeRate));
-
-            var priority = (100 * cancelledInstanceRate) + (10 * runningInstanceRate) + (1 * totalRuntimeRate);
-
-            // The lower the priority, the earlier the genome will start.
-            return priority;
+                    GurobiTertiaryTuneCriterion.MipGap => gurobiResult.Gap,
+                    GurobiTertiaryTuneCriterion.BestObjective => gurobiResult.OptimizationSenseIsMinimize
+                                                                     ? gurobiResult.BestObjective
+                                                                     : -gurobiResult.BestObjective,
+                    GurobiTertiaryTuneCriterion.BestObjectiveBound => gurobiResult.OptimizationSenseIsMinimize
+                                                                          ? -gurobiResult.BestObjectiveBound
+                                                                          : gurobiResult.BestObjectiveBound,
+                    GurobiTertiaryTuneCriterion.None => 42,
+                    _ => throw new NotImplementedException(
+                             $"The tertiary tune criterion value to minimize is not implemented for {this._tertiaryTuneCriterion}!"),
+                };
         }
 
         #endregion

@@ -142,7 +142,7 @@ namespace Optano.Algorithm.Tuner.Gurobi
 
             var tuner = new AlgorithmTuner<GurobiRunner, InstanceSeedFile, GurobiResult>(
                 targetAlgorithmFactory: new GurobiRunnerFactory(gurobiConfig, tunerConfig),
-                runEvaluator: new GurobiRunEvaluator(tunerConfig.CpuTimeout),
+                runEvaluator: new GurobiRunEvaluator(tunerConfig.CpuTimeout, gurobiConfig.TertiaryTuneCriterion),
                 trainingInstances: InstanceSeedFile.CreateInstanceSeedFilesFromDirectory(
                     pathToTrainingInstanceFolder,
                     GurobiUtils.ListOfValidFileExtensions,

@@ -129,7 +129,7 @@ namespace Optano.Algorithm.Tuner.Gurobi
         {
             result = null;
 
-            if (stringArray.Length != 4)
+            if (stringArray.Length != 7)
             {
                 return false;
             }
@@ -144,21 +144,34 @@ namespace Optano.Algorithm.Tuner.Gurobi
                 return false;
             }
 
-            if (!double.TryParse(stringArray[2], NumberStyles.Any, CultureInfo.InvariantCulture, out var gap))
+            // Skip stringArray[2], since the mip gap is computed via best objective and best objective bound.
+            if (!double.TryParse(stringArray[3], NumberStyles.Any, CultureInfo.InvariantCulture, out var bestObjective))
             {
                 return false;
             }
 
-            if (!bool.TryParse(stringArray[3], out var hasValidResult))
+            if (!double.TryParse(stringArray[4], NumberStyles.Any, CultureInfo.InvariantCulture, out var bestObjectiveBound))
+            {
+                return false;
+            }
+
+            if (!bool.TryParse(stringArray[5], out var hasValidResult))
+            {
+                return false;
+            }
+
+            if (!bool.TryParse(stringArray[6], out var optimizationSenseIsMinimize))
             {
                 return false;
             }
 
             result = new GurobiResult(
-                gap,
+                bestObjective,
+                bestObjectiveBound,
                 TimeSpan.FromMilliseconds(runtime),
                 targetAlgorithmStatus,
-                hasValidResult);
+                hasValidResult,
+                optimizationSenseIsMinimize);
             return true;
         }
 

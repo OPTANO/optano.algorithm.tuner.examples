@@ -34,6 +34,8 @@ namespace Optano.Algorithm.Tuner.Gurobi.Tests
     using System;
     using System.Linq;
 
+    using global::Gurobi;
+
     using Optano.Algorithm.Tuner.GrayBox.DataRecordTypes;
     using Optano.Algorithm.Tuner.Gurobi.GurobiAdapterFeatures;
     using Optano.Algorithm.Tuner.MachineLearning.GenomeRepresentation;
@@ -77,11 +79,17 @@ namespace Optano.Algorithm.Tuner.Gurobi.Tests
         {
             var gurobiGrayBoxMethods = new GurobiGrayBoxMethods();
 
-            var runtimeFeatures = new GurobiRuntimeFeatures(DateTime.Now);
+            var runtimeFeatures = new GurobiRuntimeFeatures(DateTime.Now, true);
             var instanceFeatures = new GurobiInstanceFeatures();
             var adapterFeatures = GurobiUtils.ComposeAdapterFeatures(runtimeFeatures, runtimeFeatures, instanceFeatures);
             var adapterFeaturesHeader = GurobiUtils.ComposeAdapterFeaturesHeader(runtimeFeatures, runtimeFeatures, instanceFeatures);
-            var result = new GurobiResult(double.NaN, TimeSpan.MaxValue, TargetAlgorithmStatus.CancelledByTimeout, false);
+            var result = new GurobiResult(
+                GRB.INFINITY,
+                -GRB.INFINITY,
+                TimeSpan.MaxValue,
+                TargetAlgorithmStatus.CancelledByTimeout,
+                false,
+                true);
 
             var adapterDataRecord = new AdapterDataRecord<GurobiResult>(
                 "Gurobi901",

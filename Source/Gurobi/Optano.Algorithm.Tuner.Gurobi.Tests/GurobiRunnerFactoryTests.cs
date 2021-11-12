@@ -80,7 +80,7 @@ namespace Optano.Algorithm.Tuner.Gurobi.Tests
         public void TryToGetResultFromStringArrayWorksForGurobiResults()
         {
             var timeout = TimeSpan.FromSeconds(30);
-            var gurobiResult = new GurobiResult(0.5, timeout, TargetAlgorithmStatus.CancelledByTimeout, true);
+            var gurobiResult = new GurobiResult(2.5, -5, timeout, TargetAlgorithmStatus.CancelledByTimeout, true, true);
             var gurobiConfiguration = new GurobiRunnerConfiguration.GurobiRunnerConfigBuilder().Build(timeout);
             var tunerConfiguration = new AlgorithmTunerConfiguration.AlgorithmTunerConfigurationBuilder().SetCpuTimeout(timeout)
                 .Build(1);
@@ -92,7 +92,10 @@ namespace Optano.Algorithm.Tuner.Gurobi.Tests
             result.IsCancelled.ShouldBe(gurobiResult.IsCancelled);
             result.Runtime.ShouldBe(gurobiResult.Runtime);
             result.Gap.ShouldBe(gurobiResult.Gap);
+            result.BestObjective.ShouldBe(gurobiResult.BestObjective);
+            result.BestObjectiveBound.ShouldBe(gurobiResult.BestObjectiveBound);
             result.HasValidSolution.ShouldBe(gurobiResult.HasValidSolution);
+            result.OptimizationSenseIsMinimize.ShouldBe(gurobiResult.OptimizationSenseIsMinimize);
         }
 
         #endregion

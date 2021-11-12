@@ -31,6 +31,8 @@
 
 namespace Optano.Algorithm.Tuner.Gurobi
 {
+    using System;
+
     using Akka.Util.Internal;
 
     using NDesk.Options;
@@ -42,6 +44,15 @@ namespace Optano.Algorithm.Tuner.Gurobi
     /// </summary>
     public class GurobiRunnerConfigurationParser : PostTuningAdapterArgumentParser<GurobiRunnerConfiguration.GurobiRunnerConfigBuilder>
     {
+        #region Constants
+
+        /// <summary>
+        /// The tertiary tune criterion option name.
+        /// </summary>
+        private const string TertiaryTuneCriterionOptionName = "tertiaryTuneCriterion";
+
+        #endregion
+
         #region Methods
 
         /// <inheritdoc />
@@ -51,6 +62,20 @@ namespace Optano.Algorithm.Tuner.Gurobi
 
             var additionalMasterOptions = new OptionSet
                                               {
+                                                  {
+                                                      GurobiRunnerConfigurationParser.TertiaryTuneCriterionOptionName + "=",
+                                                      () =>
+                                                          "Specifies the tertiary tune criterion after highest number of results with valid solution and lowest number of cancelled results."
+                                                          + $" Default is \"{GurobiRunnerConfiguration.GurobiRunnerConfigBuilder.TertiaryTuneCriterionDefault}\"."
+                                                          + $"\r\nValid values are \"{Enum.GetNames(typeof(GurobiTertiaryTuneCriterion)).Join("\", \"")}\".",
+                                                      tertiaryTuneCriterionString =>
+                                                          {
+                                                              var tertiaryTuneCriterion =
+                                                                  GurobiRunnerConfigurationParser.ParseTertiaryTuneCriterion(
+                                                                      tertiaryTuneCriterionString);
+                                                              this.InternalConfigurationBuilder.SetTertiaryTuneCriterion(tertiaryTuneCriterion);
+                                                          }
+                                                  },
                                                   {
                                                       "numberOfSeeds=",
                                                       () =>
@@ -73,6 +98,26 @@ namespace Optano.Algorithm.Tuner.Gurobi
         protected override OptionSet CreateAdapterPostTuningOptionSet()
         {
             return this.CreateMasterOrPostTuningOptionSet();
+        }
+
+        /// <summary>
+        /// Parses the tertiary tune criterion from string.
+        /// </summary>
+        /// <param name="tertiaryTuneCriterionString">The tertiary tune criterion as string.</param>
+        /// <returns>The tertiary tune criterion.</returns>
+        private static GurobiTertiaryTuneCriterion ParseTertiaryTuneCriterion(string tertiaryTuneCriterionString)
+        {
+            if (Enum.TryParse(
+                tertiaryTuneCriterionString,
+                true,
+                out GurobiTertiaryTuneCriterion tertiaryTuneCriterion))
+            {
+                return tertiaryTuneCriterion;
+            }
+
+            throw new OptionException(
+                $"The given tertiary tune criterion {tertiaryTuneCriterionString} is not a member of the {nameof(GurobiTertiaryTuneCriterion)} enum.",
+                GurobiRunnerConfigurationParser.TertiaryTuneCriterionOptionName);
         }
 
         /// <summary>

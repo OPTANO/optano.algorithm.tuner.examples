@@ -143,12 +143,18 @@ namespace Optano.Algorithm.Tuner.Gurobi.Tests
         /// <param name="bestObjectiveBound">The best objective bound.</param>
         /// <param name="expectedResult">The expected result.</param>
         [Theory]
-        [InlineData(0, 100, GRB.INFINITY)]
+        [InlineData(double.NaN, double.NaN, GRB.INFINITY)]
         [InlineData(double.NaN, 100, GRB.INFINITY)]
         [InlineData(100, double.NaN, GRB.INFINITY)]
+        [InlineData(GRB.INFINITY, GRB.INFINITY, GRB.INFINITY)]
+        [InlineData(GRB.INFINITY, 100, GRB.INFINITY)]
+        [InlineData(100, GRB.INFINITY, GRB.INFINITY)]
+        [InlineData(0, 0, 0)]
+        [InlineData(0, 100, GRB.INFINITY)]
+        [InlineData(100, 0, 1)]
         [InlineData(100, 100, 0)]
         [InlineData(100, 50, 0.5)]
-        [InlineData(100, 0, 1)]
+        [InlineData(50, 100, 1)]
         public void GetMipGapReturnsCorrectResult(double bestObjective, double bestObjectiveBound, double expectedResult)
         {
             var actualResult = GurobiUtils.GetMipGap(bestObjective, bestObjectiveBound);

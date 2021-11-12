@@ -34,6 +34,8 @@ namespace Optano.Algorithm.Tuner.Gurobi
     using System;
     using System.Linq;
 
+    using global::Gurobi;
+
     using Optano.Algorithm.Tuner.TargetAlgorithm;
     using Optano.Algorithm.Tuner.TargetAlgorithm.Results;
 
@@ -47,23 +49,26 @@ namespace Optano.Algorithm.Tuner.Gurobi
         /// <summary>
         /// Initializes a new instance of the <see cref="GurobiResult" /> class.
         /// </summary>
-        /// <param name="gap">The MIP gap at the end of the run.</param>
+        /// <param name="bestObjective">The best objective at the end of the run.</param>
+        /// <param name="bestObjectiveBound">The best objective bound at the end of the run.</param>
         /// <param name="runtime">The runtime in milliseconds.</param>
         /// <param name="targetAlgorithmStatus">The target algorithm status.</param>
         /// <param name="hasValidSolution">Whether a valid solution was found.</param>
-        public GurobiResult(double gap, TimeSpan runtime, TargetAlgorithmStatus targetAlgorithmStatus, bool hasValidSolution)
+        /// <param name="optimizationSenseIsMinimize">A value indicating whether the optimization sense is minimize.</param>
+        public GurobiResult(
+            double bestObjective,
+            double bestObjectiveBound,
+            TimeSpan runtime,
+            TargetAlgorithmStatus targetAlgorithmStatus,
+            bool hasValidSolution,
+            bool optimizationSenseIsMinimize)
             : base(runtime, targetAlgorithmStatus)
         {
-            // Check some parameters.
-            if (gap < 0)
-            {
-                throw new ArgumentOutOfRangeException($"Gap has to be nonnegative, but is {gap}.");
-            }
-
-            // Set them.
-            this.Gap = gap;
+            this.BestObjective = bestObjective;
+            this.BestObjectiveBound = bestObjectiveBound;
             this.Runtime = runtime;
             this.HasValidSolution = hasValidSolution;
+            this.OptimizationSenseIsMinimize = optimizationSenseIsMinimize;
         }
 
         /// <summary>
@@ -72,7 +77,7 @@ namespace Optano.Algorithm.Tuner.Gurobi
         /// This ctor is never used, since this adapter handles its cancelled results on its own.
         /// </summary>
         public GurobiResult()
-            : this(double.NaN, TimeSpan.MaxValue, TargetAlgorithmStatus.CancelledByTimeout, false)
+            : this(GRB.INFINITY, -GRB.INFINITY, TimeSpan.MaxValue, TargetAlgorithmStatus.CancelledByTimeout, false, true)
         {
             throw new InvalidOperationException();
         }
@@ -84,12 +89,27 @@ namespace Optano.Algorithm.Tuner.Gurobi
         /// <summary>
         /// Gets the MIP gap at the end of the run.
         /// </summary>
-        public double Gap { get; }
+        public double Gap => GurobiUtils.GetMipGap(this.BestObjective, this.BestObjectiveBound);
+
+        /// <summary>
+        /// Gets the best objective at the end of the run.
+        /// </summary>
+        public double BestObjective { get; }
+
+        /// <summary>
+        /// Gets the best objective bound at the end of the run.
+        /// </summary>
+        public double BestObjectiveBound { get; }
 
         /// <summary>
         /// Gets a value indicating whether the run completed with a feasible solution.
         /// </summary>
         public bool HasValidSolution { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether the optimization sense is minimize.
+        /// </summary>
+        public bool OptimizationSenseIsMinimize { get; }
 
         #endregion
 
@@ -102,19 +122,26 @@ namespace Optano.Algorithm.Tuner.Gurobi
         public override string ToString()
         {
             return
-                $"Cancelled: {this.IsCancelled}; Runtime: {this.Runtime} ms; Found feasible solution: {this.HasValidSolution}; MIP gap: {this.Gap}";
+                $"Cancelled: {this.IsCancelled}; Runtime: {this.Runtime} ms; Found feasible solution: {this.HasValidSolution}; MIP gap: {this.Gap}; Best objective: {this.BestObjective}; Best objective bound: {this.BestObjectiveBound}; Optimization sense: {(this.OptimizationSenseIsMinimize ? "Min" : "Max")};";
         }
 
         /// <inheritdoc />
         public override string[] GetHeader()
         {
-            return base.GetHeader().Concat(new[] { "MipGap", "HasValidSolution" }).ToArray();
+            return base.GetHeader()
+                .Concat(new[] { "MipGap", "BestObjective", "BestObjectiveBound", "HasValidSolution", "OptimizationSenseIsMinimize" }).ToArray();
         }
 
         /// <inheritdoc />
         public override string[] ToStringArray()
         {
-            return base.ToStringArray().Concat(new[] { $"{this.Gap:0.######}", $"{this.HasValidSolution}" }).ToArray();
+            return base.ToStringArray().Concat(
+                    new[]
+                        {
+                            $"{this.Gap:0.######}", $"{this.BestObjective:0.######}", $"{this.BestObjectiveBound:0.######}",
+                            $"{this.HasValidSolution}", $"{this.OptimizationSenseIsMinimize}",
+                        })
+                .ToArray();
         }
 
         #endregion
